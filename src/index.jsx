@@ -1,16 +1,74 @@
 import React from "react";
 import ReactDOM from 'react-dom';
+import Container from 'react-bootstrap/Container'
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import List from "./list.jsx";
+import UserInfo from "./userInfo.jsx";
+import DestInfo from "./destInfo.jsx";
+import Button from "react-bootstrap/Button";
+import Itinerary from "./itinerary.jsx";
+
+// https://material-ui.com/zh/
 
 class App extends React.Component {
 
     constructor (props) {
       super(props);
+      this.state = {
+          generate: false,
+      }
+
+      this.handleGenerate = this.handleGenerate.bind(this);
+    }
+
+    handleGenerate (){
+        this.setState({
+            generate: true,
+        });
+    }
+
+    renderItinerary (){
+        if (this.state.generate){
+            return (
+                <div>
+                    <Itinerary />
+                    <Button type="button" class="btn btn-primary" onClick={()=>this.handleGenerate()}>Regenerate my travel itinerary!</Button>
+                </div>
+            );
+        }
+        else {
+            return (
+                <Button type="button" class="btn btn-primary" onClick={()=>this.handleGenerate()}>Generate my travel itinerary!</Button>
+            )
+        }
     }
 
     render () {
         return (
             <div>
-                <p>Dumb travel planner</p>
+            <Container>
+                <h1>Conversational Travel Agent</h1>
+            <Row>
+                <UserInfo />
+            </Row>
+            <br></br>
+            <Row>
+                <Col>
+                <DestInfo />
+                </Col>
+
+                <Col>
+                <List />
+                </Col>
+            </Row>
+            <br></br>
+            <Row className="justify-content-md-center">
+            <Col>
+            {this.renderItinerary()}
+            </Col>
+            </Row>
+            </Container>
             </div>
         );
     }
@@ -20,4 +78,4 @@ class App extends React.Component {
 
 export default App;
 
-ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM.render(<App />, document.getElementById('app'));
