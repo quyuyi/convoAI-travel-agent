@@ -33,6 +33,7 @@ class App extends React.Component {
             return (
                 <div>
                     <Itinerary />
+                    <br></br>
                     <Button type="button" class="btn btn-primary" onClick={()=>this.handleGenerate()}>Regenerate my travel itinerary!</Button>
                 </div>
             );
