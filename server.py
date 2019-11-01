@@ -22,6 +22,8 @@ def index():
 def business_logic():
     # read clinc's request.json
     clinc_request = request.json
+    print("print from bussiness_logic")
+    print(clinc_request)
 
     # extract state
     curr_intent = clinc_request['state']
@@ -85,7 +87,9 @@ def add_destination():
 def resolve_add_destination(clinc_request):
     # no need to change state here
     # no need to change/add slot value here
+    print("print from resolve_add_destination")
     clinc_request['slots']['_CITY_']['values']['resolved'] = 1
+    print(clinc_request)
     return jsonify(**clinc_request)
 
 
