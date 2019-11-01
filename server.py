@@ -91,7 +91,7 @@ def resolve_add_destination(clinc_request):
     # no need to change state here
     # no need to change/add slot value here
     print("print from resolve_add_destination")
-    clinc_request['slots']['_DESTINATION_']['values']['resolved'] = 1
+    clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 1
     print(clinc_request)
     return jsonify(**clinc_request)
 
