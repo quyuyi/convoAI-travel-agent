@@ -5,6 +5,7 @@ UI
 1. Conversational AI font
 2. destination list
 3. destination info popup window
+4. add ASR
 
 business logic server
 1. if change state, can we know the slots of the new state?

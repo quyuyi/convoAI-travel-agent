@@ -3,7 +3,7 @@ import MaterialTable from 'material-table';
 import { AccessAlarm, ThreeDRotation } from '@material-ui/icons';
 
 // https://material-ui.com/zh/components/tables/
-
+// get destinations list from list.jsx
 class Itinerary extends React.Component {
 
     constructor (props) {
@@ -11,7 +11,7 @@ class Itinerary extends React.Component {
       
       this.state = {
           data: [
-              { name: 'Mehmet', surname: 'Baran', birthYear: 1987, birthCity: 63 },
+              { '': 'Mehmet', surname: 'Baran', birthYear: 1987, birthCity: 63 },
             ],
       };
 
@@ -19,9 +19,9 @@ class Itinerary extends React.Component {
 
     render (){
         const columns = [
-            { title: 'Name', field: 'name' },
-            { title: 'Surname', field: 'surname' },
-            { title: 'Birth Year', field: 'birthYear', type: 'numeric' },
+            { title: 'Day', field: 'day' },
+            { title: 'Destination', field: 'destination' },
+            { title: 'Description', field: 'description'},
         ];
         const data = this.state.data;
         
