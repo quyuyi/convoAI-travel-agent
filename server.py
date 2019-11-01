@@ -86,7 +86,7 @@ def resolve_add_destination(clinc_request):
     # no need to change state here
     # no need to change/add slot value here
     clinc_request['slots']['_CITY_']['values']['resolved'] = 1
-    return jsonify(clinc_request)
+    return jsonify(**clinc_request)
 
 
 
