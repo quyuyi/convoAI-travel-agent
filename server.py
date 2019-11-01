@@ -93,6 +93,7 @@ def resolve_add_destination(clinc_request):
     print("print from resolve_add_destination")
     clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = 'someplace'
     # why the value of 'values' is list???
+    print("change")
     clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 1
 
     print(clinc_request)
