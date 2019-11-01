@@ -10,7 +10,6 @@ import Button from "react-bootstrap/Button";
 import Itinerary from "./itinerary.jsx";
 
 // https://material-ui.com/zh/
-// comment
 class App extends React.Component {
 
     constructor (props) {
