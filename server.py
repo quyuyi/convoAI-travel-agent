@@ -21,7 +21,7 @@ def index():
 @app.route("/api/v1/clinc/", methods=["GET", "POST"])
 def business_logic():
     # read clinc's request.json
-    clinc_request = request.json()
+    clinc_request = request.json
 
     # extract state
     curr_intent = clinc_request['state']
@@ -44,7 +44,7 @@ def business_logic():
 @app.route("/query_clinc/", methods=["GET", "POST"])
 def add_destination():
     # get query frrom the front end
-    query = request.json()['query']
+    query = request.json['query']
 
     url = "https://HOSTNAME/v1/query/" # TODO what should HOSTNAME be replaced with?
 
