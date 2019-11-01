@@ -43,10 +43,13 @@ def business_logic():
 # return back to the front end
 @app.route("/query_clinc/", methods=["GET", "POST"])
 def add_destination():
-    url = "https://HOSTNAME/v1/query/" # what should HOSTNAME be replaced with?
+    # get query frrom the front end
+    query = request.json()['query']
+
+    url = "https://HOSTNAME/v1/query/" # TODO what should HOSTNAME be replaced with?
 
     payload = {
-        "query": "I want to travel to Boston for 3 days with my best friend.",
+        "query": query,
         "language": "en",
         "device": "Alexa",
         "lat": 42.2810237,

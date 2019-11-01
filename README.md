@@ -1,5 +1,16 @@
 # EECS498 Conversational AI - Travel Agent
 
+TODO
+UI
+1. Conversational AI font
+2. destination list
+3. destination info popup window
+
+business logic server
+1. if change state, can we know the slots of the new state?
+
+
+
 To run this app:
 1. npm install
 2. npm run dev
