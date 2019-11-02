@@ -8,6 +8,7 @@ import UserInfo from "./userInfo.jsx";
 import DestInfo from "./destInfo.jsx";
 import Button from "react-bootstrap/Button";
 import Itinerary from "./itinerary.jsx";
+import Dialog from "./dialog.jsx";
 
 // https://material-ui.com/zh/
 
@@ -60,8 +61,16 @@ class App extends React.Component {
                 </Col>
 
                 <Col>
+                <Row>
                 <List />
+                </Row>
+                <Row>
+                <Dialog/>
+                </Row>    
                 </Col>
+                    
+
+             
             </Row>
             <br></br>
             <Row className="justify-content-md-center">
