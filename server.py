@@ -107,7 +107,7 @@ def resolve_add_destination(clinc_request):
     clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = 'someplace'
     # why the value of 'values' is list???
     print("change")
-    # clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 1
+    clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 1
 
     print(clinc_request)
     return jsonify(**clinc_request)
@@ -138,6 +138,7 @@ def resolve_clean_hello(clinc_request):
     return jsonify(**clinc_request)
 
 def resolve_destination_info(clinc_request):
+
     return jsonify(**clinc_request)
 
 def resolve_generate_schedule(clinc_request):
