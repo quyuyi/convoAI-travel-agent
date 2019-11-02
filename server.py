@@ -158,7 +158,26 @@ def resolve_destination_info(clinc_request):
 def resolve_generate_schedule(clinc_request):
     return jsonify(**clinc_request)
 
+
+
 def resolve_recommendation(clinc_request):
+    print("start resolve recommendation...")
+    print("request body is:")
+    print(clinc_request)
+    # TODO
+    # extract necessary info from clinc's request 
+    # (refer to resolve_basic_info(clinc_request) above)
+
+    # TODO
+    # request the trip api
+    # receive response(i.e., a destination or a list of destination) from the trip api
+
+    # TODO
+    # figure out other preferences need by the trip api
+    # tell Tianchun to add slots in clinc
+
+    # TODO
+    # format the response to clinc
     return jsonify(**clinc_request)
 
 
@@ -167,6 +186,21 @@ def resolve_remove_destination(clinc_request):
 
 
 
+
+
+
+
+# global variables
+preferences = {
+    # update global variable (city, length_of_visit, number_of_people)
+    # in resolve_basic_info(clinc_request)
+    "city": -1,
+    "length_of_visit": -1,
+    "number_of_people": -1,
+    # TODO
+    # update global variable you figured out
+    # in resolve_recommendation(clinc_request)
+}
 
 
 
