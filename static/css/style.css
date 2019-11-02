@@ -1,22 +1,28 @@
 .talk_con{
     width:600px;
     height:500px;
-    border:1px solid #666;
+    /* border:1px solid #666; */
     margin:0;
     background:#f9f9f9;
 }
 .talk_show{
     width:580px;
     height:420px;
-    border:1px solid #666;
+    /* border:1px solid #666; */
     background:#fff;
-    margin:10px auto 0;
+    margin:0px auto 0;
     overflow:auto;
 }
 .talk_input{
+    padding: '2px 4px';
+    display: 'flex';
     width:580px;
     margin:10px auto 0;
 }
+.iconButton{
+    padding:10;
+}
+
 .whotalk{
     width:80px;
     height:30px;

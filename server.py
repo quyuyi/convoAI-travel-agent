@@ -64,7 +64,8 @@ def add_destination():
     # get query frrom the front end
     query = request.json['query']
 
-    url = "https://HOSTNAME/v1/query/" # TODO what should HOSTNAME be replaced with?
+    # url = "https://HOSTNAME/v1/query/" # TODO what should HOSTNAME be replaced with?
+    url = "https://api.clinc.ai:443/v1/query/"
 
     payload = {
         "query": query,

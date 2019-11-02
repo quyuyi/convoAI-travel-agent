@@ -16,8 +16,18 @@ class DestInfo extends React.Component {
 
     render (){
         const cardStyle = {
-              maxWidth: 345,
+              maxWidth: 500,
+              maxHeight: 500,
         };
+
+        const contentHeaderStyle = {
+            height: 50,
+        }
+
+        const contentStyle = {
+            maxHeight: 260,
+            overflow: "auto",
+        }
 
         const mediaStyle = {
               height: 140,
@@ -32,12 +42,16 @@ class DestInfo extends React.Component {
                     image="/static/img/NCRB.jpg"
                     title="Contemplative Reptile"
                     />
-                    <CardContent>
+                    <CardContent style = {contentHeaderStyle}>
                     <Typography gutterBottom variant="h5" component="h2">
                         NCRB
                     </Typography>
+                    </CardContent>
+                    <CardContent
+                    style = {contentStyle}>
                     <Typography variant="body2" color="textSecondary" component="p">
-                    Located at the corner of Hubbard and Murfin Avenues near Bursley Hall and Northwood apartments, the NCRB features everything you need in a fitness facility.
+                    Located at the corner of Hubbard and Murfin Avenues near Bursley Hall and Northwood apartments, the NCRB features everything you need in a fitness facility.Located at the corner of Hubbard and Murfin Avenues near Bursley Hall and Northwood apartments, the NCRB features everything you need in a fitness facility.Located at the corner of Hubbard and Murfin Avenues near Bursley Hall and Northwood apartments, the NCRB features everything you need in a fitness facility.
+                    Located at the corner of Hubbard and Murfin Avenues near Bursley Hall and Northwood apartments, the NCRB features everything you need in a fitness facility.Located at the corner of Hubbard and Murfin Avenues near Bursley Hall and Northwood apartments, the NCRB features everything you need in a fitness facility.Located at the corner of Hubbard and Murfin Avenues near Bursley Hall and Northwood apartments, the NCRB features everything you need in a fitness facility.
                     </Typography>
                     </CardContent>
                 </CardActionArea>
