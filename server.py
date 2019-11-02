@@ -142,7 +142,7 @@ def resolve_clean_hello(clinc_request):
     return jsonify(**clinc_request)
 
 def resolve_destination_info(clinc_request):
-    clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = clinc_request['slots']['_DESTINATION_']['values'][0]['token']
+    clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = clinc_request['slots']['_DESTINATION_']['values'][0]['tokens']
     clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 1
     return jsonify(**clinc_request)
 
