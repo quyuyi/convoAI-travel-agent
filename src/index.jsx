@@ -33,13 +33,13 @@ class App extends React.Component {
                 <div>
                     <Itinerary />
                     <br></br>
-                    <Button type="button" class="btn btn-primary" onClick={()=>this.handleGenerate()}>Regenerate my travel itinerary!</Button>
+                    <Button type="button" className="btn btn-primary" onClick={()=>this.handleGenerate()}>Regenerate my travel itinerary!</Button>
                 </div>
             );
         }
         else {
             return (
-                <Button type="button" class="btn btn-primary" onClick={()=>this.handleGenerate()}>Generate my travel itinerary!</Button>
+                <Button type="button" className="btn btn-primary" onClick={()=>this.handleGenerate()}>Generate my travel itinerary!</Button>
             )
         }
     }

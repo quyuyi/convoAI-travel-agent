@@ -132,11 +132,9 @@ def resolve_basic_info(clinc_request):
     clinc_request['slots']['_CITY_']['values'][0]['resolved'] = 1
     clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['resolved'] = 1
     clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['resolved'] = 1
-    '''
     clinc_request['slots']['_CITY_']['values'][0]['value'] = clinc_request['slots']['_CITY_']['values'][0]['token']
     clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['value'] = clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['token']
     clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['value'] = clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['token']
-    '''
     return jsonify(**clinc_request)
 
 def resolve_clean_hello(clinc_request):
