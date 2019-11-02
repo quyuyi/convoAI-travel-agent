@@ -32,8 +32,21 @@ def business_logic():
 
     # resolve request depends on the specific state
     if (curr_intent == "add_destination"):
-        print("enter if condition")
         return resolve_add_destination(clinc_request)
+    elif (curr_intent == "clean_hello"):
+        return resolve_clean_hello(clinc_request)
+    elif (curr_intent == "basic_info"):
+        return resolve_basic_info(clinc_request)
+    elif (curr_intent == "destination_info"):
+        return resolve_destination_info(clinc_request)
+    elif (curr_intent == "generate_shedule"):
+        return resolve_generate_schedule(clinc_request)
+    elif (curr_intent == "recommendation"):
+        return resolve_recommendation(clinc_request)
+    elif (curr_intent == "remove_destination"):
+        return resolve_remove_destination(clinc_request)
+    else:
+        print("intent out of scope")
 
 
     # return the response.json back to clinc
@@ -100,13 +113,39 @@ def resolve_add_destination(clinc_request):
     return jsonify(**clinc_request)
 
 
+def resolve_basic_info(clinc_request):
+    print("start resolve basic info...")
+    print("request body is:")
+    print(clinc_request)
+    # slots: city, length_of_visit, number_of_people
+    # TODO
+    
+    return jsonify(**clinc_request)
+
+def resolve_clean_hello(clinc_request):
+    return jsonify(**clinc_request)
+
+def resolve_destination_info(clinc_request):
+    return jsonify(**clinc_request)
+
+def resolve_generate_schedule(clinc_request):
+    return jsonify(**clinc_request)
+
+def resolve_recommendation(clinc_request):
+    return jsonify(**clinc_request)
+
+
+def resolve_remove_destination(clinc_request):
+    return jsonify(**clinc_request)
+
+
 
 
 
 
 all_states = [
     "add_destination", "basic_info", "clean_goodbye", "clean_hello",
-    "destination_info", "generate_schedule", "recommendation", "remove_destination"]
+    "destination_info", "generate_shedule", "recommendation", "remove_destination"]
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=os.environ.get('PORT', 3000), debug=True)
