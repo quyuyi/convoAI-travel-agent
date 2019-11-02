@@ -57,4 +57,3 @@ class Dialog extends React.Component {
 }
 
 export default Dialog;
-

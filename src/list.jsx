@@ -50,7 +50,7 @@ class List extends React.Component {
     render (){
         return (
             <div>
-            <div id="myDIV" class="header">
+            <div id="myDIV" className="header">
             <h2>Destinations</h2>
             <span>
             {/* <input type="text" id="myInput" placeholder="Place..."/>
@@ -59,12 +59,12 @@ class List extends React.Component {
             </div>
 
 
-            <ul class="list-group list-group-flush">
+            <ul className="list-group list-group-flush">
             <div className='destinations'>
                     {this.state.destinations.map((h,idx) => {
                         return (
                             <div key={idx}>
-                                <li class="list-group-item">
+                                <li className="list-group-item">
                                 <span onClick = {()=>this.handleRemove()}>
                                 <Tooltip title = "delete">
                                 <HighlightOffIcon />
