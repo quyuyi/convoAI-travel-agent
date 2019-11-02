@@ -109,7 +109,7 @@ def resolve_add_destination(clinc_request):
     clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 1
 
     print("change state")
-    clinc_request['state'] = "generate_shedule"
+    clinc_request['state'] = "destination_info"
 
     print(clinc_request)
     return jsonify(**clinc_request)
@@ -139,10 +139,12 @@ def resolve_basic_info(clinc_request):
     return jsonify(**clinc_request)
 
 def resolve_clean_hello(clinc_request):
+    clinc_request['state'] = "basic_info"
     return jsonify(**clinc_request)
 
 def resolve_destination_info(clinc_request):
-
+    clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = clinc_request['slots']['_DESTINATION_']['values'][0]['token']
+    clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 1
     return jsonify(**clinc_request)
 
 def resolve_generate_schedule(clinc_request):
