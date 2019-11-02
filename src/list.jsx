@@ -1,8 +1,9 @@
 import React from "react";
-import ReactDOM from 'react-dom';
 import Button from 'react-bootstrap/Button';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import Tooltip from '@material-ui/core/Tooltip';
+import Chip from '@material-ui/core/Chip';
+import PlaceIcon from '@material-ui/icons/Place';
 
 class List extends React.Component {
     constructor (props){
@@ -48,40 +49,63 @@ class List extends React.Component {
     }
 
     render (){
-        return (
+        return(
             <div>
-            <div id="myDIV" className="header">
-            <h2>Destinations</h2>
-            <span>
-            {/* <input type="text" id="myInput" placeholder="Place..."/>
-            <Button variant="secondary" onClick={()=>this.handleAdd()} className="addBtn">Add</Button> */}
-            </span>
-            </div>
-
-
-            <ul className="list-group list-group-flush">
-            <div className='destinations'>
-                    {this.state.destinations.map((h,idx) => {
-                        return (
-                            <div key={idx}>
-                                <li className="list-group-item">
-                                <span onClick = {()=>this.handleRemove()}>
-                                <Tooltip title = "delete">
-                                <HighlightOffIcon />
-                                </Tooltip>
-                                </span>
-                                {h}
-                                </li>    
-                            </div>
-                        )
-                    })}
-            </div>
-            </ul>
-
-
+                {this.state.destinations.map((value, index) => {
+                    return (
+                        <Chip key={index} 
+                        icon={<PlaceIcon />}
+                        color="default" 
+                        label = {value} 
+                        onDelete={()=>this.handleRemove()}
+                        deleteIcon={<HighlightOffIcon />}
+                        variant="outlined" />
+                    )
+                })}
             </div>
         );
     }
+
+
+
+
+
+
+    // render (){
+    //     return (
+    //         <div>
+    //         <div id="myDIV" className="header">
+    //         <h2>Destinations</h2>
+    //         <span>
+    //         {/* <input type="text" id="myInput" placeholder="Place..."/>
+    //         <Button variant="secondary" onClick={()=>this.handleAdd()} className="addBtn">Add</Button> */}
+    //         </span>
+    //         </div>
+
+
+    //         <ul className="list-group list-group-flush">
+    //         <div className='destinations'>
+    //                 {this.state.destinations.map((h,idx) => {
+    //                     return (
+    //                         <div key={idx}>
+    //                             <li className="list-group-item">
+    //                             <span onClick = {()=>this.handleRemove()}>
+    //                             <Tooltip title = "delete">
+    //                             <HighlightOffIcon />
+    //                             </Tooltip>
+    //                             </span>
+    //                             {h}
+    //                             </li>    
+    //                         </div>
+    //                     )
+    //                 })}
+    //         </div>
+    //         </ul>
+
+
+    //         </div>
+    //     );
+    // }
 }
 
 export default List;

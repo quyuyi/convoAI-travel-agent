@@ -53,23 +53,15 @@ class App extends React.Component {
             <Row>
                 <UserInfo />
             </Row>
+            
+            <Row>
+                <List />
+            </Row>
             <br></br>
             <Row>
                 <Col>
                 <DestInfo />
                 </Col>
-
-                <Col>
-                <Row>
-                <List />
-                </Row>
-                <Row>
-                <Dialog/>
-                </Row>    
-                </Col>
-                    
-
-             
             </Row>
             <br></br>
             <Row className="justify-content-md-center">
