@@ -129,6 +129,15 @@ def resolve_basic_info(clinc_request):
     # TODO
     # 1. check if all slots have token and whether the token is valid
     # 2. turn token to value, using regex or exact
+
+    city_tokens = clinc_request['slots']['_CITY_']['values'][0]['tokens']
+    length_of_visit_tokens = clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['tokens']
+    number_of_people_tokens = clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['tokens']
+
+    #### process number_of_people
+    try:
+        clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['value'] = int()
+
     clinc_request['slots']['_CITY_']['values'][0]['resolved'] = 1
     clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['resolved'] = 1
     clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['resolved'] = 1
@@ -138,7 +147,6 @@ def resolve_basic_info(clinc_request):
     return jsonify(**clinc_request)
 
 def resolve_clean_hello(clinc_request):
-    clinc_request['state'] = "basic_info"
     return jsonify(**clinc_request)
 
 def resolve_destination_info(clinc_request):
