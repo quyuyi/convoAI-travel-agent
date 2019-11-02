@@ -52,14 +52,14 @@ class App extends React.Component {
             <Row>
                 <UserInfo />
             </Row>
+            
+            <Row>
+                <List />
+            </Row>
             <br></br>
             <Row>
                 <Col>
                 <DestInfo />
-                </Col>
-
-                <Col>
-                <List />
                 </Col>
             </Row>
             <br></br>

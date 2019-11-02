@@ -1,13 +1,14 @@
 # EECS498 Conversational AI - Travel Agent
 
-TODO
-UI
+## TODO
+
+### UI
 1. Conversational AI font
-2. destination list
+~~2. destination list~~
 3. destination info popup window
 4. add ASR
 
-business logic server
+### Business Logic Server
 1. if change state, can we know the slots of the new state?
 
 
@@ -26,7 +27,5 @@ If you would like to have webpack rebuild your javascript any time your React co
 
 ## Notes:
 1. Business Transition
-With out BT, 
-user input -> clinc intent classification -> clinc slot extraction -> backend resolve state and slots
-With BT,
-user input -> clinc intent classification -> clinc slot extraction -> Business logic server BT -> clinc slot extraction based on the new state with the old query -> backend can't resolve slot?
+- With out BT, user input -> clinc intent classification -> clinc slot extraction -> backend resolve state and slots
+- With BT, user input -> clinc intent classification -> clinc slot extraction -> Business logic server BT -> clinc slot extraction based on the new state with the old query -> backend can't resolve slot?

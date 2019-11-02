@@ -135,8 +135,8 @@ def resolve_basic_info(clinc_request):
     number_of_people_tokens = clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['tokens']
 
     #### process number_of_people
-    try:
-        clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['value'] = int()
+    # try:
+    #     clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['value'] = int()
 
     clinc_request['slots']['_CITY_']['values'][0]['resolved'] = 1
     clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['resolved'] = 1
