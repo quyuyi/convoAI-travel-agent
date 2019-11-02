@@ -107,7 +107,7 @@ def resolve_add_destination(clinc_request):
     clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = 'someplace'
     # why the value of 'values' is list???
     print("change")
-    clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 1
+    # clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 1
 
     print(clinc_request)
     return jsonify(**clinc_request)
@@ -122,6 +122,9 @@ def resolve_basic_info(clinc_request):
     '''
     {'ai_version': 'd2462c12-e625-49fd-9cfe-c781ddedf060', 'device': 'default', 'dialog': 'KIuP1skcNGBdxFjVc5NWl6NqvFY3LnaL', 'lat': 0, 'lon': 0, 'time_offset': 0, 'external_user_id': '1', 'query': 'I want to travel to Ann Arbor for 3 days with mum.', 'qid': '98477a05-bc61-48e9-94cc-3aa04265444c', 'state': 'basic_info', 'slots': {'_CITY_': {'type': 'string', 'values': [{'resolved': -1, 'tokens': 'ann arbor'}]}, '_LENGTH_OF_VISIT_': {'type': 'string', 'values': [{'resolved': -1, 'tokens': '3'}]}, '_NUMBER_OF_PEOPLE_': {'type': 'string', 'values': [{'resolved': -1, 'tokens': 'with mum'}]}}, 'sentiment': 0, 'intent_probability': 0.9865199534733209, 'session_id': '1c0e6e95e60f4ef0bd8e20bee0f12320', 'intent': 'basic_info_start'}
     '''
+    # TODO
+    # 1. check if all slots have token and whether the token is valid
+    # 2. turn token to value, using regex or exact
     clinc_request['slots']['_CITY_']['values'][0]['resolved'] = 1
     clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['resolved'] = 1
     clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['resolved'] = 1
