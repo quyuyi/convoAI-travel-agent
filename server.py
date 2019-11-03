@@ -8,24 +8,24 @@ from api import request_clinc
 import pprint
 
 
-'''
+
 from record import record
 # Imports the Google Cloud client library
 from google.cloud import speech
 from google.cloud.speech import enums
 from google.cloud.speech import types
 from google.cloud import texttospeech
-'''
+
 pp = pprint.PrettyPrinter(indent=2)
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="/Users/quyuyi/Downloads/WebpageClassifier-2cf78af630ef.json"
 
-'''
+
 # Instantiates a speech to text client
 speech_to_text_client = speech.SpeechClient()
 
 # Instantiates a text to speech client
 text_to_speech_client = texttospeech.TextToSpeechClient()
-'''
+
 
 
 app = Flask(__name__)
@@ -34,7 +34,7 @@ app = Flask(__name__)
 def index():
     return render_template('index.html')
 
-'''
+
 @app.route("/record_to_text/", methods=["GET", "POST"])
 def record_to_text():
     record()
@@ -126,21 +126,22 @@ def add_destination():
     # print('destination got from clinc')
     # print(response['visuals']['destinations'])
     
+    # TODO
     # request destinations from business logic server
-    dest = requests.get('http://convo-ai.herokuapp.com/api/return_destinations/')
-    dest = dest.json()
-    print('destination list from business logic server is:')
-    print(dest)
+    # dest = requests.get('http://convo-ai.herokuapp.com/api/return_destinations/')
+    # dest = dest.json()
+    # print('destination list from business logic server is:')
+    # print(dest)
     data = {
         'response': result,
-        'destinations': dest['result'],
-        # 'destinations': ['for', 'test', 'only']
+        # 'destinations': dest['result'],
+        'destinations': ['for', 'test', 'only']
     }
     print("response from clinc is:")
     print(result)
     text_to_speech(result)
     return jsonify(**data)
-'''
+
 
 
 
@@ -319,10 +320,10 @@ def resolve_recommendation(clinc_request):
     # request the trip api
     # receive response(i.e., a destination or a list of destination) from the trip api
     if recommend is None and len(preferences) == 3:
-        url = 'https://www.triposo.com/api/20190906/poi.json?location_id='+city_tokens+'&fields=id,name&account=8FRG5L0P&token=i0reis6kqrqd7wi7nnwzhkimvrk9zh6a'
+        url = 'https://www.triposo.com/api/20190906/poi.json?location_id='+preferences['city']+'&fields=id,name&account=8FRG5L0P&token=i0reis6kqrqd7wi7nnwzhkimvrk9zh6a'
         count = 0
-    recommend = requests.get(url)
-    recommend = recommend.json()
+        recommend = requests.get(url)
+        recommend = recommend.json()
     clinc_request['slots']['_RECOMMENDATION_']['type'] = "string"
     clinc_request['slots']['_RECOMMENDATION_']['value'] = [{'value': recommend['results'][count]['name'], 'resolved': 1}]
     count += 1
