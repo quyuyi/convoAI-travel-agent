@@ -126,15 +126,16 @@ def add_destination():
     # print('destination got from clinc')
     # print(response['visuals']['destinations'])
     
+    # TODO
     # request destinations from business logic server
-    dest = requests.get('http://convo-ai.herokuapp.com/api/return_destinations/')
-    dest = dest.json()
-    print('destination list from business logic server is:')
-    print(dest)
+    # dest = requests.get('http://convo-ai.herokuapp.com/api/return_destinations/')
+    # dest = dest.json()
+    # print('destination list from business logic server is:')
+    # print(dest)
     data = {
         'response': result,
-        'destinations': dest['result'],
-        # 'destinations': ['for', 'test', 'only']
+        # 'destinations': dest['result'],
+        'destinations': ['for', 'test', 'only']
     }
     print("response from clinc is:")
     print(result)
