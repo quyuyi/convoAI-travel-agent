@@ -9,6 +9,7 @@ import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import BeatLoader from 'react-spinners/BeatLoader';
 import { css } from '@emotion/core';
+import ReactAudioPlayer from 'react-audio-player';
 
 // https://www.w3schools.com/howto/howto_css_chat.asp
 // https://bootsnipp.com/snippets/1ea0N
@@ -21,6 +22,7 @@ class Dialog extends React.Component {
     constructor (props) {
         super(props);
         this.state = {
+            first: true,
             loading: false,
             history: [
                 {"from": "clinc", "msg": "Hi, how can I help you?",}
@@ -35,7 +37,6 @@ class Dialog extends React.Component {
     componentDidMount (){
         var cont= document.getElementById("talkSub");
     }
-
 
     postData(url = '', data = {}) {
         // Default options are marked with *
@@ -91,6 +92,7 @@ class Dialog extends React.Component {
                 "msg": text,
             }
             this.setState({
+                first: false,
                 loading: true,
                 history: [...previous, record_user],
             })
@@ -117,6 +119,9 @@ class Dialog extends React.Component {
                 loading: false,
                 history: [...previous, record_clinc],
             });
+            window.audio = new Audio();
+            window.audio.src = "/get_audio";
+            window.audio.play();
         }) // JSON-string from `response.json()` call
         .catch(error => console.error(error));
     }
@@ -193,6 +198,11 @@ class Dialog extends React.Component {
     }
 
     render (){
+        // if (this.state.first) {
+        //     window.audio = new Audio();
+        //     window.audio.src = "/get_audio";
+        //     window.audio.play();
+        // }
         return (
     <div className="talk_con">
         <div className="talk_show" id="words">

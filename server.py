@@ -2,7 +2,7 @@
 
 import os
 import io
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, send_file
 import requests
 # import sys
 # sys.path.insert(1, os.getcwd()+'/script/')
@@ -12,10 +12,14 @@ from record import record
 from google.cloud import speech
 from google.cloud.speech import enums
 from google.cloud.speech import types
+from google.cloud import texttospeech
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="/Users/quyuyi/Downloads/WebpageClassifier-2cf78af630ef.json"
-# Instantiates a client
-client = speech.SpeechClient()
+# Instantiates a speech to text client
+speech_to_text_client = speech.SpeechClient()
+
+# Instantiates a text to speech client
+text_to_speech_client = texttospeech.TextToSpeechClient()
 
 app = Flask(__name__)
 
@@ -44,7 +48,7 @@ def record_to_text():
         language_code='en-US')
 
     # Detects speech in the audio file
-    response = client.recognize(config, audio)
+    response = speech_to_text_client.recognize(config, audio)
 
     transcript = ''
     for result in response.results:
@@ -57,7 +61,6 @@ def record_to_text():
         "response": transcript
     }
     return jsonify(**data)
-
 
 
 # http://heroku.travel_agent.com/api/v1/clinc/
@@ -117,16 +120,53 @@ def add_destination():
     print(response)
 
     # return response to the front end
+    result = 'no speakableResponse from clinc'
+    if 'visuals' in response:
+        print("have a speakable repsponse")
+        result = response['visuals']['speakableResponse']
     data = {
-        'response': response['visuals']['speakableResponse']
+        'response': result
     }
+    print("response from clinc is:")
+    print(result)
+    text_to_speech(result)
     return jsonify(**data)
 
 
+def text_to_speech(text):
+    # Set the text input to be synthesized
+    synthesis_input = texttospeech.types.SynthesisInput(text=text)
+
+    # Build the voice request, select the language code ("en-US") and the ssml
+    # voice gender ("neutral")
+    voice = texttospeech.types.VoiceSelectionParams(
+        language_code='en-US',
+        ssml_gender=texttospeech.enums.SsmlVoiceGender.NEUTRAL)
+
+    # Select the type of audio file you want returned
+    audio_config = texttospeech.types.AudioConfig(
+        audio_encoding=texttospeech.enums.AudioEncoding.MP3)
+
+    # Perform the text-to-speech request on the text input with the selected
+    # voice parameters and audio file type
+    response = text_to_speech_client.synthesize_speech(synthesis_input, voice, audio_config)
+
+    # The response's audio_content is binary.
+    with open('output.mp3', 'wb') as out:
+        # Write the response to the output file.
+        out.write(response.audio_content)
+        print('Audio content written to file "output.mp3"')
 
 
+@app.route('/get_audio/')
+def get_audio():
+    filename = 'output.mp3'
+    return send_file(filename, mimetype='audio/mp3')
 
-
+@app.route('/start_audio/')
+def get_silence():
+    filename = 'start.mp3'
+    return send_file(filename, mimetype='audio/mp3')
 
 # Only the state and slots properties can be manipulated
 def resolve_add_destination(clinc_request):
