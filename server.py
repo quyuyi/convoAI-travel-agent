@@ -13,7 +13,9 @@ from google.cloud import speech
 from google.cloud.speech import enums
 from google.cloud.speech import types
 from google.cloud import texttospeech
+import pprint
 
+pp = pprint.PrettyPrinter(indent=2)
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="/Users/quyuyi/Downloads/WebpageClassifier-2cf78af630ef.json"
 # Instantiates a speech to text client
 speech_to_text_client = speech.SpeechClient()
@@ -116,10 +118,8 @@ def add_destination():
 
     # request clinc will make clinc to call our business logic server 
     # (if that competency has its business logic enabled)
+    print("_____________________get response from clinc_____________________")
     response = request_clinc(query)
-
-    print("**************back end get response from clinc******************")
-    print(response)
 
     # return response to the front end
     # update the front end about the preferences and destinations
@@ -175,7 +175,9 @@ def get_silence():
 
 # Only the state and slots properties can be manipulated
 def resolve_add_destination(clinc_request):
-    print("print from resolve_add_destination")
+    print("start resolve add_destination...")
+    print("request body is:")
+    pp.pprint(clinc_request)
     valid = True
     # TODO
     # check validity of state and slots, 
@@ -202,7 +204,7 @@ def resolve_add_destination(clinc_request):
 def resolve_basic_info(clinc_request):
     print("start resolve basic info...")
     print("request body is:")
-    print(clinc_request)
+    pp.pprint(clinc_request)
     # slots: city, length_of_visit, number_of_people
     # example request body
     '''
@@ -234,12 +236,20 @@ def resolve_basic_info(clinc_request):
 
  
 def resolve_clean_hello(clinc_request):
+    print("start resolve clinc_request..")
+    print("request body is:")
+    pp.pprint(clinc_request)
+
     return jsonify(**clinc_request)
 
 
 
 
 def resolve_destination_info(clinc_request):
+    print("start resolve destination_info...")
+    print("request body is:")
+    pp.pprint(clinc_request)
+
     clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = clinc_request['slots']['_DESTINATION_']['values'][0]['tokens']
     clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 1
 
@@ -252,6 +262,9 @@ def resolve_destination_info(clinc_request):
 
 
 def resolve_generate_schedule(clinc_request):
+    print("start resolve generate_schedule...")
+    print("request body is:")
+    pp.pprint(clinc_request)
     return jsonify(**clinc_request)
 
 
@@ -259,7 +272,7 @@ def resolve_generate_schedule(clinc_request):
 def resolve_recommendation(clinc_request):
     print("start resolve recommendation...")
     print("request body is:")
-    print(clinc_request)
+    pp.pprint(clinc_request)
     # TODO
     # extract necessary info from clinc's request 
     # (refer to resolve_basic_info(clinc_request) above)
@@ -281,6 +294,10 @@ def resolve_recommendation(clinc_request):
 
 
 def resolve_remove_destination(clinc_request):
+    print("start resolve remove_destination...")
+    print("request body is:")
+    pp.pprint(clinc_request)
+
     return jsonify(**clinc_request)
 
 
