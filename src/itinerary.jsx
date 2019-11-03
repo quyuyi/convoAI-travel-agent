@@ -30,14 +30,17 @@ class Itinerary extends React.Component {
         let record = {
           'day': index+1,
           'destination': dest,
-          'description': 'some description...'
+          'description': 'https://caennews.engin.umich.edu/wp-content/uploads/sites/304/2017/05/ggbl2505-article-300x231.jpg'
         };
         d.push(record);
       });
         const columns = [
             { title: 'Day', field: 'day' },
             { title: 'Destination', field: 'destination' },
-            { title: 'Description', field: 'description'},
+            { title: 'Description', field: 'description',
+            render: rowData => <img src = {rowData.description} 
+                                   style = {{width:200}}/>
+            },
         ];
         const data = d;
         
