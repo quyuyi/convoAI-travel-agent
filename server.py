@@ -2,7 +2,7 @@
 
 import os
 import io
-from flask import Flask, render_template, request, jsonify, send_file
+from flask import Flask, render_template, request, jsonify, send_file, url_for
 import requests
 from api import request_clinc
 import pprint
@@ -125,12 +125,15 @@ def add_destination():
         result = response['visuals']['speakableResponse']
     # print('destination got from clinc')
     # print(response['visuals']['destinations'])
-    global destinations
-    print('global variable destinations')
-    print(destinations)
+    
+    # request destinations from business logic server
+    dest = requests.get('http://convo-ai.herokuapp.com/api/return_destinations/')
+    dest = dest.json()
+    print('destination list from business logic server is:')
+    print(dest)
     data = {
         'response': result,
-        'destinations': destinations,
+        'destinations': dest['result'],
         # 'destinations': ['for', 'test', 'only']
     }
     print("response from clinc is:")
@@ -149,8 +152,13 @@ def add_destination():
 
 
 
-
-
+@app.route("/api/return_destinations", methods=["GET", "POST"])
+def return_destinations():
+    global destinations
+    data = {
+        "result": destinations,
+    }
+    return jsonify(**data)
 
 
 # business logic server
