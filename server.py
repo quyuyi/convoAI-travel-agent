@@ -8,24 +8,24 @@ from api import request_clinc
 import pprint
 
 
-
+'''
 from record import record
 # Imports the Google Cloud client library
 from google.cloud import speech
 from google.cloud.speech import enums
 from google.cloud.speech import types
 from google.cloud import texttospeech
-
+'''
 pp = pprint.PrettyPrinter(indent=2)
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="/Users/quyuyi/Downloads/WebpageClassifier-2cf78af630ef.json"
 
-
+'''
 # Instantiates a speech to text client
 speech_to_text_client = speech.SpeechClient()
 
 # Instantiates a text to speech client
 text_to_speech_client = texttospeech.TextToSpeechClient()
-
+'''
 
 
 app = Flask(__name__)
@@ -34,7 +34,7 @@ app = Flask(__name__)
 def index():
     return render_template('index.html')
 
-
+'''
 @app.route("/record_to_text/", methods=["GET", "POST"])
 def record_to_text():
     record()
@@ -140,8 +140,7 @@ def add_destination():
     print(result)
     text_to_speech(result)
     return jsonify(**data)
-
-
+'''
 
 
 
