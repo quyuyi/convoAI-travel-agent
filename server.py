@@ -134,7 +134,7 @@ def add_destination():
     }
     print("response from clinc is:")
     print(result)
-    text_to_speech(result)
+    # text_to_speech(result)
     return jsonify(**data)
 
 
