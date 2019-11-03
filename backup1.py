@@ -2,13 +2,11 @@
 
 import os
 import io
-from flask import Flask, render_template, request, jsonify, send_file, url_for
+from flask import Flask, render_template, request, jsonify, send_file
 import requests
+# import sys
+# sys.path.insert(1, os.getcwd()+'/script/')
 from api import request_clinc
-import pprint
-
-
-
 from record import record
 # Imports the Google Cloud client library
 from google.cloud import speech
@@ -16,19 +14,16 @@ from google.cloud.speech import enums
 from google.cloud.speech import types
 from google.cloud import texttospeech
 
-pp = pprint.PrettyPrinter(indent=2)
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="/Users/quyuyi/Downloads/WebpageClassifier-2cf78af630ef.json"
-
-
 # Instantiates a speech to text client
-speech_to_text_client = speech.SpeechClient()
+# speech_to_text_client = speech.SpeechClient()
 
 # Instantiates a text to speech client
-text_to_speech_client = texttospeech.TextToSpeechClient()
-
-
+# text_to_speech_client = texttospeech.TextToSpeechClient()
 
 app = Flask(__name__)
+
+
 
 @app.route("/")
 def index():
@@ -64,104 +59,11 @@ def record_to_text():
     print("transcript is:")
     print(transcript)
     data = {
-        "response": transcript
+         "response": transcript
     }
     return jsonify(**data)
 
 
-@app.route('/get_audio/')
-def get_audio():
-    filename = 'output.mp3'
-    return send_file(filename, mimetype='audio/mp3')
-
-@app.route('/start_audio/')
-def get_silence():
-    filename = 'start.mp3'
-    return send_file(filename, mimetype='audio/mp3')
-
-def text_to_speech(text):
-    # Set the text input to be synthesized
-    synthesis_input = texttospeech.types.SynthesisInput(text=text)
-
-    # Build the voice request, select the language code ("en-US") and the ssml
-    # voice gender ("neutral")
-    voice = texttospeech.types.VoiceSelectionParams(
-        language_code='en-US',
-        ssml_gender=texttospeech.enums.SsmlVoiceGender.NEUTRAL)
-
-    # Select the type of audio file you want returned
-    audio_config = texttospeech.types.AudioConfig(
-        audio_encoding=texttospeech.enums.AudioEncoding.MP3)
-
-    # Perform the text-to-speech request on the text input with the selected
-    # voice parameters and audio file type
-    response = text_to_speech_client.synthesize_speech(synthesis_input, voice, audio_config)
-
-    # The response's audio_content is binary.
-    with open('output.mp3', 'wb') as out:
-        # Write the response to the output file.
-        out.write(response.audio_content)
-        print('Audio content written to file "output.mp3"')
-
-# get the user query from the front end
-# query clinc in the required format
-# get the response from clinc, which contains speakableResponse
-# return back to the front end
-@app.route("/query_clinc/", methods=["GET", "POST"])
-def add_destination():
-    # get query frrom the front end
-    query = request.json['query']
-
-    # request clinc will make clinc to call our business logic server 
-    # (if that competency has its business logic enabled)
-    print("_____________________get response from clinc_____________________")
-    response = request_clinc(query)
-
-    # return response to the front end
-    # update the front end about the preferences and destinations
-    result = 'no speakableResponse from clinc'
-    if 'visuals' in response:
-        print("have a speakable repsponse")
-        result = response['visuals']['speakableResponse']
-    # print('destination got from clinc')
-    # print(response['visuals']['destinations'])
-    
-    # request destinations from business logic server
-    dest = requests.get('http://convo-ai.herokuapp.com/api/return_destinations/')
-    dest = dest.json()
-    print('destination list from business logic server is:')
-    print(dest)
-    data = {
-        'response': result,
-        'destinations': dest['result'],
-        # 'destinations': ['for', 'test', 'only']
-    }
-    print("response from clinc is:")
-    print(result)
-    text_to_speech(result)
-    return jsonify(**data)
-
-
-
-
-
-
-
-
-
-
-
-
-@app.route("/api/return_destinations", methods=["GET", "POST"])
-def return_destinations():
-    global destinations
-    data = {
-        "result": destinations,
-    }
-    return jsonify(**data)
-
-
-# business logic server
 # http://heroku.travel_agent.com/api/v1/clinc/
 # get request from clinc
 # check state, add slot values, etc.
@@ -198,14 +100,83 @@ def business_logic():
         print("intent out of scope")
 
 
+    # return the response.json back to clinc
 
 
+
+
+
+# get the user query from the front end
+# query clinc in the required format
+# get the response from clinc, which contains speakableResponse
+# return back to the front end
+@app.route("/query_clinc/", methods=["GET", "POST"])
+def add_destination():
+    # get query frrom the front end
+    query = request.json['query']
+
+    # request clinc will make clinc to call our business logic server 
+    # (if that competency has its business logic enabled)
+    response = request_clinc(query)
+
+    print("**************back end get response from clinc******************")
+    print(response)
+
+    # return response to the front end
+    # update the front end about the preferences and destinations
+    result = 'no speakableResponse from clinc'
+    if 'visuals' in response:
+        print("have a speakable repsponse")
+        result = response['visuals']['speakableResponse']
+    data = {
+        'response': result,
+        # 'destinations': destinations,
+        'destinations': ['for', 'test', 'only']
+    }
+    print("response from clinc is:")
+    print(result)
+    text_to_speech(result)
+    return jsonify(**data)
+
+
+def text_to_speech(text):
+    # Set the text input to be synthesized
+    synthesis_input = texttospeech.types.SynthesisInput(text=text)
+
+    # Build the voice request, select the language code ("en-US") and the ssml
+    # voice gender ("neutral")
+    voice = texttospeech.types.VoiceSelectionParams(
+        language_code='en-US',
+        ssml_gender=texttospeech.enums.SsmlVoiceGender.NEUTRAL)
+
+    # Select the type of audio file you want returned
+    audio_config = texttospeech.types.AudioConfig(
+        audio_encoding=texttospeech.enums.AudioEncoding.MP3)
+
+    # Perform the text-to-speech request on the text input with the selected
+    # voice parameters and audio file type
+    # response = text_to_speech_client.synthesize_speech(synthesis_input, voice, audio_config)
+
+    # The response's audio_content is binary.
+    # with open('output.mp3', 'wb') as out:
+    #     # Write the response to the output file.
+    #     out.write(response.audio_content)
+    #     print('Audio content written to file "output.mp3"')
+
+
+@app.route('/get_audio/')
+def get_audio():
+    filename = 'output.mp3'
+    return send_file(filename, mimetype='audio/mp3')
+
+@app.route('/start_audio/')
+def get_silence():
+    filename = 'start.mp3'
+    return send_file(filename, mimetype='audio/mp3')
 
 # Only the state and slots properties can be manipulated
 def resolve_add_destination(clinc_request):
-    print("start resolve add_destination...")
-    print("request body is:")
-    pp.pprint(clinc_request)
+    print("print from resolve_add_destination")
     valid = True
     # TODO
     # check validity of state and slots, 
@@ -215,18 +186,12 @@ def resolve_add_destination(clinc_request):
     # determine if need business transition
     # clinc_request['state'] = "generate_shedule"
 
-
-    if clinc_request['slots']:
+    if valid:
         destination = clinc_request['slots']['_DESTINATION_']['values'][0]['tokens']
-        # clinc_request['visual_payload'] = {
-        #     'destination': destination
-        # }
         clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = destination
         clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 1  # why the value of 'values' is list???
         global destinations
-        print(destinations)
-        destinations.append(destination)
-        print(destinations)
+        destinations += [destination]
 
 
     print("change state")
@@ -238,7 +203,7 @@ def resolve_add_destination(clinc_request):
 def resolve_basic_info(clinc_request):
     print("start resolve basic info...")
     print("request body is:")
-    pp.pprint(clinc_request)
+    print(clinc_request)
     # slots: city, length_of_visit, number_of_people
     # example request body
     '''
@@ -253,11 +218,10 @@ def resolve_basic_info(clinc_request):
     city_tokens = clinc_request['slots']['_CITY_']['values'][0]['tokens']
     length_of_visit_tokens = clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['tokens']
     number_of_people_tokens = clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['tokens']
-
-    # Store info into global variable
     preferences['city'] = city_tokens
     preferences['length_of_visit'] = length_of_visit_tokens
     preferences['number_of_people'] = number_of_people_tokens
+
 
     #### process number_of_people
     # try:
@@ -275,35 +239,26 @@ def resolve_basic_info(clinc_request):
 
  
 def resolve_clean_hello(clinc_request):
-    print("start resolve clinc_request..")
-    print("request body is:")
-    pp.pprint(clinc_request)
-
     return jsonify(**clinc_request)
 
 
 
 
 def resolve_destination_info(clinc_request):
-    print("start resolve destination_info...")
-    print("request body is:")
-    pp.pprint(clinc_request)
-
     clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = clinc_request['slots']['_DESTINATION_']['values'][0]['tokens']
-    clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 1
+    clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 1 
 
     # TODO
     # request the trip api to get information about the destination
     # figure out what to return back to the user
 
+
     return jsonify(**clinc_request)
 
 
 
+
 def resolve_generate_schedule(clinc_request):
-    print("start resolve generate_schedule...")
-    print("request body is:")
-    pp.pprint(clinc_request)
     return jsonify(**clinc_request)
 
 
@@ -311,10 +266,11 @@ def resolve_generate_schedule(clinc_request):
 def resolve_recommendation(clinc_request):
     print("start resolve recommendation...")
     print("request body is:")
-    pp.pprint(clinc_request)
+    print(clinc_request)
     # TODO
     # extract necessary info from clinc's request 
     # (refer to resolve_basic_info(clinc_request) above)
+
 
     # TODO
     # request the trip api
@@ -342,10 +298,6 @@ def resolve_recommendation(clinc_request):
 
 
 def resolve_remove_destination(clinc_request):
-    print("start resolve remove_destination...")
-    print("request body is:")
-    pp.pprint(clinc_request)
-
     return jsonify(**clinc_request)
 
 
@@ -362,6 +314,7 @@ preferences = {
     "city": -1,
     "length_of_visit": -1,
     "number_of_people": -1,
+
     # TODO
     # update global variable you figured out
     # in resolve_recommendation(clinc_request)
@@ -381,4 +334,5 @@ all_states = [
     "destination_info", "generate_shedule", "recommendation", "remove_destination"]
 
 if __name__ == "__main__":
+
     app.run(host='0.0.0.0', port=os.environ.get('PORT', 3000), debug=True)
