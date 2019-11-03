@@ -125,15 +125,15 @@ def add_destination():
         result = response['visuals']['speakableResponse']
     data = {
         'response': result,
-        # 'destinations': destinations,
-        'destinations': ['for', 'test', 'only']
+        'destinations': destinations,
+        # 'destinations': ['for', 'test', 'only']
     }
     print("response from clinc is:")
     print(result)
     text_to_speech(result)
     return jsonify(**data)
-
 '''
+
 
 
 
@@ -201,8 +201,8 @@ def resolve_add_destination(clinc_request):
     # TODO
     # determine if need business transition
     # clinc_request['state'] = "generate_shedule"
-    print(clinc_request['slots'])
-    if clinc_request['slots']['_DESTINATION']['values']:
+
+    if clinc_request['slots']:
         destination = clinc_request['slots']['_DESTINATION_']['values'][0]['tokens']
         clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = destination
         clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 1  # why the value of 'values' is list???
