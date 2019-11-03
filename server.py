@@ -150,8 +150,6 @@ def add_destination():
 
 
 
-
-
 @app.route("/api/return_destinations", methods=["GET", "POST"])
 def return_destinations():
     global destinations
@@ -319,6 +317,7 @@ def resolve_recommendation(clinc_request):
     # TODO
     # request the trip api
     # receive response(i.e., a destination or a list of destination) from the trip api
+    global recommend
     if recommend is None and len(preferences) == 3:
         url = 'https://www.triposo.com/api/20190906/poi.json?location_id='+preferences['city']+'&fields=id,name&account=8FRG5L0P&token=i0reis6kqrqd7wi7nnwzhkimvrk9zh6a'
         count = 0
