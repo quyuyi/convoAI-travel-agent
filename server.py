@@ -7,7 +7,7 @@ import requests
 # import sys
 # sys.path.insert(1, os.getcwd()+'/script/')
 from api import request_clinc
-# from record import record
+from record import record
 # Imports the Google Cloud client library
 from google.cloud import speech
 from google.cloud.speech import enums
@@ -33,7 +33,7 @@ def index():
 
 @app.route("/record_to_text/", methods=["GET", "POST"])
 def record_to_text():
-    # record()
+    record()
 
     print("transcribing the audio file...")
     # call asr api to turn the blocking.wav to text
