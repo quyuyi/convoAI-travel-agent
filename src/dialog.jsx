@@ -7,54 +7,143 @@ import Paper from '@material-ui/core/Paper';
 import InputBase from '@material-ui/core/InputBase';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
+import BeatLoader from 'react-spinners/BeatLoader';
+import { css } from '@emotion/core';
 
 // https://www.w3schools.com/howto/howto_css_chat.asp
 // https://bootsnipp.com/snippets/1ea0N
-
+const override = css`
+    display: block;
+    margin: 0 auto;
+    border-color: red;
+`;
 class Dialog extends React.Component {
     constructor (props) {
         super(props);
         this.state = {
+            loading: false,
             history: [
-                {"from": "clinc", "msg": "Hi, how can I help you?"}
+                {"from": "clinc", "msg": "Hi, how can I help you?",}
             ],
-            text: '',
         };
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.onKeyDown = this.onKeyDown.bind(this);
+        this.onRecord = this.onRecord.bind(this);
+        this.onSubmit = this.onSubmit.bind(this);
     }
 
     componentDidMount (){
         var cont= document.getElementById("talkSub");
-        
+    }
+
+
+    postData(url = '', data = {}) {
+        // Default options are marked with *
+            return fetch(url, {
+                method: 'POST', // *GET, POST, PUT, DELETE, etc.
+                mode: 'cors', // no-cors, cors, *same-origin
+                cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: 'same-origin', // include, *same-origin, omit
+                headers: {
+                    'Content-Type': 'application/json',
+                    // 'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                redirect: 'follow', // manual, *follow, error
+                referrer: 'no-referrer', // no-referrer, *client
+                body: JSON.stringify(data), // body data type must match "Content-Type" header
+            })
+            .then(response => response.json()); // parses JSON response into native JavaScript objects 
+    }
+
+
+    onKeyDown (event){
+        if (event.key === 'Enter') {
+            // event.preventDefault();
+            // event.stopPropagation();
+            this.onSubmit();
+          }
+    }
+
+    onRecord (){
+        console.log("call backend to record...");
+        this.postData('/record_to_text/', {query: "record"}) 
+        .then(data => {
+            console.log("get reponse: ", data.response);
+            this.handleSubmit(data.response);
+        }) // JSON-string from `response.json()` call
+        .catch(error => console.error(error));
     }
     
+    onSubmit (e){
+        const text=document.getElementById("userInput").value;
+        this.handleSubmit(text);
+    }
+
     // add the user request or the clinc response to display in the chat box
-    handleSubmit (e){
-        var cont=document.getElementById("words");    
+    handleSubmit (text){
+        var cont=document.getElementById("words");
         let regu = "^[ ]+$";
         let re = new RegExp(regu);
-        const text=document.getElementById("userInput").value;
         if (!re.test(text) & !(text==="")){
             const previous = this.state.history;
             const record_user = {
                 "from": "user",
                 "msg": text,
             }
-
-            // TODO
-            // send user utterence to clinc
-            // get response from clinc
-            const record_clinc = {
-                "from": "clinc",
-                "msg": "response from clinc",
-            }
             this.setState({
-                history: [...previous, record_user, record_clinc],
-                text: ""
-            });
+                loading: true,
+                history: [...previous, record_user],
+            })
             document.getElementById("userInput").value='';
+            this.queryClinc(text);
         };
         cont.scrollTop = cont.scrollHeight;
+    }
+
+
+    // send user utterence to backend which post to clinc
+    // get response from clinc
+    queryClinc (query){
+        console.log("post user query to backend which will post to clinc for response...")
+        this.postData('/query_clinc/', {query: query}) 
+        .then(data => {
+            console.log("get reponse: ", data.response);
+            const previous = this.state.history;
+            const record_clinc = {
+                "from": "clinc",
+                "msg": data.response,
+            };
+            this.setState({
+                loading: false,
+                history: [...previous, record_clinc],
+            });
+        }) // JSON-string from `response.json()` call
+        .catch(error => console.error(error));
+    }
+
+    renderLoader (){
+        return (
+            <div className="atalk">
+            <AdbIcon /> 
+            <span id="asay">
+                <div className='sweet-loading'>
+                <BeatLoader
+                css={override}
+                sizeUnit={"px"}
+                size={15}
+                color={'white'}
+                loading={this.state.loading}
+                />
+                </div>
+            </span>
+            </div>
+        );
+    }
+
+    renderNothing (){
+        return (
+            <div></div>
+        );
     }
 
 
@@ -80,16 +169,21 @@ class Dialog extends React.Component {
                     id="userInput"
                     className="talk_word"
                     placeholder="Type a message"
+                    onKeyDown={e=>this.onKeyDown(e)}
                     inputProps={{ 'aria-label': 'request clinc' }}
                 />
                 <IconButton 
                 aria-label="send"
                 className="iconButton"
-                onClick={()=>this.handleSubmit()}>
+                onClick={()=>this.onSubmit()}>
                     <SendIcon />
                 </IconButton>
-                <Divider orientation="vertical" className="divider"/>
-                <IconButton className="iconButton" color="primary" aria-label="voice">
+                {/* <Divider orientation="vertical" className="divider"/> */}
+                <IconButton 
+                className="iconButton" 
+                onClick={()=>this.onRecord()}
+                color="primary" 
+                aria-label="voice">
                     <MicIcon />
                 </IconButton>
                 </span>
@@ -109,6 +203,7 @@ class Dialog extends React.Component {
                     </div>
                 );
             })}
+            {this.state.loading ? this.renderLoader() : this.renderNothing()}
         </div>
         {/* <div className="talk_input">
             <form onSubmit = {this.handleSubmit}>
@@ -120,63 +215,6 @@ class Dialog extends React.Component {
     </div>
         );
     }
-
-
-    // renderIncomingMsg (msg){
-    //     return();
-    // }
 }
 
 export default Dialog;
-
-
-// <div class="mesgs">
-//           <div class="msg_history">
-//             <div class="incoming_msg">
-//               <div class="incoming_msg_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
-//               <div class="received_msg">
-//                 <div class="received_withd_msg">
-//                   <p>Test which is a new approach to have all
-//                     solutions</p>
-//                   <span class="time_date"> 11:01 AM    |    June 9</span></div>
-//               </div>
-//             </div>
-//             <div class="outgoing_msg">
-//               <div class="sent_msg">
-//                 <p>Test which is a new approach to have all
-//                   solutions</p>
-//                 <span class="time_date"> 11:01 AM    |    June 9</span> </div>
-//             </div>
-//             <div class="incoming_msg">
-//               <div class="incoming_msg_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
-//               <div class="received_msg">
-//                 <div class="received_withd_msg">
-//                   <p>Test, which is a new approach to have</p>
-//                   <span class="time_date"> 11:01 AM    |    Yesterday</span></div>
-//               </div>
-//             </div>
-//             <div class="outgoing_msg">
-//               <div class="sent_msg">
-//                 <p>Apollo University, Delhi, India Test</p>
-//                 <span class="time_date"> 11:01 AM    |    Today</span> </div>
-//             </div>
-//             <div class="incoming_msg">
-//               <div class="incoming_msg_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
-//               <div class="received_msg">
-//                 <div class="received_withd_msg">
-//                   <p>We work directly with our designers and suppliers,
-//                     and sell direct to you, which means quality, exclusive
-//                     products, at a price anyone can afford.</p>
-//                   <span class="time_date"> 11:01 AM    |    Today</span></div>
-//               </div>
-//             </div>
-//           </div>
-//           <div class="type_msg">
-//             <div class="input_msg_write">
-//               <input type="text" class="write_msg" placeholder="Type a message" />
-//               <button class="msg_send_btn" type="button"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-      

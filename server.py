@@ -1,8 +1,21 @@
 #!/usr/bin/env python
 
 import os
+import io
 from flask import Flask, render_template, request, jsonify
 import requests
+# import sys
+# sys.path.insert(1, os.getcwd()+'/script/')
+from api import request_clinc
+from record import record
+# Imports the Google Cloud client library
+from google.cloud import speech
+from google.cloud.speech import enums
+from google.cloud.speech import types
+
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="/Users/quyuyi/Downloads/WebpageClassifier-2cf78af630ef.json"
+# Instantiates a client
+client = speech.SpeechClient()
 
 app = Flask(__name__)
 
@@ -10,6 +23,40 @@ app = Flask(__name__)
 @app.route("/")
 def index():
     return render_template('index.html')
+
+
+@app.route("/record_to_text/", methods=["GET", "POST"])
+def record_to_text():
+    record()
+
+    print("transcribing the audio file...")
+    # call asr api to turn the blocking.wav to text
+    # The name of the audio file to transcribe
+    file_name = 'blocking.wav'
+    # Loads the audio into memory
+    with io.open(file_name, 'rb') as audio_file:
+        content = audio_file.read()
+        audio = types.RecognitionAudio(content=content)
+
+    config = types.RecognitionConfig(
+        encoding=enums.RecognitionConfig.AudioEncoding.LINEAR16,
+        sample_rate_hertz=44100,
+        language_code='en-US')
+
+    # Detects speech in the audio file
+    response = client.recognize(config, audio)
+
+    transcript = ''
+    for result in response.results:
+        transcript += result.alternatives[0].transcript
+        print('Transcript: {}'.format(result.alternatives[0].transcript))
+
+    print("transcript is:")
+    print(transcript)
+    data = {
+        "response": transcript
+    }
+    return jsonify(**data)
 
 
 
@@ -64,35 +111,16 @@ def add_destination():
     # get query frrom the front end
     query = request.json['query']
 
-    # url = "https://HOSTNAME/v1/query/" # TODO what should HOSTNAME be replaced with?
-    url = "https://api.clinc.ai:443/v1/query/"
+    response = request_clinc(query)
 
-    payload = {
-        "query": query,
-        "language": "en",
-        "device": "Alexa",
-        "lat": 42.2810237,
-        "lon": -83.7467534,
-        "time_offset": 300,
-        "dialog": "40C0QYWuywZbF3AwFNNohraKgX8MotY", 
-        # Dialog token to keep context between queries, 
-        # this is found in a field of the same name from the previous query response
-        # which means we need to store the previous one in our server?
-        "ai_version": "d2462c12-e625-49fd-9cfe-c781ddedf060"
-    }
-
-    headers = {
-        "Authorization": "app-key RQWkiEhwqp9BU04533bnT67FXaqwd0", # how to do authorization???
-        "Content-Type": "application/json",
-    }
-
-    response = requests.post(url, json=payload, headers=headers)
-
-    print(response.json())
+    print("**************back end get response from clinc******************")
+    print(response)
 
     # return response to the front end
-    speakableResponse = response['visuals']['speakableResponse']
-    return jsonify(speakableResponse)
+    data = {
+        'response': response['visuals']['speakableResponse']
+    }
+    return jsonify(**data)
 
 
 
@@ -147,13 +175,26 @@ def resolve_basic_info(clinc_request):
     clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['value'] = clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['tokens']
     return jsonify(**clinc_request)
 
+
+
+ 
 def resolve_clean_hello(clinc_request):
     return jsonify(**clinc_request)
+
+
+
 
 def resolve_destination_info(clinc_request):
     clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = clinc_request['slots']['_DESTINATION_']['values'][0]['tokens']
     clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 1
+
+    # TODO
+    # request the trip api to get information about the destination
+    # figure out what to return back to the user
+
     return jsonify(**clinc_request)
+
+
 
 def resolve_generate_schedule(clinc_request):
     return jsonify(**clinc_request)
@@ -179,6 +220,9 @@ def resolve_recommendation(clinc_request):
     # TODO
     # format the response to clinc
     return jsonify(**clinc_request)
+
+
+
 
 
 def resolve_remove_destination(clinc_request):
