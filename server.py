@@ -281,8 +281,7 @@ def resolve_recommendation(clinc_request):
     recommend = requests.get(url)
     recommend = recommend.json()
     clinc_request['slots']['_RECOMMENDATION_']['type'] = "string"
-    clinc_request['slots']['_RECOMMENDATION_']['value'][0]['value'] = recommend['results'][count]['name']
-    clinc_request['slots']['_RECOMMENDATION_']['value'][0]['resolved'] = 1
+    clinc_request['slots']['_RECOMMENDATION_']['value'] = [{'value': recommend['results'][count]['name'], 'resolved': 1}]
     count += 1
     print(clinc_request['slots'])
 
