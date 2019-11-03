@@ -120,9 +120,9 @@ class Dialog extends React.Component {
                 loading: false,
                 history: [...previous, record_clinc],
             });
-            // window.audio = new Audio();
-            // window.audio.src = "/get_audio";
-            // window.audio.play();
+            window.audio = new Audio();
+            window.audio.src = "/get_audio";
+            window.audio.play();
         }) // JSON-string from `response.json()` call
         .catch(error => console.error(error));
     }
