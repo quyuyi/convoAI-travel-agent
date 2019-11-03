@@ -12,7 +12,7 @@ Non-blocking mode (start and stop recording):
 ...     time.sleep(5.0)
 ...     recfile2.stop_recording()
 '''
-import pyaudio
+# import pyaudio
 import wave
 
 class Recorder(object):
