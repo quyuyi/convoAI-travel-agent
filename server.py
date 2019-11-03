@@ -16,12 +16,13 @@ from google.cloud import texttospeech
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="/Users/quyuyi/Downloads/WebpageClassifier-2cf78af630ef.json"
 # Instantiates a speech to text client
-speech_to_text_client = speech.SpeechClient()
+# speech_to_text_client = speech.SpeechClient()
 
 # Instantiates a text to speech client
-text_to_speech_client = texttospeech.TextToSpeechClient()
+# text_to_speech_client = texttospeech.TextToSpeechClient()
 
 app = Flask(__name__)
+
 
 
 @app.route("/")
@@ -58,7 +59,7 @@ def record_to_text():
     print("transcript is:")
     print(transcript)
     data = {
-        "response": transcript
+         "response": transcript
     }
     return jsonify(**data)
 
@@ -154,13 +155,13 @@ def text_to_speech(text):
 
     # Perform the text-to-speech request on the text input with the selected
     # voice parameters and audio file type
-    response = text_to_speech_client.synthesize_speech(synthesis_input, voice, audio_config)
+    # response = text_to_speech_client.synthesize_speech(synthesis_input, voice, audio_config)
 
     # The response's audio_content is binary.
-    with open('output.mp3', 'wb') as out:
-        # Write the response to the output file.
-        out.write(response.audio_content)
-        print('Audio content written to file "output.mp3"')
+    # with open('output.mp3', 'wb') as out:
+    #     # Write the response to the output file.
+    #     out.write(response.audio_content)
+    #     print('Audio content written to file "output.mp3"')
 
 
 @app.route('/get_audio/')
@@ -217,6 +218,10 @@ def resolve_basic_info(clinc_request):
     city_tokens = clinc_request['slots']['_CITY_']['values'][0]['tokens']
     length_of_visit_tokens = clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['tokens']
     number_of_people_tokens = clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['tokens']
+    preferences['city'] = city_tokens
+    preferences['length_of_visit'] = length_of_visit_tokens
+    preferences['number_of_people'] = number_of_people_tokens
+
 
     #### process number_of_people
     # try:
@@ -241,13 +246,15 @@ def resolve_clean_hello(clinc_request):
 
 def resolve_destination_info(clinc_request):
     clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = clinc_request['slots']['_DESTINATION_']['values'][0]['tokens']
-    clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 1
+    clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 1 
 
     # TODO
     # request the trip api to get information about the destination
     # figure out what to return back to the user
 
+
     return jsonify(**clinc_request)
+
 
 
 
@@ -264,9 +271,20 @@ def resolve_recommendation(clinc_request):
     # extract necessary info from clinc's request 
     # (refer to resolve_basic_info(clinc_request) above)
 
+
     # TODO
     # request the trip api
     # receive response(i.e., a destination or a list of destination) from the trip api
+    if recommend is None and len(preferences) == 3:
+        url = 'https://www.triposo.com/api/20190906/poi.json?location_id='+city_tokens+'&fields=id,name&account=8FRG5L0P&token=i0reis6kqrqd7wi7nnwzhkimvrk9zh6a'
+        count = 0
+    recommend = requests.get(url)
+    recommend = recommend.json()
+    clinc_request['slots']['_RECOMMENDATION_']['type'] = "string"
+    clinc_request['slots']['_RECOMMENDATION_']['value'][0]['value'] = recommend['results'][count]['name']
+    clinc_request['slots']['_RECOMMENDATION_']['value'][0]['resolved'] = 1
+    count += 1
+    print(clinc_request['slots'])
 
     # TODO
     # figure out other preferences need by the trip api
@@ -297,6 +315,7 @@ preferences = {
     "city": -1,
     "length_of_visit": -1,
     "number_of_people": -1,
+
     # TODO
     # update global variable you figured out
     # in resolve_recommendation(clinc_request)
@@ -307,10 +326,14 @@ preferences = {
 # to update global variable: destinations
 destinations = []
 
+count = 0
+recommend = None
+
 
 all_states = [
     "add_destination", "basic_info", "clean_goodbye", "clean_hello",
     "destination_info", "generate_shedule", "recommendation", "remove_destination"]
 
 if __name__ == "__main__":
+
     app.run(host='0.0.0.0', port=os.environ.get('PORT', 3000), debug=True)
