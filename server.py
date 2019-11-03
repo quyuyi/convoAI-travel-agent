@@ -123,6 +123,11 @@ def add_destination():
     if 'visuals' in response:
         print("have a speakable repsponse")
         result = response['visuals']['speakableResponse']
+    # print('destination got from clinc')
+    # print(response['visuals']['destinations'])
+    global destinations
+    print('global variable destinations')
+    print(destinations)
     data = {
         'response': result,
         'destinations': destinations,
@@ -202,12 +207,18 @@ def resolve_add_destination(clinc_request):
     # determine if need business transition
     # clinc_request['state'] = "generate_shedule"
 
+
     if clinc_request['slots']:
         destination = clinc_request['slots']['_DESTINATION_']['values'][0]['tokens']
+        clinc_request['visual_payload'] = {
+            'destination': destination
+        }
         clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = destination
         clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 1  # why the value of 'values' is list???
         global destinations
-        destinations += [destination]
+        print(destinations)
+        destinations.append(destination)
+        print(destinations)
 
 
     print("change state")
