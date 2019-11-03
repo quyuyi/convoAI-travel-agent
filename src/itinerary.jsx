@@ -4,26 +4,42 @@ import { AccessAlarm, ThreeDRotation } from '@material-ui/icons';
 
 // https://material-ui.com/zh/components/tables/
 // get destinations list from list.jsx
+
+// TODO
+// Do we need to enable deleting in the itinery?
+// Or it's enough to delete in destinaiton list and synchronize the itinerary?
+
+// TODO
+// Better display itinerary?
+
 class Itinerary extends React.Component {
 
     constructor (props) {
       super(props);
-      
-      this.state = {
-          data: [
-              { '': 'Mehmet', surname: 'Baran', birthYear: 1987, birthCity: 63 },
-            ],
-      };
+      console.log(this.props);
+    }
+
+
+    componentDidMount (){
 
     }
 
     render (){
+      let d = [];
+      this.props.destinations.map((dest, index)=> {
+        let record = {
+          'day': index+1,
+          'destination': dest,
+          'description': 'some description...'
+        };
+        d.push(record);
+      });
         const columns = [
             { title: 'Day', field: 'day' },
             { title: 'Destination', field: 'destination' },
             { title: 'Description', field: 'description'},
         ];
-        const data = this.state.data;
+        const data = d;
         
 
         return (
@@ -31,7 +47,7 @@ class Itinerary extends React.Component {
               title="itinerary"
               columns={columns}
               data={data}
-              editable={{
+              // editable={{
                 // onRowUpdate: (newData, oldData) =>
                 //   new Promise(resolve => {
                 //     setTimeout(() => {
@@ -45,18 +61,18 @@ class Itinerary extends React.Component {
                 //       }
                 //     }, 600);
                 //   }),
-                onRowDelete: oldData =>
-                  new Promise(resolve => {
-                    setTimeout(() => {
-                      resolve();
-                      this.setState(prevState => {
-                        const data = [...prevState.data];
-                        data.splice(data.indexOf(oldData), 1);
-                        return { ...prevState, data };
-                      });
-                    }, 600);
-                  }),
-              }}
+                // onRowDelete: oldData =>
+                //   new Promise(resolve => {
+                //     setTimeout(() => {
+                //       resolve();
+                //       this.setState(prevState => {
+                //         const data = [...prevState.data];
+                //         data.splice(data.indexOf(oldData), 1);
+                //         return { ...prevState, data };
+                //       });
+                //     }, 600);
+                //   }),
+              // }}
             />
         );
     }

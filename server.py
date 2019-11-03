@@ -114,18 +114,23 @@ def add_destination():
     # get query frrom the front end
     query = request.json['query']
 
+    # request clinc will make clinc to call our business logic server 
+    # (if that competency has its business logic enabled)
     response = request_clinc(query)
 
     print("**************back end get response from clinc******************")
     print(response)
 
     # return response to the front end
+    # update the front end about the preferences and destinations
     result = 'no speakableResponse from clinc'
     if 'visuals' in response:
         print("have a speakable repsponse")
         result = response['visuals']['speakableResponse']
     data = {
-        'response': result
+        'response': result,
+        # 'destinations': destinations,
+        'destinations': ['for', 'test', 'only']
     }
     print("response from clinc is:")
     print(result)
@@ -170,13 +175,23 @@ def get_silence():
 
 # Only the state and slots properties can be manipulated
 def resolve_add_destination(clinc_request):
-    # no need to change state here
-    # no need to change/add slot value here
     print("print from resolve_add_destination")
-    clinc_request['state'] = "generate_shedule"
-    clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = 'someplace'
-    # why the value of 'values' is list???
-    clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 1
+    valid = True
+    # TODO
+    # check validity of state and slots, 
+    # set valid to false if not valid
+
+    # TODO
+    # determine if need business transition
+    # clinc_request['state'] = "generate_shedule"
+
+    if valid:
+        destination = clinc_request['slots']['_DESTINATION_']['values'][0]['tokens']
+        clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = destination
+        clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 1  # why the value of 'values' is list???
+        global destinations
+        destinations += [destination]
+
 
     print("change state")
 
@@ -273,8 +288,9 @@ def resolve_remove_destination(clinc_request):
 
 
 
-
-# global variables
+'''
+global variables
+'''
 preferences = {
     # update global variable (city, length_of_visit, number_of_people)
     # in resolve_basic_info(clinc_request)
@@ -286,6 +302,10 @@ preferences = {
     # in resolve_recommendation(clinc_request)
 }
 
+# TODO
+# resolve add_destination and remove destination 
+# to update global variable: destinations
+destinations = []
 
 
 all_states = [

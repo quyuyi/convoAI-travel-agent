@@ -17,9 +17,35 @@ class App extends React.Component {
       super(props);
       this.state = {
           generate: false,
+          destinations: [
+            "Duder",
+            "BBB",
+            "GGBL",
+          ],
       }
 
       this.handleGenerate = this.handleGenerate.bind(this);
+      this.handleUpdate = this.handleUpdate.bind(this);
+      this.handleRemove = this.handleRemove.bind(this);
+    }
+
+    handleUpdate (new_list){
+        console.log("Updating the destination list...");
+        this.setState({
+            destinations: new_list,
+        })
+    }
+
+    handleRemove (idx){
+        let previous = this.state.destinations;
+        const removed = previous.splice(idx,1);
+
+        console.log("Removing...");
+        console.log(removed);
+        this.setState({
+            destinations: previous,
+        }
+        );
     }
 
     handleGenerate (){
@@ -32,7 +58,8 @@ class App extends React.Component {
         if (this.state.generate){
             return (
                 <div>
-                    <Itinerary />
+                    <Itinerary
+                    destinations={this.state.destinations} />
                     <br></br>
                     <Button type="button" className="btn btn-primary" onClick={()=>this.handleGenerate()}>Regenerate my travel itinerary!</Button>
                 </div>
@@ -55,7 +82,9 @@ class App extends React.Component {
             </Row>
             
             <Row>
-                <List />
+                <List 
+                destinations={this.state.destinations}
+                handleRemove = {this.handleRemove}/>
             </Row>
             <br></br>
             <Row>
@@ -64,7 +93,8 @@ class App extends React.Component {
                 </Col>
 
                 <Col>
-                <Dialog />
+                <Dialog 
+                handleUpdate={this.handleUpdate}/>
                 </Col>
             </Row>
             <br></br>

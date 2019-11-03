@@ -8,56 +8,57 @@ import PlaceIcon from '@material-ui/icons/Place';
 class List extends React.Component {
     constructor (props){
         super(props);
-        this.state= {
-            destinations: [
-                "Duder",
-                "BBB",
-                "GGBL",
-            ],
-        };
+        // this.state= {
+        //     destinations: [
+        //         "Duder",
+        //         "BBB",
+        //         "GGBL",
+        //     ],
+        // };
 
-        this.handleAdd = this.handleAdd.bind(this);
-        this.handleRemove = this.handleRemove.bind(this);
+        // this.handleAdd = this.handleAdd.bind(this);
+        // this.handleRemove = this.handleRemove.bind(this);
 
     }
 
     componentDidMount (){
     }
 
-    handleAdd (){
-        const newDest = document.getElementById("myInput").value;
-        document.getElementById("myInput").value = "";
-        const previous = this.state.destinations;
+    // handleAdd (){
+    //     const newDest = document.getElementById("myInput").value;
+    //     document.getElementById("myInput").value = "";
+    //     const previous = this.state.destinations;
 
-        console.log("Adding a new destination list...");
-        console.log(newDest);
-        this.setState({
-            destinations: [...previous, newDest],
-        })
-    }
+    //     console.log("Adding a new destination list...");
+    //     console.log(newDest);
+    //     this.setState({
+    //         destinations: [...previous, newDest],
+    //     })
+    // }
 
-    handleRemove (idx){
-        let previous = this.state.destinations;
-        const removed = previous.splice(idx,1);
+    // handleRemove (idx){
+    //     let previous = this.state.destinations;
+    //     const removed = previous.splice(idx,1);
 
-        console.log("Removing...");
-        console.log(removed);
-        this.setState({
-            destinations: previous,
-        }
-        );
-    }
+    //     console.log("Removing...");
+    //     console.log(removed);
+    //     this.setState({
+    //         destinations: previous,
+    //     }
+    //     );
+    // }
 
     render (){
+        console.log(this.props.destinations);
         return(
             <div>
-                {this.state.destinations.map((value, index) => {
+                {this.props.destinations.map((value, index) => {
                     return (
                         <Chip key={index} 
                         icon={<PlaceIcon />}
                         color="default" 
                         label = {value} 
-                        onDelete={()=>this.handleRemove()}
+                        onDelete={()=>this.props.handleRemove(index)}
                         deleteIcon={<HighlightOffIcon />}
                         variant="outlined" />
                     )

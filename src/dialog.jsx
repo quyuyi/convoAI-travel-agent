@@ -115,6 +115,7 @@ class Dialog extends React.Component {
                 "from": "clinc",
                 "msg": data.response,
             };
+            this.props.handleUpdate(data.destinations);
             this.setState({
                 loading: false,
                 history: [...previous, record_clinc],
