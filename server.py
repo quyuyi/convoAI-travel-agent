@@ -151,9 +151,32 @@ def add_destination():
     # return response to the front end
     # update the front end about the preferences and destinations
     result = 'no speakableResponse from clinc'
+    dest = ""
+    isRecommendation = False
+    intro = ""
+    img = ""    
+    city = ""
+    visitor = ""
+    length = ""
+    addCity = "_CITY_" in response["slots"].keys()
+    if addCity:
+        city = response['slots']['_CITY_']['values'][0]['value']
+    addLength = "_LENGTH_OF_VISIT_" in response["slots"].keys()
+    if addLength:
+        length = response['slots']['_LENGTH_OF_VISIT_']['values'][0]['value'] 
+    addVisitor = 'The_NUMBER_OF_PEOPLE_' in response['slots'].keys()  
+    if addVisitor:
+        visitor = response['slots']['The_NUMBER_OF_PEOPLE_']['values'][0]['value'] 
+
     if 'visuals' in response:
         print("have a speakable repsponse")
         result = response['visuals']['speakableResponse']
+        if "intro" in response['visuals'].keys():
+            isRecommendation = True
+            intro = response['visuals']['intro']
+            img = response['visuals']['image']
+            dest = response['bl_resp']['slots']['_RECOMMENDATION_']['values'][0]['value']
+    
     # print('destination got from clinc')
     # print(response['visuals']['destinations'])
 
@@ -166,7 +189,17 @@ def add_destination():
     data = {
         'response': result,
         # 'destinations': dest['result'],
-        'destinations': ['for', 'test', 'only']
+        'destinations': ['for', 'test', 'only'],
+        'isRecommendation': isRecommendation, 
+        'intro': intro,
+        'img': img,
+        'dest': dest,
+        'addVisitor': addVisitor,
+        'visitor': visitor,
+        'addLength': addLength,
+        'length': length,
+        'addCity': addCity,
+        'city': city
     }
     print("speakable response from clinc is:")
     print(result)
@@ -291,6 +324,7 @@ def resolve_basic_info(clinc_request):
     if '_CITY_' in clinc_request['slots']:
         clinc_request['slots']['_CITY_']['values'][0]['resolved'] = 1
         city_tokens = clinc_request['slots']['_CITY_']['values'][0]['tokens']
+        city_tokens = city_tokens.capitalize()
         clinc_request['slots']['_CITY_']['values'][0]['value'] = city_tokens
         preferences['city'] = city_tokens
         recommend = None
@@ -300,13 +334,23 @@ def resolve_basic_info(clinc_request):
     if '_LENGTH_OF_VISIT_' in clinc_request['slots']:
         clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['resolved'] = 1
         length_of_visit_tokens = clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['tokens']
-        clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['value'] = length_of_visit_tokens
+        if not clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['value']:
+            clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['value'] = length_of_visit_tokens
         preferences['length_of_visit'] = length_of_visit_tokens
 
     if '_NUMBER_OF_PEOPLE_' in clinc_request['slots']:
         clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['resolved'] = 1
-        number_of_people_tokens = clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['tokens']
-        clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['value'] = number_of_people_tokens
+        number_of_people_str = clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['tokens']
+        try:
+            clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['value'] = str(int(number_of_people_tr))
+        except:
+            people_number = 0
+            number_of_people_tokens = number_of_people_str.split()
+            for t in number_of_people_tokens:
+                if t in ['with', 'and', 'take', 'parents', 'grandparents']:
+                    people_number += 1
+            clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['value'] = str(people_number)
+        
         preferences['number_of_people'] = number_of_people_tokens
 
 

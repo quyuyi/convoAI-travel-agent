@@ -116,7 +116,9 @@ class Dialog extends React.Component {
                 "from": "clinc",
                 "msg": data.response,
             };
-
+            if (data.addCity) document.getElementById("city").label = data.city
+            if (data.addVisitor) document.getElementById("visitor").label = data.visitor
+            if (data.addLength) document.getElementById("duration").label = data.length
             if (data.isRecommendation) {
                 let dest = document.getElementById("dest_img");
                 dest.setAttribute("image", data.img);
