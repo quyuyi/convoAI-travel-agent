@@ -95,17 +95,18 @@ class Dialog extends React.Component {
                 first: false,
                 loading: true,
                 history: [...previous, record_user],
-            })
+            });
+            cont.scrollTop = cont.scrollHeight;
             document.getElementById("userInput").value='';
             this.queryClinc(text);
         };
-        cont.scrollTop = cont.scrollHeight;
     }
 
 
     // send user utterence to backend which post to clinc
     // get response from clinc
     queryClinc (query){
+        var cont=document.getElementById("words");
         console.log("post user query to backend which will post to clinc for response...")
         this.postData('/query_clinc/', {query: query}) 
         .then(data => {
@@ -124,6 +125,7 @@ class Dialog extends React.Component {
                 document.getElementById("dest").innerHTML = data.dest;
                 document.getElementById("intro").innerHTML = data.intro;
             }
+
             this.props.handleUpdate(data.destinations);
             this.setState({
                 loading: false,
@@ -132,6 +134,7 @@ class Dialog extends React.Component {
             window.audio = new Audio();
             window.audio.src = "/get_audio";
             window.audio.play();
+            cont.scrollTop = cont.scrollHeight;
         }) // JSON-string from `response.json()` call
         .catch(error => console.error(error));
     }
