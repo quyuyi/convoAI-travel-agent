@@ -160,6 +160,7 @@ def add_destination():
     city = ""
     visitor = ""
     length = ""
+    print(response)
     addCity = "_CITY_" in response["slots"].keys()
     if addCity:
         city = response['slots']['_CITY_']['values'][0]['value']
@@ -298,10 +299,11 @@ def resolve_add_destination(clinc_request):
         print("recommend: ", recommend)
         if destination in ["this place", "this", "it", "there", "that"]:
             print("destination: ", destinations)
+            print("count", count)
             destinations.append(recommend['results'][count-1]['name'])
             clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = recommend['results'][count-1]['name']
-            destinations_info[recommend['results'][count-1]['name']] = recommend['results'][count]
-            print(destinations)
+            destinations_info[recommend['results'][count-1]['name']] = recommend['results'][count-1]
+            # print(destinations)
 
     print("finish resolving, send response back to clinc...")
     print(clinc_request)
