@@ -343,15 +343,15 @@ def resolve_basic_info(clinc_request):
         preferences['city'] = city_tokens
         recommend = None
         count = 0
-    # else:
-    #     if preferences["city"] != -1:
-    #         clinc_request['slot']['_CITY_'] = {
-    #             "type": "string",
-    #             "values": [{
-    #                 "resolved": 1,
-    #                 "value": preferences["city"]
-    #             }]
-    #         }
+    else:
+        if preferences["city"] != -1:
+            clinc_request['slots']['_CITY_'] = {
+                "type": "string",
+                "values": [{
+                    "resolved": 1,
+                    "value": preferences["city"]
+                }]
+            }
 
 
     if '_LENGTH_OF_VISIT_' in clinc_request['slots']:
@@ -372,7 +372,7 @@ def resolve_basic_info(clinc_request):
             people_number = 1
             number_of_people_tokens = number_of_people_str.split()
             for t in number_of_people_tokens:
-                if t in ['with', 'and', 'take', 'parents', 'grandparents']:
+                if t in ['with', 'and', 'take', 'parents', 'grandparents', ',']:
                     people_number += 1
             clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['value'] = str(people_number)
         
