@@ -354,8 +354,8 @@ def resolve_basic_info(clinc_request):
     if '_LENGTH_OF_VISIT_' in clinc_request['slots']:
         clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['resolved'] = 1
         length_of_visit_tokens = clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['tokens']
-        if not clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['value']:
-            clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['value'] = length_of_visit_tokens
+        # if not clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['value']:
+        clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['value'] = length_of_visit_tokens
         preferences['length_of_visit'] = length_of_visit_tokens
 
     if '_NUMBER_OF_PEOPLE_' in clinc_request['slots']:
