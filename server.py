@@ -51,6 +51,7 @@ preferences = {
 # resolve add_destination and remove destination
 # to update global variable: destinations
 destinations = []
+destinations_info = {}
 
 count = 0
 recommend = None
@@ -290,9 +291,16 @@ def resolve_add_destination(clinc_request):
         clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = destination
         clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 1  # why the value of 'values' is list???
         global destinations
-        print(destinations)
-        destinations.append(destination)
-        print(destinations)
+        global recommend
+        global destinations_info
+        global count
+        print("recommend: ", recommend)
+        if destination in ["this place", "this", "it", "there", "that"]:
+            print("destination: ", destinations)
+            destinations.append(recommend['results'][count-1]['name'])
+            clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = recommend['results'][count-1]['name']
+            destinations_info[recommend['results'][count-1]['name']] = recommend['results'][count]
+            print(destinations)
 
     print("finish resolving, send response back to clinc...")
     print(clinc_request)
@@ -325,6 +333,8 @@ def resolve_basic_info(clinc_request):
         clinc_request['slots']['_CITY_']['values'][0]['resolved'] = 1
         city_tokens = clinc_request['slots']['_CITY_']['values'][0]['tokens']
         city_tokens = city_tokens.capitalize()
+        print(city_tokens)
+        print("reach here")
         clinc_request['slots']['_CITY_']['values'][0]['value'] = city_tokens
         preferences['city'] = city_tokens
         recommend = None
@@ -351,8 +361,10 @@ def resolve_basic_info(clinc_request):
         clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['resolved'] = 1
         number_of_people_str = clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['tokens']
         try:
+            print("enter try")
             clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['value'] = str(int(number_of_people_tr))
         except:
+            print("enter except")
             people_number = 0
             number_of_people_tokens = number_of_people_str.split()
             for t in number_of_people_tokens:
@@ -430,7 +442,7 @@ def resolve_recommendation(clinc_request):
     city = city.capitalize()
     print("city ", city)
     if recommend is None and len(preferences) == 3:
-        url = 'https://www.triposo.com/api/20190906/poi.json?location_id='+city+'&fields=id,name,intro,images&count=10&account=8FRG5L0P&token=i0reis6kqrqd7wi7nnwzhkimvrk9zh6a'
+        url = 'https://www.triposo.com/api/20190906/poi.json?location_id='+city+'&fields=id,name,intro,images,coordinates&count=10&account=8FRG5L0P&token=i0reis6kqrqd7wi7nnwzhkimvrk9zh6a'
         count = 0
         recommend = requests.get(url)
         recommend = recommend.json()
