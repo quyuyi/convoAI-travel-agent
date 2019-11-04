@@ -151,9 +151,32 @@ def add_destination():
     # return response to the front end
     # update the front end about the preferences and destinations
     result = 'no speakableResponse from clinc'
+    dest = ""
+    isRecommendation = False
+    intro = ""
+    img = ""    
+    city = ""
+    visitor = ""
+    length = ""
+    addCity = "_CITY_" in response["slots"].keys()
+    if addCity:
+        city = response['slots']['_CITY_']['values'][0]['value']
+    addLength = "_LENGTH_OF_VISIT_" in response["slots"].keys()
+    if addLength:
+        length = response['slots']['_LENGTH_OF_VISIT_']['values'][0]['value'] 
+    addVisitor = 'The_NUMBER_OF_PEOPLE_' in response['slots'].keys()  
+    if addVisitor:
+        visitor = response['slots']['The_NUMBER_OF_PEOPLE_']['values'][0]['value'] 
+
     if 'visuals' in response:
         print("have a speakable repsponse")
         result = response['visuals']['speakableResponse']
+        if "intro" in response['visuals'].keys():
+            isRecommendation = True
+            intro = response['visuals']['intro']
+            img = response['visuals']['image']
+            dest = response['bl_resp']['slots']['_RECOMMENDATION_']['values'][0]['value']
+    
     # print('destination got from clinc')
     # print(response['visuals']['destinations'])
 
@@ -166,7 +189,17 @@ def add_destination():
     data = {
         'response': result,
         # 'destinations': dest['result'],
-        'destinations': ['for', 'test', 'only']
+        'destinations': ['for', 'test', 'only'],
+        'isRecommendation': isRecommendation, 
+        'intro': intro,
+        'img': img,
+        'dest': dest,
+        'addVisitor': addVisitor,
+        'visitor': visitor,
+        'addLength': addLength,
+        'length': length,
+        'addCity': addCity,
+        'city': city
     }
     print("response from clinc is:")
     print(result)

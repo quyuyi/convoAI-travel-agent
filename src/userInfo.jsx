@@ -24,10 +24,10 @@ class UserInfo extends React.Component {
         const duration = this.state.duration;
         const visitor = this.state.visitor;
         return (
-            <div>
-            <Chip color="primary" icon = {<LocationCityIcon />} label = {city} />
-            <Chip color="secondary" icon = {<DateRangeIcon />} label = {duration} />
-            <Chip color="default" icon = {<GroupIcon />} label = {visitor} />
+            <div> 
+            <Chip id = "city" color="primary" icon = {<LocationCityIcon />} label = {city} />
+            <Chip id = "duration" color="secondary" icon = {<DateRangeIcon />} label = {duration} />
+            <Chip id = "visitor" color="default" icon = {<GroupIcon />} label = {visitor} />
             </div>
         );
     }
