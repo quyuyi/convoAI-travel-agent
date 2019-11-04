@@ -388,7 +388,7 @@ def resolve_recommendation(clinc_request):
     }
     clinc_request['visual_payload'] = {
         "intro": recommend['results'][count]['intro'],
-        "image": recommend['results'][count]['images'][0]['attribution']['original']['url']
+        "image": recommend['results'][count]['images'][0]['attribution']['size']['original']['url']
     }
     count += 1
     print(clinc_request['slots'])
