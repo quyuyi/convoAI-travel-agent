@@ -7,7 +7,7 @@ import requests
 from api import request_clinc
 import pprint
 
-'''
+
 # comment1 here
 from record import record
 # Imports the Google Cloud client library
@@ -16,13 +16,13 @@ from google.cloud.speech import enums
 from google.cloud.speech import types
 from google.cloud import texttospeech
 # end comment1 here
-'''
+
 
 pp = pprint.PrettyPrinter(indent=2)
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="/Users/quyuyi/Downloads/WebpageClassifier-2cf78af630ef.json"
 
 
-'''
+
 # comment2
 # Instantiates a speech to text client
 speech_to_text_client = speech.SpeechClient()
@@ -30,7 +30,6 @@ speech_to_text_client = speech.SpeechClient()
 # Instantiates a text to speech client
 text_to_speech_client = texttospeech.TextToSpeechClient()
 # end comment2
-'''
 
 
 
@@ -42,7 +41,7 @@ def index():
     return render_template('index.html')
 
 
-'''
+
 # comment3
 @app.route("/record_to_text/", methods=["GET", "POST"])
 def record_to_text():
@@ -151,7 +150,7 @@ def add_destination():
     text_to_speech(result)
     return jsonify(**data)
 # end comment3
-'''
+
 
 
 
@@ -259,7 +258,7 @@ def resolve_basic_info(clinc_request):
     # if resolve is -1, edit response in clinc to continue query that slot
     # TODO
     # 1. check if all slots have token and whether the token is valid
-    # 2. turn token to value, using regex or exact
+    # 2. turn token to value, using regex or exactgit
 
     #### process number_of_people
     # try:
