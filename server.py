@@ -33,7 +33,27 @@ text_to_speech_client = texttospeech.TextToSpeechClient()
 # end comment2
 """
 
+'''
+global variables
+'''
+preferences = {
+    # update global variable (city, length_of_visit, number_of_people)
+    # in resolve_basic_info(clinc_request)
+    "city": -1,
+    "length_of_visit": -1,
+    "number_of_people": -1,
+    # TODO
+    # update global variable you figured out
+    # in resolve_recommendation(clinc_request)
+}
 
+# TODO
+# resolve add_destination and remove destination 
+# to update global variable: destinations
+destinations = []
+
+count = 0
+recommend = None
 
 
 
@@ -386,27 +406,7 @@ def resolve_remove_destination(clinc_request):
 
 
 
-'''
-global variables
-'''
-preferences = {
-    # update global variable (city, length_of_visit, number_of_people)
-    # in resolve_basic_info(clinc_request)
-    "city": -1,
-    "length_of_visit": -1,
-    "number_of_people": -1,
-    # TODO
-    # update global variable you figured out
-    # in resolve_recommendation(clinc_request)
-}
 
-# TODO
-# resolve add_destination and remove destination 
-# to update global variable: destinations
-destinations = []
-
-count = 0
-recommend = None
 
 
 all_states = [
