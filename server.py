@@ -296,8 +296,8 @@ def resolve_add_destination(clinc_request):
         global count
         if destination == "this place":
             print("destination: ", destinations)
-            destinations.append(recommend['result'][count]['name'])
-            destinations_info[recommend['result'][count]['name']] = recommend['result'][count]
+            destinations.append(recommend['results'][count-1]['name'])
+            destinations_info[recommend['results'][count-1]['name']] = recommend['result'][count]
             print(destinations)
 
 
