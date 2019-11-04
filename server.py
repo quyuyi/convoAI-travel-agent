@@ -366,7 +366,7 @@ def resolve_basic_info(clinc_request):
             clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['value'] = str(int(number_of_people_tr))
         except:
             print("enter except")
-            people_number = 0
+            people_number = 1
             number_of_people_tokens = number_of_people_str.split()
             for t in number_of_people_tokens:
                 if t in ['with', 'and', 'take', 'parents', 'grandparents']:
