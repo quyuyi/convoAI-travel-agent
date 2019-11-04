@@ -160,9 +160,6 @@ def add_destination():
     city = ""
     visitor = ""
     length = ""
-    if "slots" not in response.keys():
-        print(response)
-        return
     addCity = "_CITY_" in response["slots"].keys()
     if addCity:
         city = response['slots']['_CITY_']['values'][0]['value']
@@ -343,15 +340,15 @@ def resolve_basic_info(clinc_request):
         preferences['city'] = city_tokens
         recommend = None
         count = 0
-    # else:
-    #     if preferences["city"] != -1:
-    #         clinc_request['slot']['_CITY_'] = {
-    #             "type": "string",
-    #             "values": [{
-    #                 "resolved": 1,
-    #                 "value": preferences["city"]
-    #             }]
-    #         }
+    else:
+        if preferences["city"] != -1:
+            clinc_request['slot']['_CITY_'] = {
+                "type": "string",
+                "values": [{
+                    "resolved": 1,
+                    "value": preferences["city"]
+                }]
+            }
 
 
     if '_LENGTH_OF_VISIT_' in clinc_request['slots']:
