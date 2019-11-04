@@ -165,9 +165,9 @@ def add_destination():
     addLength = "_LENGTH_OF_VISIT_" in response["slots"].keys()
     if addLength:
         length = response['slots']['_LENGTH_OF_VISIT_']['values'][0]['value'] 
-    addVisitor = 'The_NUMBER_OF_PEOPLE_' in response['slots'].keys()  
+    addVisitor = '_NUMBER_OF_PEOPLE_' in response['slots'].keys()  
     if addVisitor:
-        visitor = response['slots']['The_NUMBER_OF_PEOPLE_']['values'][0]['value'] 
+        visitor = response['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['value'] 
 
     if 'visuals' in response:
         print("have a speakable repsponse")
