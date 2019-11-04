@@ -269,6 +269,7 @@ def resolve_add_destination(clinc_request):
 
 
 def resolve_basic_info(clinc_request):
+    global preferences
     print("start resolve basic info...")
     print("request body is:")
     pp.pprint(clinc_request)
@@ -346,6 +347,9 @@ def resolve_generate_schedule(clinc_request):
 
 
 def resolve_recommendation(clinc_request):
+    global preferences
+    global recommend
+    global count
     print("start resolve recommendation...")
     print("request body is:")
     pp.pprint(clinc_request)
@@ -356,7 +360,6 @@ def resolve_recommendation(clinc_request):
     # TODO
     # request the trip api
     # receive response(i.e., a destination or a list of destination) from the trip api
-    global recommend
     print("preferences ", preferences)
     city = preferences['city']
     city = city.capitalize()
