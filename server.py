@@ -51,6 +51,7 @@ preferences = {
 # resolve add_destination and remove destination
 # to update global variable: destinations
 destinations = []
+destinations_info = {}
 
 count = 0
 recommend = None
@@ -290,9 +291,13 @@ def resolve_add_destination(clinc_request):
         clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = destination
         clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 1  # why the value of 'values' is list???
         global destinations
-        print("destination: ", destinations)
-        destinations.append(destination)
-        print(destinations)
+        global recommend
+        global destinations_info
+        if destination == "this place"
+            print("destination: ", destinations)
+            destinations.append(recommend['name'])
+            destinations_info[recommend['name']] = recommend
+            print(destinations)
 
 
     print("change state")
@@ -402,7 +407,7 @@ def resolve_recommendation(clinc_request):
     city = city.capitalize()
     print("city ", city)
     if recommend is None and len(preferences) == 3:
-        url = 'https://www.triposo.com/api/20190906/poi.json?location_id='+city+'&fields=id,name,intro,images&count=10&account=8FRG5L0P&token=i0reis6kqrqd7wi7nnwzhkimvrk9zh6a'
+        url = 'https://www.triposo.com/api/20190906/poi.json?location_id='+city+'&fields=id,name,intro,images,coordinates&count=10&account=8FRG5L0P&token=i0reis6kqrqd7wi7nnwzhkimvrk9zh6a'
         count = 0
         recommend = requests.get(url)
         recommend = recommend.json()
