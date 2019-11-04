@@ -339,7 +339,7 @@ def resolve_recommendation(clinc_request):
     global recommend
     print("preferences ", preferences)
     city = preferences['city']
-    city.capitalize()
+    city = city.capitalize()
     print("city ", city)
     if recommend is None and len(preferences) == 3:
         url = 'https://www.triposo.com/api/20190906/poi.json?location_id='+city+'&fields=id,name&account=8FRG5L0P&token=i0reis6kqrqd7wi7nnwzhkimvrk9zh6a'
