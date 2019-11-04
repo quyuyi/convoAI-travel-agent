@@ -340,6 +340,15 @@ def resolve_basic_info(clinc_request):
         preferences['city'] = city_tokens
         recommend = None
         count = 0
+    else:
+        if preferences["city"] != -1:
+            clinc_request['slot']['_CITY_'] = {
+                "type": "string",
+                "values": [{
+                    "resolved": 1,
+                    "value": preferences["city"]
+                }]
+            }
 
 
     if '_LENGTH_OF_VISIT_' in clinc_request['slots']:
