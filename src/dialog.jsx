@@ -116,9 +116,20 @@ class Dialog extends React.Component {
                 "from": "clinc",
                 "msg": data.response,
             };
-            if (data.addCity) document.getElementById("city").label = data.city
-            if (data.addVisitor) document.getElementById("visitor").label = data.visitor
-            if (data.addLength) document.getElementById("duration").label = data.length
+
+            // update userInfo chips
+            var city = '';
+            var visitor = '';
+            var length = '';
+            if (data.addCity) city = data.city
+            if (data.addVisitor) visitor = data.visitor
+            if (data.addLength) length = data.length
+            console.log("add city is: ", city);
+            console.log("add visitor is: ", data.visitor);
+            console.log("add length is: ", length);
+            this.props.handleUserInfo(city, visitor, length);
+
+            // update destInfo window
             if (data.isRecommendation) {
                 let dest = document.getElementById("dest_img");
                 dest.setAttribute("image", data.img);
@@ -126,6 +137,7 @@ class Dialog extends React.Component {
                 document.getElementById("intro").innerHTML = data.intro;
             }
 
+            // update distination list
             this.props.handleUpdate(data.destinations);
             this.setState({
                 loading: false,

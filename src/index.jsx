@@ -17,22 +17,22 @@ class App extends React.Component {
       super(props);
       this.state = {
           generate: false,
-          destinations: [
-            "Duder",
-            "BBB",
-            "GGBL",
-          ],
+          city: '',
+          visitor: '',
+          length: '',
+          destinations : []
       }
 
       this.handleGenerate = this.handleGenerate.bind(this);
       this.handleUpdate = this.handleUpdate.bind(this);
       this.handleRemove = this.handleRemove.bind(this);
+      this.handleUserInfo = this.handleUserInfo.bind(this);
     }
 
-    handleUpdate (new_list){
+    handleUpdate (new_dest){
         console.log("Updating the destination list...");
         this.setState({
-            destinations: new_list,
+            destinations: new_dest,
         })
     }
 
@@ -52,6 +52,24 @@ class App extends React.Component {
         this.setState({
             generate: true,
         });
+    }
+
+    handleUserInfo (c, v, l){
+        if (c != ''){
+            this.setState({
+                city: c,
+            });
+        }
+        if (v != ''){
+            this.setState({
+                visitor: v,
+            });
+        }
+        if (l != ''){
+            this.setState({
+                length: l,
+            });
+        }
     }
 
     renderItinerary (){
@@ -78,7 +96,11 @@ class App extends React.Component {
             <Container>
                 <h1>Conversational Travel Agent</h1>
             <Row>
-                <UserInfo />
+                <UserInfo 
+                city={this.state.city}
+                visitor={this.state.visitor}
+                length={this.state.length}
+                />
             </Row>
             
             <Row>
@@ -94,7 +116,8 @@ class App extends React.Component {
 
                 <Col>
                 <Dialog 
-                handleUpdate={this.handleUpdate}/>
+                handleUpdate={this.handleUpdate}
+                handleUserInfo = {this.handleUserInfo}/>
                 </Col>
             </Row>
             <br></br>
