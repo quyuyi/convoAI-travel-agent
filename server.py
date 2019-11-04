@@ -163,7 +163,6 @@ def add_destination():
 
 
 
-
 @app.route("/api/return_destinations", methods=["GET", "POST"])
 def return_destinations():
     global destinations
@@ -275,12 +274,18 @@ def resolve_basic_info(clinc_request):
     # try:
     #     clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['value'] = int()
 
-    clinc_request['slots']['_CITY_']['values'][0]['resolved'] = 1
-    clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['resolved'] = 1
-    clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['resolved'] = 1
-    clinc_request['slots']['_CITY_']['values'][0]['value'] = clinc_request['slots']['_CITY_']['values'][0]['tokens']
-    clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['value'] = clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['tokens']
-    clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['value'] = clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['tokens']
+    if '_CITY_' in clinc_request['slots']:
+        clinc_request['slots']['_CITY_']['values'][0]['resolved'] = 1
+        clinc_request['slots']['_CITY_']['values'][0]['value'] = clinc_request['slots']['_CITY_']['values'][0]['tokens']
+
+    if '_LENGTH_OF_VISIT_' in clinc_request['slots']:
+        clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['resolved'] = 1
+        clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['value'] = clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['tokens']
+    
+    if '_NUMBER_OF_PEOPLE_' in clinc_request['slots']:
+        clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['resolved'] = 1
+        clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['value'] = clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['tokens']
+    
     return jsonify(**clinc_request)
 
 
@@ -337,7 +342,7 @@ def resolve_recommendation(clinc_request):
         count = 0
         recommend = requests.get(url)
         recommend = recommend.json()
-
+    print(recommend)
     clinc_request['slots'] = {
         "_RECOMMENDATION_": {
             "type": "string",
