@@ -12,7 +12,7 @@ class DestInfo extends React.Component {
 
     constructor (props) {
         super(props);
-        
+
     }
 
     render (){
@@ -46,13 +46,13 @@ class DestInfo extends React.Component {
                     />
                     <CardContent style = {contentHeaderStyle}>
                     <Typography id = "dest" gutterBottom variant="h5" component="h2">
-                        NCRB
+                        Hi
                     </Typography>
                     </CardContent>
                     <CardContent
                     style = {contentStyle}>
                     <Typography id = "intro" variant="body2" color="textSecondary" component="p">
-                    Located at the corner of Hubbard and Murfin Avenues near Bursley Hall and Northwood apartments, the NCRB features everything you need in a fitness facility.Located at the corner of Hubbard and Murfin Avenues near Bursley Hall and Northwood apartments, the NCRB features everything you need in a fitness facility.Located at the corner of Hubbard and Murfin Avenues near Bursley Hall and Northwood apartments, the NCRB features everything you need in a fitness facility.
+                    Welcome to EECS498 Conversational AI.
                     </Typography>
                     </CardContent>
                 </CardActionArea>
