@@ -377,13 +377,15 @@ def resolve_recommendation(clinc_request):
                 {
                     "resolved": 1,
                     "value": recommend['results'][count]['name']
-                    "intro": recommend['results'][count]['intro']
-                    "image": recommend['results'][count]['images'][0]['original']['url']
+                    
                 }
             ]
         }
     }
-
+    clinc_request['visual_payload'] = {
+        "intro": recommend['results'][count]['intro'],
+        "image": recommend['results'][count]['images'][0]['original']['url']
+    }
     count += 1
     print(clinc_request['slots'])
 
