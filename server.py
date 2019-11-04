@@ -295,9 +295,10 @@ def resolve_add_destination(clinc_request):
         global destinations_info
         global count
         print("recommend: ", recommend)
-        if destination == "this place":
+        if destination in ["this place", "this", "it", "there", "that"]:
             print("destination: ", destinations)
             destinations.append(recommend['results'][count-1]['name'])
+            clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = recommend['results'][count-1]['name']
             destinations_info[recommend['results'][count-1]['name']] = recommend['results'][count]
             print(destinations)
 
@@ -332,6 +333,8 @@ def resolve_basic_info(clinc_request):
         clinc_request['slots']['_CITY_']['values'][0]['resolved'] = 1
         city_tokens = clinc_request['slots']['_CITY_']['values'][0]['tokens']
         city_tokens = city_tokens.capitalize()
+        print(city_tokens)
+        print("reach here")
         clinc_request['slots']['_CITY_']['values'][0]['value'] = city_tokens
         preferences['city'] = city_tokens
         recommend = None
@@ -349,8 +352,10 @@ def resolve_basic_info(clinc_request):
         clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['resolved'] = 1
         number_of_people_str = clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['tokens']
         try:
+            print("enter try")
             clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['value'] = str(int(number_of_people_tr))
         except:
+            print("enter except")
             people_number = 0
             number_of_people_tokens = number_of_people_str.split()
             for t in number_of_people_tokens:
