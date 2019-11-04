@@ -7,7 +7,7 @@ import requests
 from api import request_clinc
 import pprint
 
-"""
+
 # comment1 here
 from record import record
 # Imports the Google Cloud client library
@@ -16,14 +16,14 @@ from google.cloud.speech import enums
 from google.cloud.speech import types
 from google.cloud import texttospeech
 # end comment1 here
-"""
+
 
 
 pp = pprint.PrettyPrinter(indent=4)
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="/Users/quyuyi/Downloads/WebpageClassifier-2cf78af630ef.json"
 
 
-"""
+
 # comment2
 # Instantiates a speech to text client
 speech_to_text_client = speech.SpeechClient()
@@ -31,7 +31,7 @@ speech_to_text_client = speech.SpeechClient()
 # Instantiates a text to speech client
 text_to_speech_client = texttospeech.TextToSpeechClient()
 # end comment2
-"""
+
 
 
 '''
@@ -207,7 +207,7 @@ def add_destination():
     }
     print("speakable response from clinc is:")
     print(result)
-    # text_to_speech(result)
+    text_to_speech(result)
     return jsonify(**data)
 # end comment3
 
@@ -343,6 +343,7 @@ def resolve_basic_info(clinc_request):
         preferences['city'] = city_tokens
         recommend = None
         count = 0
+
     else:
         if preferences["city"] != -1:
             clinc_request['slots']['_CITY_'] = {
@@ -357,8 +358,15 @@ def resolve_basic_info(clinc_request):
     if '_LENGTH_OF_VISIT_' in clinc_request['slots']:
         clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['resolved'] = 1
         length_of_visit_tokens = clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['tokens']
-        # if not clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['value']:
-        clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['value'] = length_of_visit_tokens
+        lov = length_of_visit_tokens
+        lov_tokens = length_of_visit_tokens.split()
+        if len(lov_tokens) == 2 and lov_tokens[1] == "days":
+            lov = lov_tokens[0]
+        if length_of_visit_tokens in ['a week', 'one week', '1 week']:
+            lov = "7"
+        if length_of_visit_tokens in ['weekend']:
+            lov = "2"
+        clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['value'] = lov
         preferences['length_of_visit'] = length_of_visit_tokens
 
     if '_NUMBER_OF_PEOPLE_' in clinc_request['slots']:

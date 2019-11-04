@@ -24,7 +24,7 @@ class UserInfo extends React.Component {
         return (
             <div> 
             <Chip id = "city" color="primary" icon = {<LocationCityIcon />} label = {this.props.city} />
-            <Chip id = "duration" color="secondary" icon = {<DateRangeIcon />} label = {duration} />
+            <Chip id = "duration" color="secondary" icon = {<DateRangeIcon />} label = {duration + " days"} />
             <Chip id = "visitor" color="default" icon = {<GroupIcon />} label = {visitor + " people"} />
             </div>
         );
