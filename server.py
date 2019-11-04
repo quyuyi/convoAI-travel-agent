@@ -48,7 +48,7 @@ preferences = {
 }
 
 # TODO
-# resolve add_destination and remove destination 
+# resolve add_destination and remove destination
 # to update global variable: destinations
 destinations = []
 
@@ -143,7 +143,7 @@ def add_destination():
     # get query frrom the front end
     query = request.json['query']
 
-    # request clinc will make clinc to call our business logic server 
+    # request clinc will make clinc to call our business logic server
     # (if that competency has its business logic enabled)
     print("_____________________get response from clinc_____________________")
     response = request_clinc(query)
@@ -156,7 +156,7 @@ def add_destination():
         result = response['visuals']['speakableResponse']
     # print('destination got from clinc')
     # print(response['visuals']['destinations'])
-    
+
     # TODO
     # request destinations from business logic server
     # dest = requests.get('http://convo-ai.herokuapp.com/api/return_destinations/')
@@ -241,7 +241,7 @@ def resolve_add_destination(clinc_request):
     pp.pprint(clinc_request)
     valid = True
     # TODO
-    # check validity of state and slots, 
+    # check validity of state and slots,
     # set valid to false if not valid
 
     # TODO
@@ -282,7 +282,7 @@ def resolve_basic_info(clinc_request):
     # if resolve is -1, edit response in clinc to continue query that slot
     # TODO
     # 1. check if all slots have token and whether the token is valid
-    # 2. turn token to value, using regex or exact
+    # 2. turn token to value, using regex or exactgit
 
     #### process number_of_people
     # try:
@@ -300,18 +300,18 @@ def resolve_basic_info(clinc_request):
         length_of_visit_tokens = clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['tokens']
         clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['value'] = length_of_visit_tokens
         preferences['length_of_visit'] = length_of_visit_tokens
-    
+
     if '_NUMBER_OF_PEOPLE_' in clinc_request['slots']:
         clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['resolved'] = 1
         number_of_people_tokens = clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['tokens']
         clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['value'] = number_of_people_tokens
         preferences['number_of_people'] = number_of_people_tokens
-    
+
     return jsonify(**clinc_request)
 
 
 
- 
+
 def resolve_clean_hello(clinc_request):
     print("start resolve clinc_request..")
     print("request body is:")
@@ -354,7 +354,7 @@ def resolve_recommendation(clinc_request):
     print("request body is:")
     pp.pprint(clinc_request)
     # TODO
-    # extract necessary info from clinc's request 
+    # extract necessary info from clinc's request
     # (refer to resolve_basic_info(clinc_request) above)
 
     # TODO
