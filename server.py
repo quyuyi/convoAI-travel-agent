@@ -7,24 +7,31 @@ import requests
 from api import request_clinc
 import pprint
 
-
-
+'''
+# comment1 here
 from record import record
 # Imports the Google Cloud client library
 from google.cloud import speech
 from google.cloud.speech import enums
 from google.cloud.speech import types
 from google.cloud import texttospeech
+# end comment1 here
+'''
 
 pp = pprint.PrettyPrinter(indent=2)
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="/Users/quyuyi/Downloads/WebpageClassifier-2cf78af630ef.json"
 
 
+'''
+# comment2
 # Instantiates a speech to text client
 speech_to_text_client = speech.SpeechClient()
 
 # Instantiates a text to speech client
 text_to_speech_client = texttospeech.TextToSpeechClient()
+# end comment2
+'''
+
 
 
 
@@ -35,6 +42,8 @@ def index():
     return render_template('index.html')
 
 
+'''
+# comment3
 @app.route("/record_to_text/", methods=["GET", "POST"])
 def record_to_text():
     record()
@@ -141,6 +150,11 @@ def add_destination():
     print(result)
     text_to_speech(result)
     return jsonify(**data)
+# end comment3
+'''
+
+
+
 
 
 
@@ -323,8 +337,19 @@ def resolve_recommendation(clinc_request):
         count = 0
         recommend = requests.get(url)
         recommend = recommend.json()
-    clinc_request['slots']['_RECOMMENDATION_']['type'] = "string"
-    clinc_request['slots']['_RECOMMENDATION_']['value'] = [{'value': recommend['results'][count]['name'], 'resolved': 1}]
+
+    clinc_request['slots'] = {
+        "_RECOMMENDATION_": {
+            "type": "string",
+            "values": [
+                {
+                    "resolved": 1,
+                    "value": recommend['results'][count]['name']
+                }
+            ]
+        }
+    }
+
     count += 1
     print(clinc_request['slots'])
 
