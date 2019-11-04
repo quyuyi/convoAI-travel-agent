@@ -326,6 +326,7 @@ def resolve_basic_info(clinc_request):
     if '_CITY_' in clinc_request['slots']:
         clinc_request['slots']['_CITY_']['values'][0]['resolved'] = 1
         city_tokens = clinc_request['slots']['_CITY_']['values'][0]['tokens']
+        city_tokens = city_tokens.capitalize()
         clinc_request['slots']['_CITY_']['values'][0]['value'] = city_tokens
         preferences['city'] = city_tokens
         recommend = None
@@ -335,13 +336,23 @@ def resolve_basic_info(clinc_request):
     if '_LENGTH_OF_VISIT_' in clinc_request['slots']:
         clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['resolved'] = 1
         length_of_visit_tokens = clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['tokens']
-        clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['value'] = length_of_visit_tokens
+        if not clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['value']:
+            clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['value'] = length_of_visit_tokens
         preferences['length_of_visit'] = length_of_visit_tokens
 
     if '_NUMBER_OF_PEOPLE_' in clinc_request['slots']:
         clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['resolved'] = 1
-        number_of_people_tokens = clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['tokens']
-        clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['value'] = number_of_people_tokens
+        number_of_people_str = clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['tokens']
+        try:
+            clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['value'] = str(int(number_of_people_tr))
+        except:
+            people_number = 0
+            number_of_people_tokens = number_of_people_str.split()
+            for t in number_of_people_tokens:
+                if t in ['with', 'and', 'take', 'parents', 'grandparents']:
+                    people_number += 1
+            clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['value'] = str(people_number)
+        
         preferences['number_of_people'] = number_of_people_tokens
 
     return jsonify(**clinc_request)
