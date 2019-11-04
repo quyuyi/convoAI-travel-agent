@@ -293,7 +293,7 @@ def resolve_add_destination(clinc_request):
         global destinations
         global recommend
         global destinations_info
-        if destination == "this place"
+        if destination == "this place":
             print("destination: ", destinations)
             destinations.append(recommend['name'])
             destinations_info[recommend['name']] = recommend
