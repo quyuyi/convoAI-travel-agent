@@ -170,6 +170,7 @@ def add_destination():
     addVisitor = '_NUMBER_OF_PEOPLE_' in response['slots'].keys()  
     if addVisitor:
         visitor = response['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['value'] 
+    
 
     if 'visuals' in response:
         print("have a speakable repsponse")
@@ -342,15 +343,15 @@ def resolve_basic_info(clinc_request):
         preferences['city'] = city_tokens
         recommend = None
         count = 0
-    else:
-        if preferences["city"] != -1:
-            clinc_request['slot']['_CITY_'] = {
-                "type": "string",
-                "values": [{
-                    "resolved": 1,
-                    "value": preferences["city"]
-                }]
-            }
+    # else:
+    #     if preferences["city"] != -1:
+    #         clinc_request['slot']['_CITY_'] = {
+    #             "type": "string",
+    #             "values": [{
+    #                 "resolved": 1,
+    #                 "value": preferences["city"]
+    #             }]
+    #         }
 
 
     if '_LENGTH_OF_VISIT_' in clinc_request['slots']:
