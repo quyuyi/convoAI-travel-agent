@@ -66,7 +66,7 @@ def index():
     return render_template('index.html')
 
 
-"""
+
 # comment3
 @app.route("/record_to_text/", methods=["GET", "POST"])
 def record_to_text():
@@ -205,10 +205,10 @@ def add_destination():
     }
     print("speakable response from clinc is:")
     print(result)
-    text_to_speech(result)
+    # text_to_speech(result)
     return jsonify(**data)
 # end comment3
-"""
+
 
 
 
