@@ -115,6 +115,12 @@ class Dialog extends React.Component {
                 "from": "clinc",
                 "msg": data.response,
             };
+            if (data.isRecommendation) {
+                let dest = document.getElementById("dest_img");
+                dest.setAttribute("image", data.img);
+                document.getElementById("dest").innerHTML = data.dest;
+                document.getElementById("intro").innerHTML = data.intro;
+            }
             this.props.handleUpdate(data.destinations);
             this.setState({
                 loading: false,
