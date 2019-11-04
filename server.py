@@ -163,7 +163,6 @@ def add_destination():
 
 
 
-
 @app.route("/api/return_destinations", methods=["GET", "POST"])
 def return_destinations():
     global destinations
@@ -262,25 +261,29 @@ def resolve_basic_info(clinc_request):
     # 1. check if all slots have token and whether the token is valid
     # 2. turn token to value, using regex or exact
 
-    city_tokens = clinc_request['slots']['_CITY_']['values'][0]['tokens']
-    length_of_visit_tokens = clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['tokens']
-    number_of_people_tokens = clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['tokens']
-
-    # Store info into global variable
-    preferences['city'] = city_tokens
-    preferences['length_of_visit'] = length_of_visit_tokens
-    preferences['number_of_people'] = number_of_people_tokens
-
     #### process number_of_people
     # try:
     #     clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['value'] = int()
 
-    clinc_request['slots']['_CITY_']['values'][0]['resolved'] = 1
-    clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['resolved'] = 1
-    clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['resolved'] = 1
-    clinc_request['slots']['_CITY_']['values'][0]['value'] = clinc_request['slots']['_CITY_']['values'][0]['tokens']
-    clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['value'] = clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['tokens']
-    clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['value'] = clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['tokens']
+    if '_CITY_' in clinc_request['slots']:
+        clinc_request['slots']['_CITY_']['values'][0]['resolved'] = 1
+        city_tokens = clinc_request['slots']['_CITY_']['values'][0]['tokens']
+        clinc_request['slots']['_CITY_']['values'][0]['value'] = city_tokens
+        preferences['city'] = city_tokens
+
+
+    if '_LENGTH_OF_VISIT_' in clinc_request['slots']:
+        clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['resolved'] = 1
+        length_of_visit_tokens = clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['tokens']
+        clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['value'] = length_of_visit_tokens
+        preferences['length_of_visit'] = length_of_visit_tokens
+    
+    if '_NUMBER_OF_PEOPLE_' in clinc_request['slots']:
+        clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['resolved'] = 1
+        number_of_people_tokens = clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['tokens']
+        clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['value'] = number_of_people_tokens
+        preferences['number_of_people'] = number_of_people_tokens
+    
     return jsonify(**clinc_request)
 
 
@@ -337,7 +340,7 @@ def resolve_recommendation(clinc_request):
         count = 0
         recommend = requests.get(url)
         recommend = recommend.json()
-
+    print(recommend)
     clinc_request['slots'] = {
         "_RECOMMENDATION_": {
             "type": "string",
