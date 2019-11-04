@@ -7,7 +7,7 @@ import requests
 from api import request_clinc
 import pprint
 
-
+"""
 # comment1 here
 from record import record
 # Imports the Google Cloud client library
@@ -16,14 +16,14 @@ from google.cloud.speech import enums
 from google.cloud.speech import types
 from google.cloud import texttospeech
 # end comment1 here
-
+"""
 
 
 pp = pprint.PrettyPrinter(indent=4)
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="/Users/quyuyi/Downloads/WebpageClassifier-2cf78af630ef.json"
 
 
-
+"""
 # comment2
 # Instantiates a speech to text client
 speech_to_text_client = speech.SpeechClient()
@@ -31,6 +31,7 @@ speech_to_text_client = speech.SpeechClient()
 # Instantiates a text to speech client
 text_to_speech_client = texttospeech.TextToSpeechClient()
 # end comment2
+"""
 
 
 '''
@@ -204,7 +205,7 @@ def add_destination():
     }
     print("speakable response from clinc is:")
     print(result)
-    text_to_speech(result)
+    # text_to_speech(result)
     return jsonify(**data)
 # end comment3
 
@@ -339,6 +340,15 @@ def resolve_basic_info(clinc_request):
         preferences['city'] = city_tokens
         recommend = None
         count = 0
+    else:
+        if preferences["city"] != -1:
+            clinc_request['slot']['_CITY_'] = {
+                "type": "string",
+                "values": [{
+                    "resolved": 1,
+                    "value": preferences["city"]
+                }]
+            }
 
 
     if '_LENGTH_OF_VISIT_' in clinc_request['slots']:
