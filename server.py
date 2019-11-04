@@ -160,6 +160,9 @@ def add_destination():
     city = ""
     visitor = ""
     length = ""
+    if "slots" not in response.keys():
+        print(response)
+        return
     addCity = "_CITY_" in response["slots"].keys()
     if addCity:
         city = response['slots']['_CITY_']['values'][0]['value']
