@@ -7,7 +7,7 @@ import requests
 from api import request_clinc
 import pprint
 
-"""
+
 # comment1 here
 from record import record
 # Imports the Google Cloud client library
@@ -16,14 +16,14 @@ from google.cloud.speech import enums
 from google.cloud.speech import types
 from google.cloud import texttospeech
 # end comment1 here
-"""
 
 
-pp = pprint.PrettyPrinter(indent=2)
+
+pp = pprint.PrettyPrinter(indent=4)
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="/Users/quyuyi/Downloads/WebpageClassifier-2cf78af630ef.json"
 
 
-"""
+
 # comment2
 # Instantiates a speech to text client
 speech_to_text_client = speech.SpeechClient()
@@ -31,7 +31,7 @@ speech_to_text_client = speech.SpeechClient()
 # Instantiates a text to speech client
 text_to_speech_client = texttospeech.TextToSpeechClient()
 # end comment2
-"""
+
 
 '''
 global variables
@@ -168,9 +168,9 @@ def add_destination():
         # 'destinations': dest['result'],
         'destinations': ['for', 'test', 'only']
     }
-    print("response from clinc is:")
+    print("speakable response from clinc is:")
     print(result)
-    # text_to_speech(result)
+    text_to_speech(result)
     return jsonify(**data)
 # end comment3
 
@@ -204,13 +204,13 @@ def return_destinations():
 def business_logic():
     # read clinc's request.json
     clinc_request = request.json
-    print("print from bussiness_logic")
-    print(clinc_request)
+    # print("print from bussiness_logic")
+    # print(clinc_request)
 
     # extract state
     curr_intent = clinc_request['state']
-    print("current intent is")
-    print(curr_intent)
+    # print("current intent is")
+    # print(curr_intent)
 
     # resolve request depends on the specific state
     if (curr_intent == "add_destination"):
@@ -261,9 +261,7 @@ def resolve_add_destination(clinc_request):
         destinations.append(destination)
         print(destinations)
 
-
-    print("change state")
-
+    print("finish resolving, send response back to clinc...")
     print(clinc_request)
     return jsonify(**clinc_request)
 
@@ -311,6 +309,9 @@ def resolve_basic_info(clinc_request):
         clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['value'] = number_of_people_tokens
         preferences['number_of_people'] = number_of_people_tokens
 
+
+    print("finish resolving, send response back to clinc...")
+    print(clinc_request)
     return jsonify(**clinc_request)
 
 
@@ -321,6 +322,8 @@ def resolve_clean_hello(clinc_request):
     print("request body is:")
     pp.pprint(clinc_request)
 
+    print("finish resolving, send response back to clinc...")
+    print(clinc_request)
     return jsonify(**clinc_request)
 
 
@@ -338,6 +341,8 @@ def resolve_destination_info(clinc_request):
     # request the trip api to get information about the destination
     # figure out what to return back to the user
 
+    print("finish resolving, send response back to clinc...")
+    print(clinc_request)
     return jsonify(**clinc_request)
 
 
@@ -346,6 +351,9 @@ def resolve_generate_schedule(clinc_request):
     print("start resolve generate_schedule...")
     print("request body is:")
     pp.pprint(clinc_request)
+
+    print("finish resolving, send response back to clinc...")
+    print(clinc_request)
     return jsonify(**clinc_request)
 
 
@@ -401,6 +409,9 @@ def resolve_recommendation(clinc_request):
 
     # TODO
     # format the response to clinc
+
+    print("finish resolving, send response back to clinc...")
+    print(clinc_request)
     return jsonify(**clinc_request)
 
 
@@ -412,6 +423,8 @@ def resolve_remove_destination(clinc_request):
     print("request body is:")
     pp.pprint(clinc_request)
 
+    print("finish resolving, send response back to clinc...")
+    print(clinc_request)
     return jsonify(**clinc_request)
 
 
