@@ -270,6 +270,8 @@ def resolve_add_destination(clinc_request):
 
 def resolve_basic_info(clinc_request):
     global preferences
+    global recommend
+    global count
     print("start resolve basic info...")
     print("request body is:")
     pp.pprint(clinc_request)
@@ -293,6 +295,8 @@ def resolve_basic_info(clinc_request):
         city_tokens = clinc_request['slots']['_CITY_']['values'][0]['tokens']
         clinc_request['slots']['_CITY_']['values'][0]['value'] = city_tokens
         preferences['city'] = city_tokens
+        recommend = None
+        count = 0
 
 
     if '_LENGTH_OF_VISIT_' in clinc_request['slots']:
