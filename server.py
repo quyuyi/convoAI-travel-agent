@@ -7,7 +7,7 @@ import requests
 from api import request_clinc
 import pprint
 
-'''
+"""
 # comment1 here
 from record import record
 # Imports the Google Cloud client library
@@ -16,13 +16,14 @@ from google.cloud.speech import enums
 from google.cloud.speech import types
 from google.cloud import texttospeech
 # end comment1 here
-'''
+"""
+
 
 pp = pprint.PrettyPrinter(indent=2)
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="/Users/quyuyi/Downloads/WebpageClassifier-2cf78af630ef.json"
 
 
-'''
+"""
 # comment2
 # Instantiates a speech to text client
 speech_to_text_client = speech.SpeechClient()
@@ -30,7 +31,8 @@ speech_to_text_client = speech.SpeechClient()
 # Instantiates a text to speech client
 text_to_speech_client = texttospeech.TextToSpeechClient()
 # end comment2
-'''
+"""
+
 
 
 
@@ -42,7 +44,7 @@ def index():
     return render_template('index.html')
 
 
-'''
+
 # comment3
 @app.route("/record_to_text/", methods=["GET", "POST"])
 def record_to_text():
@@ -148,10 +150,10 @@ def add_destination():
     }
     print("response from clinc is:")
     print(result)
-    text_to_speech(result)
+    # text_to_speech(result)
     return jsonify(**data)
 # end comment3
-'''
+
 
 
 
@@ -336,7 +338,7 @@ def resolve_recommendation(clinc_request):
     # receive response(i.e., a destination or a list of destination) from the trip api
     global recommend
     city = preferences['city']
-    city[0] = city[0].upper()
+    city.capitalize()
     if recommend is None and len(preferences) == 3:
         url = 'https://www.triposo.com/api/20190906/poi.json?location_id='+city+'&fields=id,name&account=8FRG5L0P&token=i0reis6kqrqd7wi7nnwzhkimvrk9zh6a'
         count = 0
