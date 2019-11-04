@@ -290,7 +290,7 @@ def resolve_add_destination(clinc_request):
         clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = destination
         clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 1  # why the value of 'values' is list???
         global destinations
-        print(destinations)
+        print("destination: ", destinations)
         destinations.append(destination)
         print(destinations)
 
