@@ -357,8 +357,15 @@ def resolve_basic_info(clinc_request):
     if '_LENGTH_OF_VISIT_' in clinc_request['slots']:
         clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['resolved'] = 1
         length_of_visit_tokens = clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['tokens']
-        # if not clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['value']:
-        clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['value'] = length_of_visit_tokens
+        lov = length_of_visit_tokens
+        lov_tokens = length_of_visit_tokens.split()
+        if len(lov_tokens) == 2 and lov_tokens[1] == "days":
+            lov = lov_tokens[0]
+        if length_of_visit_tokens in ['a week', 'one week', '1 week']:
+            lov = "7"
+        if length_of_visit_tokens in ['weekend']:
+            lov = "2"
+        clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['value'] = lov
         preferences['length_of_visit'] = length_of_visit_tokens
 
     if '_NUMBER_OF_PEOPLE_' in clinc_request['slots']:
