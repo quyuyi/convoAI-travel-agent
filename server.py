@@ -307,7 +307,7 @@ def resolve_add_destination(clinc_request):
             # print(destinations)
 
     print("finish resolving, send response back to clinc...")
-    print(clinc_request)
+    pp.pprint(clinc_request)
     return jsonify(**clinc_request)
 
 
@@ -380,7 +380,7 @@ def resolve_basic_info(clinc_request):
 
 
     print("finish resolving, send response back to clinc...")
-    print(clinc_request)
+    pp.pprint(clinc_request)
     return jsonify(**clinc_request)
 
 
@@ -392,7 +392,7 @@ def resolve_clean_hello(clinc_request):
     pp.pprint(clinc_request)
 
     print("finish resolving, send response back to clinc...")
-    print(clinc_request)
+    pp.pprint(clinc_request)
     return jsonify(**clinc_request)
 
 
@@ -411,7 +411,7 @@ def resolve_destination_info(clinc_request):
     # figure out what to return back to the user
 
     print("finish resolving, send response back to clinc...")
-    print(clinc_request)
+    pp.pprint(clinc_request)
     return jsonify(**clinc_request)
 
 
@@ -422,7 +422,7 @@ def resolve_generate_schedule(clinc_request):
     pp.pprint(clinc_request)
 
     print("finish resolving, send response back to clinc...")
-    print(clinc_request)
+    pp.pprint(clinc_request)
     return jsonify(**clinc_request)
 
 
@@ -480,7 +480,7 @@ def resolve_recommendation(clinc_request):
     # format the response to clinc
 
     print("finish resolving, send response back to clinc...")
-    print(clinc_request)
+    pp.pprint(clinc_request)
     return jsonify(**clinc_request)
 
 
@@ -493,7 +493,7 @@ def resolve_remove_destination(clinc_request):
     pp.pprint(clinc_request)
 
     print("finish resolving, send response back to clinc...")
-    print(clinc_request)
+    pp.pprint(clinc_request)
     return jsonify(**clinc_request)
 
 
