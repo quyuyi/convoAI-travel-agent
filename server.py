@@ -506,29 +506,32 @@ def resolve_recommendation(clinc_request):
     if recommend is None and len(preferences) == 3:
         url = 'https://www.triposo.com/api/20190906/poi.json?location_id='+city+'&fields=id,name,intro,images,coordinates&count=10&account=8FRG5L0P&token=i0reis6kqrqd7wi7nnwzhkimvrk9zh6a'
         count = 0
-        recommend = requests.get(url)
-        recommend = recommend.json()
-    print(recommend)
-    clinc_request['slots'] = {
-        "_RECOMMENDATION_": {
-            "type": "string",
-            "values": [
-                {
-                    "resolved": 1,
-                    "value": recommend['results'][count]['name']
-                    
-                }
-            ]
+        try:
+            recommend = requests.get(url).json()
+        except:
+            recommend = None
+    print('recommendation got from API:', recommend)
+    if recommend is not None:
+        clinc_request['slots'] = {
+            "_RECOMMENDATION_": {
+                "type": "string",
+                "values": [
+                    {
+                        "resolved": 1,
+                        "value": recommend['results'][count]['name']               
+                    }
+                ]
+            }
         }
-    }
-    print(recommend['results'][count]['images'][0].keys())
-    clinc_request['visual_payload'] = {
-        "intro": recommend['results'][count]['intro'],
-        "image": recommend['results'][count]['images'][0]['sizes']['original']['url']
-    }
-    count += 1
-    print(clinc_request['slots'])
-    print(clinc_request['visual_payload'])
+        print("print(recommend['results'][count]['images'][0].keys()):")
+        print(recommend['results'][count]['images'][0].keys())
+        clinc_request['visual_payload'] = {
+            "intro": recommend['results'][count]['intro'],
+            "image": recommend['results'][count]['images'][0]['sizes']['original']['url']
+        }
+        count += 1
+    print("slots:", clinc_request['slots'])
+    print("visual payload:", clinc_request['visual_payload'])
 
     # TODO
     # figure out other preferences need by the trip api
