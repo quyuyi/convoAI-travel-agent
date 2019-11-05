@@ -161,14 +161,27 @@ def add_destination():
     visitor = ""
     length = ""
     print(response)
-
-    addCity = response["slots"] and "_CITY_" in response["slots"].keys()
+    try:
+        addCity = "_CITY_" in response["slots"].keys()
+    except:
+        addCity = False
+        
     if addCity:
         city = response['slots']['_CITY_']['values'][0]['value']
-    addLength = response["slots"] and "_LENGTH_OF_VISIT_" in response["slots"].keys()
+
+    try:
+        addLength =  "_LENGTH_OF_VISIT_" in response["slots"].keys()
+    except:
+        addLength = False
+
     if addLength:
         length = response['slots']['_LENGTH_OF_VISIT_']['values'][0]['value'] 
-    addVisitor = response["slots"] and '_NUMBER_OF_PEOPLE_' in response['slots'].keys()  
+
+    try:
+        addVisitor = '_NUMBER_OF_PEOPLE_' in response['slots'].keys()  
+    except:
+        addVisitor = False
+        
     if addVisitor:
         visitor = response['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['value'] 
     
