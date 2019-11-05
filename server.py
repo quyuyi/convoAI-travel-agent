@@ -483,6 +483,12 @@ def resolve_recommendation(clinc_request):
     print("start resolve recommendation...")
     print("request body is:")
     pp.pprint(clinc_request)
+
+    for p in prefereces:
+        if p == -1:
+            clinc_request['state'] = 'basic_info'
+            return jsonify(**clinc_request)
+
     # TODO
     # extract necessary info from clinc's request
     # (refer to resolve_basic_info(clinc_request) above)
