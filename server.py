@@ -161,13 +161,27 @@ def add_destination():
     visitor = ""
     length = ""
     print(response)
-    addCity = "_CITY_" in response["slots"].keys()
+    try:
+        addCity = "_CITY_" in response["slots"].keys()
+    except:
+        addCity = False
+
     if addCity:
         city = response['slots']['_CITY_']['values'][0]['value']
-    addLength = "_LENGTH_OF_VISIT_" in response["slots"].keys()
+
+    try:
+        addLength =  "_LENGTH_OF_VISIT_" in response["slots"].keys()
+    except:
+        addLength = False
+
     if addLength:
         length = response['slots']['_LENGTH_OF_VISIT_']['values'][0]['value'] 
-    addVisitor = '_NUMBER_OF_PEOPLE_' in response['slots'].keys()  
+
+    try:
+        addVisitor = '_NUMBER_OF_PEOPLE_' in response['slots'].keys()  
+    except:
+        addVisitor = False
+        
     if addVisitor:
         visitor = response['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['value'] 
     
@@ -335,12 +349,15 @@ def resolve_basic_info(clinc_request):
 
     if '_CITY_' in clinc_request['slots']:
         clinc_request['slots']['_CITY_']['values'][0]['resolved'] = 1
-        city_tokens = clinc_request['slots']['_CITY_']['values'][0]['tokens']
-        city_tokens = city_tokens.capitalize()
-        print(city_tokens)
-        print("reach here")
-        clinc_request['slots']['_CITY_']['values'][0]['value'] = city_tokens
-        preferences['city'] = city_tokens
+        city_str = clinc_request['slots']['_CITY_']['values'][0]['tokens']
+        city_value = city_str.capitalize()
+        city_tokens = city_str.split()
+        if len(city_tokens) == 2:
+            city_value = city_tokens[0].capitalize() + '_' + city_tokens[1].capitalize()
+        if city_value == "New_York":
+            city_value = "New_York_City"
+        clinc_request['slots']['_CITY_']['values'][0]['value'] = city_value
+        preferences['city'] = city_value
         recommend = None
         count = 0
 
@@ -367,7 +384,19 @@ def resolve_basic_info(clinc_request):
         if length_of_visit_tokens in ['weekend']:
             lov = "2"
         clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['value'] = lov
-        preferences['length_of_visit'] = length_of_visit_tokens
+        preferences['length_of_visit'] = lov
+
+    '''
+    else:
+        if preferences["length_of_visit"] != -1:
+            clinc_request['slots']['_LENGTH_OF_VISIT_'] = {
+                "type": "string",
+                "values": [{
+                    "resolved": 1,
+                    "value": preferences["length_of_visit"]
+                }]
+            }
+    '''
 
     if '_NUMBER_OF_PEOPLE_' in clinc_request['slots']:
         clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['resolved'] = 1
@@ -379,12 +408,24 @@ def resolve_basic_info(clinc_request):
             print("enter except")
             people_number = 1
             number_of_people_tokens = number_of_people_str.split()
+            print(clinc_request['slots']['_NUMBER_OF_PEOPLE_'])
             for t in number_of_people_tokens:
                 if t in ['with', 'and', 'take', 'parents', 'grandparents', ',']:
                     people_number += 1
             clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['value'] = str(people_number)
-        
-        preferences['number_of_people'] = number_of_people_tokens
+        preferences['number_of_people'] = clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['value']
+
+    '''
+    else:
+        if preferences["number_of_people"] != -1:
+            clinc_request['slots']['_NUMBER_OF_PEOPLE_'] = {
+                "type": "string",
+                "values": [{
+                    "resolved": 1,
+                    "value": preferences["number_of_people"]
+                }]
+            }
+    '''
 
 
     print("finish resolving, send response back to clinc...")
@@ -442,6 +483,12 @@ def resolve_recommendation(clinc_request):
     print("start resolve recommendation...")
     print("request body is:")
     pp.pprint(clinc_request)
+    '''
+    for p in prefereces:
+        if p == -1:
+            clinc_request['state'] = 'basic_info'
+            return jsonify(**clinc_request)
+    '''
     # TODO
     # extract necessary info from clinc's request
     # (refer to resolve_basic_info(clinc_request) above)
