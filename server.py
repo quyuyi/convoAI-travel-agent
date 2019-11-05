@@ -498,7 +498,10 @@ def resolve_recommendation(clinc_request):
     # receive response(i.e., a destination or a list of destination) from the trip api
     print("preferences ", preferences)
     city = preferences['city']
-    city = city.capitalize()
+    try:
+        city = city.capitalize()
+    except:
+        print("city is not string!")
     print("city ", city)
     if recommend is None and len(preferences) == 3:
         url = 'https://www.triposo.com/api/20190906/poi.json?location_id='+city+'&fields=id,name,intro,images,coordinates&count=10&account=8FRG5L0P&token=i0reis6kqrqd7wi7nnwzhkimvrk9zh6a'
