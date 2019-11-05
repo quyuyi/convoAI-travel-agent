@@ -165,7 +165,7 @@ def add_destination():
         addCity = "_CITY_" in response["slots"].keys()
     except:
         addCity = False
-        
+
     if addCity:
         city = response['slots']['_CITY_']['values'][0]['value']
 
@@ -349,12 +349,15 @@ def resolve_basic_info(clinc_request):
 
     if '_CITY_' in clinc_request['slots']:
         clinc_request['slots']['_CITY_']['values'][0]['resolved'] = 1
-        city_tokens = clinc_request['slots']['_CITY_']['values'][0]['tokens']
-        city_tokens = city_tokens.capitalize()
-        print(city_tokens)
-        print("reach here")
-        clinc_request['slots']['_CITY_']['values'][0]['value'] = city_tokens
-        preferences['city'] = city_tokens
+        city_str = clinc_request['slots']['_CITY_']['values'][0]['tokens']
+        city_value = city_str.capitalize()
+        city_tokens = city_str.split()
+        if len(city_tokens) == 2:
+            city_value = city_tokens[0].capitalize() + '_' + city_tokens[1].capitalize()
+        if city_value = "New_York":
+            city_value = "New_York_City"
+        clinc_request['slots']['_CITY_']['values'][0]['value'] = city_value
+        preferences['city'] = city_value
         recommend = None
         count = 0
 
