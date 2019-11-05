@@ -367,7 +367,17 @@ def resolve_basic_info(clinc_request):
         if length_of_visit_tokens in ['weekend']:
             lov = "2"
         clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['value'] = lov
-        preferences['length_of_visit'] = length_of_visit_tokens
+        preferences['length_of_visit'] = lov
+
+    else:
+        if preferences["length_of_visit"] != -1:
+            clinc_request['slots']['_LENGTH_OF_VISIT_'] = {
+                "type": "string",
+                "values": [{
+                    "resolved": 1,
+                    "value": preferences["length_of_visit"]
+                }]
+            }
 
     if '_NUMBER_OF_PEOPLE_' in clinc_request['slots']:
         clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['resolved'] = 1
@@ -379,12 +389,22 @@ def resolve_basic_info(clinc_request):
             print("enter except")
             people_number = 1
             number_of_people_tokens = number_of_people_str.split()
+            print(clinc_request['slots']['_NUMBER_OF_PEOPLE_'])
             for t in number_of_people_tokens:
                 if t in ['with', 'and', 'take', 'parents', 'grandparents', ',']:
                     people_number += 1
             clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['value'] = str(people_number)
-        
-        preferences['number_of_people'] = number_of_people_tokens
+        preferences['number_of_people'] = clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['value']
+
+    else:
+        if preferences["number_of_people"] != -1:
+            clinc_request['slots']['_NUMBER_OF_PEOPLE_'] = {
+                "type": "string",
+                "values": [{
+                    "resolved": 1,
+                    "value": preferences["number_of_people"]
+                }]
+            }
 
 
     print("finish resolving, send response back to clinc...")
