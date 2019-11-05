@@ -165,7 +165,7 @@ def add_destination():
         addCity = "_CITY_" in response["slots"].keys()
     except:
         addCity = False
-        
+
     if addCity:
         city = response['slots']['_CITY_']['values'][0]['value']
 
@@ -483,6 +483,11 @@ def resolve_recommendation(clinc_request):
     # TODO
     # extract necessary info from clinc's request
     # (refer to resolve_basic_info(clinc_request) above)
+
+    for p in preferences:
+        if p == -1:
+            clinc_request['state'] = 'basic_info'
+            return jsonify(**clinc_request)
 
     # TODO
     # request the trip api
