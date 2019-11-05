@@ -354,7 +354,7 @@ def resolve_basic_info(clinc_request):
         city_tokens = city_str.split()
         if len(city_tokens) == 2:
             city_value = city_tokens[0].capitalize() + '_' + city_tokens[1].capitalize()
-        if city_value = "New_York":
+        if city_value == "New_York":
             city_value = "New_York_City"
         clinc_request['slots']['_CITY_']['values'][0]['value'] = city_value
         preferences['city'] = city_value
