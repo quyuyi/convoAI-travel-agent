@@ -3,6 +3,9 @@ import geopy.distance
 #from equal_groups import EqualGroupsKMeans
 import mlrose
 from collections import OrderedDict
+
+
+
 def cal_dist(coords_1, coords_2, unit='km'):
 	""" calculate distance bewtween two points
 
@@ -33,7 +36,7 @@ class ItineraryGen(object):
 
 		assert (len(places) / num_days <= 3)
 
-		self._num_day = num_days
+		self._num_days = num_days
 		self._places = places
 
 	'''
@@ -90,7 +93,7 @@ class ItineraryGen(object):
 	def _plan(self, route):
 		""" make a plan for each day """
 		day_plan = OrderedDict()
-		chuncks = np.array_split(route, self._num_day)
+		chuncks = np.array_split(route, self._num_days)
 		for i, chunck in enumerate(chuncks):
 			day_plan[i] = tuple(self._places[j]['name'] for j in chunck)
 
@@ -132,7 +135,7 @@ class ItineraryGen(object):
 			places: can be a dict OR a list of dicts 
 		"""
 
-		if istance(places, list):
+		if instance(places, list):
 			self._places += places
 		else:
 			self._places.append(places)
@@ -141,6 +144,19 @@ class ItineraryGen(object):
 
 	def remove_places(self, placenames):
 		raise NotImplementedError 
+
+	@property
+	def places(self):
+		return self._places
+	
+	@property
+	def num_places(self):
+		return len(self._places)
+	
+	@property
+	def num_days(self):
+		return self._num_days
+	
 
 
 
