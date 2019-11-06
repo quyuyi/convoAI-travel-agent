@@ -523,7 +523,7 @@ def resolve_recommendation(clinc_request):
                     }
                 ]
             },
-            "__CITY__": {
+            "_CITY_": {
                 "type" : "string",
                 "values": [
                     {
