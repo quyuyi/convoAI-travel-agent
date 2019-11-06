@@ -540,7 +540,6 @@ def resolve_recommendation(clinc_request):
         }
         count += 1
     print("slots:", clinc_request['slots'])
-    print("visual payload:", clinc_request['visual_payload'])
 
     # TODO
     # figure out other preferences need by the trip api
