@@ -8,18 +8,32 @@ firebase_admin.initialize_app(cred)
 
 db = firestore.client()
 
-doc_ref = db.collection(u'users').document(u'Adaf38ef33a-a384-4ca6-aeda-c743ac12dd05')
+# doc_ref = db.collection(u'users').document(u'Adaf38ef33a-a384-4ca6-aeda-c743ac12dd05')
+doc_ref = db.collection(u'users').document(u'1')
 doc_ref.set({
-    u'uuid': u'Adaf38ef33a-a384-4ca6-aeda-c743ac12dd05',
+    # u'uuid': u'1',
     u'city': u'Ann Arbor',
-    u'length': u'10',
+    # u'length': u'10',
     u'number_of_people': u'2',
-    u'destinations': {
-        u'Big Bowl': u'1',
-        u'Duderstadt': u'2'
-    }
+    # u'destinations': {
+    #     u'Big Bowl': u'1',
+    #     u'Duderstadt': u'2'
+    # }
 })
 
+
+doc_ref.update({
+    'city': 'Detroit',
+    'length': '10'
+})
+
+# retrieve the value of some key
+doc = doc_ref.get()
+doc_dict = doc.to_dict()
+print(doc_dict['city'])
+# print(u'Document data: {}'.format(doc.to_dict()))
+
+# set a document
 doc_ref = db.collection(u'users').document(u'a044aa6c-7628-4ab9-9499-58c70a2362f7')
 doc_ref.set({
     u'uuid': u'a044aa6c-7628-4ab9-9499-58c70a2362f7',

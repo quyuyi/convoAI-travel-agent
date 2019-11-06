@@ -7,6 +7,16 @@ import requests
 from api import request_clinc
 import pprint
 from utils import get 
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import firestore
+
+# Use a service account
+cred = credentials.Certificate('convai498-1572652809131-firebase-adminsdk-i8c6i-de8d470e32.json')
+firebase_admin.initialize_app(cred)
+db = firestore.client()
+collection = db.collection('users')
+doc_ref = collection.document('0')
 
 pp = pprint.PrettyPrinter(indent=4)
 
@@ -15,6 +25,9 @@ app = Flask(__name__)
 '''
 global variables
 '''
+
+# userId = 0
+
 preferences = {
     # update global variable (city, length_of_visit, number_of_people)
     # in resolve_basic_info(clinc_request)
@@ -38,6 +51,11 @@ city_recommendations = {}
 @app.route("/")
 def index():
     return render_template('businessLogic.html')
+
+# @app.route("/set_user_id/", methods=["GET", "POST"])
+# def set_user_id(id):
+#     global userId
+#     userId = id
 
 
 # business logic server
