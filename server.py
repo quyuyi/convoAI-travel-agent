@@ -6,7 +6,7 @@ from flask import Flask, render_template, request, jsonify, send_file, url_for
 import requests
 from api import request_clinc
 import pprint
-
+from utils import get 
 
 # comment1 here
 from record import record
@@ -20,7 +20,7 @@ from google.cloud import texttospeech
 
 
 pp = pprint.PrettyPrinter(indent=4)
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="/Users/quyuyi/Downloads/WebpageClassifier-2cf78af630ef.json"
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="/Users/bolu/Downloads/challenge-7382d4f0bf60.json"
 
 
 
@@ -152,48 +152,7 @@ def add_destination():
 
     # return response to the front end
     # update the front end about the preferences and destinations
-    result = 'no speakableResponse from clinc'
-    dest = ""
-    isRecommendation = False
-    intro = ""
-    img = ""    
-    city = ""
-    visitor = ""
-    length = ""
-    print(response)
-    try:
-        addCity = "_CITY_" in response["slots"].keys()
-    except:
-        addCity = False
 
-    if addCity:
-        city = response['slots']['_CITY_']['values'][0]['value']
-
-    try:
-        addLength =  "_LENGTH_OF_VISIT_" in response["slots"].keys()
-    except:
-        addLength = False
-
-    if addLength:
-        length = response['slots']['_LENGTH_OF_VISIT_']['values'][0]['value'] 
-
-    try:
-        addVisitor = '_NUMBER_OF_PEOPLE_' in response['slots'].keys()  
-    except:
-        addVisitor = False
-        
-    if addVisitor:
-        visitor = response['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['value'] 
-    
-
-    if 'visuals' in response:
-        print("have a speakable repsponse")
-        result = response['visuals']['speakableResponse']
-        if "intro" in response['visuals'].keys():
-            isRecommendation = True
-            intro = response['visuals']['intro']
-            img = response['visuals']['image']
-            dest = response['bl_resp']['slots']['_RECOMMENDATION_']['values'][0]['value']
     
     # print('destination got from clinc')
     # print(response['visuals']['destinations'])
@@ -204,34 +163,28 @@ def add_destination():
     # dest = dest.json()
     # print('destination list from business logic server is:')
     # print(dest)
+    result = get(response, 'no speakableResponse from clinc', 'visuals', 'speakableResponse')
     data = {
         'response': result,
         # 'destinations': dest['result'],
         'destinations': ['for', 'test', 'only'],
-        'isRecommendation': isRecommendation, 
-        'intro': intro,
-        'img': img,
-        'dest': dest,
-        'addVisitor': addVisitor,
-        'visitor': visitor,
-        'addLength': addLength,
-        'length': length,
-        'addCity': addCity,
-        'city': city
+        'isRecommendation': False if get(response, False, 'visuals', 'intro') == False else True, 
+        'intro': get(response, '', 'visuals', 'intro'),
+        'img': get(response, '', 'visuals', 'image'),
+        'dest': get(response, '', 'bl_resp', 'slots', '_RECOMMENDATION_', 'values', 0, 'value'),
+        'addVisitor': get(response, False, 'slots', '_NUMBER_OF_PEOPLE_'),
+        'visitor': get(response, '', 'slots', '_NUMBER_OF_PEOPLE_', 'values', 0, 'value'),
+        'addLength': get(response, False, 'slots', '_LENGTH_OF_VISIT_'),
+        'length': get(response, '', 'slots', '_LENGTH_OF_VISIT_', 'values', 0, 'value'),
+        'addCity': get(response, False, 'slots', '_CITY_'),
+        'city': get(response, '', 'slots', '_CITY_', 'values', 0, 'value')
     }
+
     print("speakable response from clinc is:")
     print(result)
     text_to_speech(result)
     return jsonify(**data)
 # end comment3
-
-
-
-
-
-
-
-
 
 
 
