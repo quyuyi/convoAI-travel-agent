@@ -240,6 +240,10 @@ def business_logic():
 
 # Only the state and slots properties can be manipulated
 def resolve_add_destination(clinc_request):
+    global destinations
+    global recommend
+    global destinations_info
+    global count
     print("start resolve add_destination...")
     print("request body is:")
     pp.pprint(clinc_request)
