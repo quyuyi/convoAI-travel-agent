@@ -40,9 +40,9 @@ global variables
 preferences = {
     # update global variable (city, length_of_visit, number_of_people)
     # in resolve_basic_info(clinc_request)
-    "city": -1,
-    "length_of_visit": -1,
-    "number_of_people": -1,
+    "city": "-1",
+    "length_of_visit": "-1",
+    "number_of_people": "-1",
     # TODO
     # update global variable you figured out
     # in resolve_recommendation(clinc_request)
@@ -55,7 +55,7 @@ destinations = []
 destinations_info = {}
 
 count = 0
-recommend = None
+city_recommendations = {}
 
 
 
@@ -240,6 +240,11 @@ def business_logic():
 
 # Only the state and slots properties can be manipulated
 def resolve_add_destination(clinc_request):
+    global preferences
+    global destinations
+    global city_recommendations
+    global destinations_info
+    global count
     print("start resolve add_destination...")
     print("request body is:")
     pp.pprint(clinc_request)
@@ -260,18 +265,15 @@ def resolve_add_destination(clinc_request):
         # }
         clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = destination
         clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 1  # why the value of 'values' is list???
-        global destinations
-        global recommend
-        global destinations_info
-        global count
-        print("recommend: ", recommend)
+    
+        print("city_recommendations: ", city_recommendations)
         if destination in ["this place", "this", "it", "there", "that"]:
             print("destination: ", destinations)
             print("count", count)
-            destinations.append(recommend['results'][count-1]['name'])
-            clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = recommend['results'][count-1]['name']
-            destinations_info[recommend['results'][count-1]['name']] = recommend['results'][count-1]
-            # print(destinations)
+            destination_name = city_recommendations[preferences["city"]]['results'][count-1]['name']
+            destinations.append(destination_name)
+            clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = destination_name
+            destinations_info[destination_name] = city_recommendations[preferences["city"]]['results'][count-1]
 
     print("finish resolving, send response back to clinc...")
     pp.pprint(clinc_request)
@@ -280,7 +282,7 @@ def resolve_add_destination(clinc_request):
 
 def resolve_basic_info(clinc_request):
     global preferences
-    global recommend
+    global city_recommendations
     global count
     print("start resolve basic info...")
     print("request body is:")
@@ -304,18 +306,38 @@ def resolve_basic_info(clinc_request):
         clinc_request['slots']['_CITY_']['values'][0]['resolved'] = 1
         city_str = clinc_request['slots']['_CITY_']['values'][0]['tokens']
         city_value = city_str.capitalize()
+        city_key = city_str.capitalize()
         city_tokens = city_str.split()
         if len(city_tokens) == 2:
-            city_value = city_tokens[0].capitalize() + '_' + city_tokens[1].capitalize()
-        if city_value == "New_York":
-            city_value = "New_York_City"
+            city_key = city_tokens[0].capitalize() + '_' + city_tokens[1].capitalize()
+            city_value = city_tokens[0].capitalize() + ' ' + city_tokens[1].capitalize()
+        if city_key == "New_York":
+            city_key = "New_York_City"
+        if city_key == "Ann_Arbor":
+            city_key = "Ann_Arbor2C_Michigan"
         clinc_request['slots']['_CITY_']['values'][0]['value'] = city_value
         preferences['city'] = city_value
         recommend = None
+
+        # When user talks about city, get request from API
+        url = 'https://www.triposo.com/api/20190906/poi.json?location_id='+city_key+'&fields=id,name,intro,images,coordinates&count=10&account=8FRG5L0P&token=i0reis6kqrqd7wi7nnwzhkimvrk9zh6a'
         count = 0
+        recommend = requests.get(url).json()
+        if not recommend["results"]:
+            clinc_request['slots']["_NORESPONSE_"] = {
+                "type": "string",
+                "values": [
+                    {
+                        "resolved": 1,
+                        "value": "But currently " + city_value + " is not supported, you may choose another city. "     
+                    }
+                ]
+            }
+        else:
+            city_recommendations[city_value] = recommend
 
     else:
-        if preferences["city"] != -1:
+        if preferences["city"] != "-1":
             clinc_request['slots']['_CITY_'] = {
                 "type": "string",
                 "values": [{
@@ -431,7 +453,7 @@ def resolve_generate_schedule(clinc_request):
 
 def resolve_recommendation(clinc_request):
     global preferences
-    global recommend
+    global city_recommendations
     global count
     print("start resolve recommendation...")
     print("request body is:")
@@ -442,50 +464,44 @@ def resolve_recommendation(clinc_request):
             clinc_request['state'] = 'basic_info'
             return jsonify(**clinc_request)
     '''
-    # TODO
-    # extract necessary info from clinc's request
-    # (refer to resolve_basic_info(clinc_request) above)
-
-    # TODO
-    # request the trip api
-    # receive response(i.e., a destination or a list of destination) from the trip api
+    
     print("preferences ", preferences)
     city = preferences['city']
-    city = city.capitalize()
-    print("city ", city)
-    if recommend is None and len(preferences) == 3:
-        url = 'https://www.triposo.com/api/20190906/poi.json?location_id='+city+'&fields=id,name,intro,images,coordinates&count=10&account=8FRG5L0P&token=i0reis6kqrqd7wi7nnwzhkimvrk9zh6a'
-        count = 0
-        recommend = requests.get(url)
-        recommend = recommend.json()
-    print(recommend)
-    clinc_request['slots'] = {
-        "_RECOMMENDATION_": {
-            "type": "string",
-            "values": [
-                {
-                    "resolved": 1,
-                    "value": recommend['results'][count]['name']
-                    
-                }
-            ]
+    print("city:", city)
+    print('recommendation got from API:', city_recommendations)
+    if city in city_recommendations:
+        clinc_request['slots'] = {
+            "_RECOMMENDATION_": {
+                "type": "string",
+                "values": [
+                    {
+                        "resolved": 1,
+                        "value": city_recommendations[city]['results'][count]['name']               
+                    }
+                ]
+            },
+            "_CITY_": {
+                "type" : "string",
+                "values": [
+                    {
+                        "resolved" : 1,
+                        "value": city
+                    }
+                ]
+            }
         }
-    }
-    print(recommend['results'][count]['images'][0].keys())
-    clinc_request['visual_payload'] = {
-        "intro": recommend['results'][count]['intro'],
-        "image": recommend['results'][count]['images'][0]['sizes']['original']['url']
-    }
-    count += 1
-    print(clinc_request['slots'])
-    print(clinc_request['visual_payload'])
+        print("city_recommendations[city]['results'][count]['images'][0].keys():")
+        print(city_recommendations[city]['results'][count]['images'][0].keys())
+        clinc_request['visual_payload'] = {
+            "intro": city_recommendations[city]['results'][count]['intro'],
+            "image": city_recommendations[city]['results'][count]['images'][0]['sizes']['original']['url']
+        }
+        count += 1
+    print("slots:", clinc_request['slots'])
 
     # TODO
     # figure out other preferences need by the trip api
     # tell Tianchun to add slots in clinc
-
-    # TODO
-    # format the response to clinc
 
     print("finish resolving, send response back to clinc...")
     pp.pprint(clinc_request)
