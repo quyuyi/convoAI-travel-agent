@@ -66,47 +66,6 @@ class List extends React.Component {
             </div>
         );
     }
-
-
-
-
-
-
-    // render (){
-    //     return (
-    //         <div>
-    //         <div id="myDIV" className="header">
-    //         <h2>Destinations</h2>
-    //         <span>
-    //         {/* <input type="text" id="myInput" placeholder="Place..."/>
-    //         <Button variant="secondary" onClick={()=>this.handleAdd()} className="addBtn">Add</Button> */}
-    //         </span>
-    //         </div>
-
-
-    //         <ul className="list-group list-group-flush">
-    //         <div className='destinations'>
-    //                 {this.state.destinations.map((h,idx) => {
-    //                     return (
-    //                         <div key={idx}>
-    //                             <li className="list-group-item">
-    //                             <span onClick = {()=>this.handleRemove()}>
-    //                             <Tooltip title = "delete">
-    //                             <HighlightOffIcon />
-    //                             </Tooltip>
-    //                             </span>
-    //                             {h}
-    //                             </li>    
-    //                         </div>
-    //                     )
-    //                 })}
-    //         </div>
-    //         </ul>
-
-
-    //         </div>
-    //     );
-    // }
 }
 
 export default List;
