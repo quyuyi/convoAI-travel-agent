@@ -42,7 +42,7 @@ preferences = {
     # in resolve_basic_info(clinc_request)
     "city": "-1",
     "length_of_visit": "-1",
-    "number_of_people": "-1",
+    "number_of_people": "-1"
     # TODO
     # update global variable you figured out
     # in resolve_recommendation(clinc_request)
@@ -56,7 +56,6 @@ destinations_info = {}
 
 count = 0
 recommend = None
-
 
 
 app = Flask(__name__)
@@ -363,7 +362,6 @@ def resolve_basic_info(clinc_request):
         clinc_request['slots']['_CITY_']['values'][0]['value'] = city_value
         preferences['city'] = city_value
         recommend = None
-        count = 0
 
         # When user talks about city, get request from API
         url = 'https://www.triposo.com/api/20190906/poi.json?location_id='+city_key+'&fields=id,name,intro,images,coordinates&count=10&account=8FRG5L0P&token=i0reis6kqrqd7wi7nnwzhkimvrk9zh6a'
