@@ -202,10 +202,8 @@ def resolve_basic_info(clinc_request):
             lov = "2"
         clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['value'] = lov
         preferences['length_of_visit'] = lov
-
-    '''
     else:
-        if preferences["length_of_visit"] != -1:
+        if preferences["length_of_visit"] != "-1":
             clinc_request['slots']['_LENGTH_OF_VISIT_'] = {
                 "type": "string",
                 "values": [{
@@ -213,7 +211,6 @@ def resolve_basic_info(clinc_request):
                     "value": preferences["length_of_visit"]
                 }]
             }
-    '''
 
     if '_NUMBER_OF_PEOPLE_' in clinc_request['slots']:
         clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['resolved'] = 1
@@ -231,10 +228,8 @@ def resolve_basic_info(clinc_request):
                     people_number += 1
             clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['value'] = str(people_number)
         preferences['number_of_people'] = clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['value']
-
-    '''
     else:
-        if preferences["number_of_people"] != -1:
+        if preferences["number_of_people"] != "-1":
             clinc_request['slots']['_NUMBER_OF_PEOPLE_'] = {
                 "type": "string",
                 "values": [{
@@ -242,7 +237,6 @@ def resolve_basic_info(clinc_request):
                     "value": preferences["number_of_people"]
                 }]
             }
-    '''
 
 
     print("finish resolving, send response back to clinc...")
