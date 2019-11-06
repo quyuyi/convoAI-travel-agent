@@ -373,7 +373,7 @@ def resolve_basic_info(clinc_request):
                 "values": [
                     {
                         "resolved": 1,
-                        "value": "But currently " + city_value + "is not supported, you may choose another city. "     
+                        "value": "But currently " + city_value + " is not supported, you may choose another city. "     
                     }
                 ]
             }
