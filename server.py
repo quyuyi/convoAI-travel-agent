@@ -358,6 +358,8 @@ def resolve_basic_info(clinc_request):
             city_value = city_tokens[0].capitalize() + ' ' + city_tokens[1].capitalize()
         if city_key == "New_York":
             city_key = "New_York_City"
+        if city_key == "Ann_Arbor":
+            city_key = "Ann_Arbor2C_Michigan"
         clinc_request['slots']['_CITY_']['values'][0]['value'] = city_value
         preferences['city'] = city_value
         recommend = None
