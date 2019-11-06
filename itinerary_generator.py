@@ -2,7 +2,7 @@ import numpy as np
 import geopy.distance
 #from equal_groups import EqualGroupsKMeans
 import mlrose
-
+from collections import OrderedDict
 def cal_dist(coords_1, coords_2, unit='km'):
 	""" calculate distance bewtween two points
 
@@ -76,7 +76,7 @@ class ItineraryGen(object):
 
 
 	def _cal_route(self):
-		""" based on TSP solver"""
+		""" based on TSP solver """
 
 		dist_list = self._build_dist_list()
 		fitness_dists = mlrose.TravellingSales(distances=dist_list)
@@ -89,10 +89,10 @@ class ItineraryGen(object):
 
 	def _plan(self, route):
 		""" make a plan for each day """
-		day_plan = []
+		day_plan = OrderedDict()
 		chuncks = np.array_split(route, self._num_day)
 		for i, chunck in enumerate(chuncks):
-			day_plan += tuple(self._places[i]['name'] for i in  chunck)
+			day_plan[i] = tuple(self._places[j]['name'] for j in chunck)
 
 		return day_plan
 
