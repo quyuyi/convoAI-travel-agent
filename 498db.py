@@ -49,5 +49,9 @@ doc_ref.set({
 users_ref = db.collection(u'users')
 docs = users_ref.stream()
 
+# cities_ref = db.collection('cities')
+# city_docs = users_ref.stream()
+
 for doc in docs:
     print(u'{} => {}'.format(doc.id, doc.to_dict()))
+    # print(u'{} => {}'.format(city_docs.id, city_docs.to_dict()))
