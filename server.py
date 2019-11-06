@@ -367,7 +367,7 @@ def resolve_basic_info(clinc_request):
         url = 'https://www.triposo.com/api/20190906/poi.json?location_id='+city_key+'&fields=id,name,intro,images,coordinates&count=10&account=8FRG5L0P&token=i0reis6kqrqd7wi7nnwzhkimvrk9zh6a'
         count = 0
         recommend = requests.get(url).json()
-        if not recommend["result"]:
+        if not recommend["results"]:
             clinc_request['slots']["_NORESPONSE_"] = {
                 "type": "string",
                 "values": [
