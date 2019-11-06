@@ -55,7 +55,7 @@ destinations = []
 destinations_info = {}
 
 count = 0
-recommend = None
+city_recommendations = {}
 
 
 
@@ -240,8 +240,9 @@ def business_logic():
 
 # Only the state and slots properties can be manipulated
 def resolve_add_destination(clinc_request):
+    global preferences
     global destinations
-    global recommend
+    global city_recommendations
     global destinations_info
     global count
     print("start resolve add_destination...")
@@ -265,14 +266,14 @@ def resolve_add_destination(clinc_request):
         clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = destination
         clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 1  # why the value of 'values' is list???
     
-        print("recommend: ", recommend)
+        print("city_recommendations: ", city_recommendations)
         if destination in ["this place", "this", "it", "there", "that"]:
             print("destination: ", destinations)
             print("count", count)
-            destinations.append(recommend['results'][count-1]['name'])
-            clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = recommend['results'][count-1]['name']
-            destinations_info[recommend['results'][count-1]['name']] = recommend['results'][count-1]
-            # print(destinations)
+            destination_name = city_recommendations[preferences["city"]]['results'][count-1]['name']
+            destinations.append(destination_name)
+            clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = destination_name
+            destinations_info[destination_name] = city_recommendations[preferences["city"]]['results'][count-1]
 
     print("finish resolving, send response back to clinc...")
     pp.pprint(clinc_request)
@@ -281,7 +282,7 @@ def resolve_add_destination(clinc_request):
 
 def resolve_basic_info(clinc_request):
     global preferences
-    global recommend
+    global city_recommendations
     global count
     print("start resolve basic info...")
     print("request body is:")
@@ -332,6 +333,8 @@ def resolve_basic_info(clinc_request):
                     }
                 ]
             }
+        else:
+            city_recommendations[city_value] = recommend
 
     else:
         if preferences["city"] != "-1":
@@ -450,7 +453,7 @@ def resolve_generate_schedule(clinc_request):
 
 def resolve_recommendation(clinc_request):
     global preferences
-    global recommend
+    global city_recommendations
     global count
     print("start resolve recommendation...")
     print("request body is:")
@@ -465,15 +468,15 @@ def resolve_recommendation(clinc_request):
     print("preferences ", preferences)
     city = preferences['city']
     print("city:", city)
-    print('recommendation got from API:', recommend)
-    if recommend is not None:
+    print('recommendation got from API:', city_recommendations)
+    if city in city_recommendations:
         clinc_request['slots'] = {
             "_RECOMMENDATION_": {
                 "type": "string",
                 "values": [
                     {
                         "resolved": 1,
-                        "value": recommend['results'][count]['name']               
+                        "value": city_recommendations[city]['results'][count]['name']               
                     }
                 ]
             },
@@ -487,15 +490,14 @@ def resolve_recommendation(clinc_request):
                 ]
             }
         }
-        print("print(recommend['results'][count]['images'][0].keys()):")
-        print(recommend['results'][count]['images'][0].keys())
+        print("city_recommendations[city]['results'][count]['images'][0].keys():")
+        print(city_recommendations[city]['results'][count]['images'][0].keys())
         clinc_request['visual_payload'] = {
-            "intro": recommend['results'][count]['intro'],
-            "image": recommend['results'][count]['images'][0]['sizes']['original']['url']
+            "intro": city_recommendations[city]['results'][count]['intro'],
+            "image": city_recommendations[city]['results'][count]['images'][0]['sizes']['original']['url']
         }
         count += 1
     print("slots:", clinc_request['slots'])
-    print("visual payload:", clinc_request['visual_payload'])
 
     # TODO
     # figure out other preferences need by the trip api
