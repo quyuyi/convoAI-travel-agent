@@ -17,6 +17,7 @@ firebase_admin.initialize_app(cred)
 db = firestore.client()
 collection = db.collection('users')
 doc_ref = collection.document('0')
+doc_ref.set({})
 
 pp = pprint.PrettyPrinter(indent=4)
 
