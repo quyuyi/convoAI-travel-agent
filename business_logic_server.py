@@ -198,7 +198,7 @@ def resolve_basic_info(clinc_request):
             }
         else:
             city_recommendations[city_value] = recommend
-'''
+    '''
     else:
         if preferences["city"] != "-1":
             clinc_request['slots']['_CITY_'] = {
@@ -208,7 +208,7 @@ def resolve_basic_info(clinc_request):
                     "value": preferences["city"]
                 }]
             }
-'''
+    '''
 
     if '_LENGTH_OF_VISIT_' in clinc_request['slots']:
         clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['resolved'] = 1
@@ -226,7 +226,7 @@ def resolve_basic_info(clinc_request):
         doc_ref.update({
             'length_of_visit': lov
         })
-'''
+    '''
     else:
         if preferences["length_of_visit"] != "-1":
             clinc_request['slots']['_LENGTH_OF_VISIT_'] = {
@@ -236,7 +236,7 @@ def resolve_basic_info(clinc_request):
                     "value": preferences["length_of_visit"]
                 }]
             }
-'''
+    '''
 
     if '_NUMBER_OF_PEOPLE_' in clinc_request['slots']:
         clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['resolved'] = 1
@@ -257,7 +257,7 @@ def resolve_basic_info(clinc_request):
         doc_ref.update({
             'number_of_people': clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['value']
         })
-'''
+    '''
     else:
         if preferences["number_of_people"] != "-1":
             clinc_request['slots']['_NUMBER_OF_PEOPLE_'] = {
@@ -267,7 +267,7 @@ def resolve_basic_info(clinc_request):
                     "value": preferences["number_of_people"]
                 }]
             }
-'''
+    '''
 
 
     print("finish resolving, send response back to clinc...")
