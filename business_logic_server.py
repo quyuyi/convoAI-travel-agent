@@ -40,14 +40,12 @@ preferences = {
     # update global variable you figured out
     # in resolve_recommendation(clinc_request)
 }
-
+count = 0
 # TODO
 # resolve add_destination and remove destination
 # to update global variable: destinations
 destinations = []
 destinations_info = {}
-
-count = 0
 city_recommendations = {}
 
 @app.route("/")
@@ -145,7 +143,6 @@ def resolve_add_destination(clinc_request):
 def resolve_basic_info(clinc_request):
     global preferences
     global city_recommendations
-    global count
     print("start resolve basic info...")
     print("request body is:")
     pp.pprint(clinc_request)
@@ -180,7 +177,8 @@ def resolve_basic_info(clinc_request):
         clinc_request['slots']['_CITY_']['values'][0]['value'] = city_value
         # preferences['city'] = city_value
         doc_ref.update({
-            'city': city_value
+            'city': city_value,
+            'count': 0
         })
 
         ### TO DO:
@@ -190,7 +188,6 @@ def resolve_basic_info(clinc_request):
 
         # When user talks about city, get request from API
         url = 'https://www.triposo.com/api/20190906/poi.json?location_id='+city_key+'&fields=id,name,intro,images,coordinates&count=10&account=8FRG5L0P&token=i0reis6kqrqd7wi7nnwzhkimvrk9zh6a'
-        count = 0
         recommend = requests.get(url).json()
         if not recommend["results"]:
             clinc_request['slots']["_NORESPONSE_"] = {
@@ -332,7 +329,6 @@ def resolve_generate_schedule(clinc_request):
 def resolve_recommendation(clinc_request):
     global preferences
     global city_recommendations
-    global count
     print("start resolve recommendation...")
     print("request body is:")
     pp.pprint(clinc_request)
@@ -346,8 +342,10 @@ def resolve_recommendation(clinc_request):
     print("preferences ", preferences)
     try:
         city = doc_ref.get().to_dict()['city']
+        count = doc_ref.get().to_dict()['count']
     except:
         city = "-1"
+        count = 0
     print("city:", city)
     city_doc_ref = city_collection.document(city)
     city_recommendations = city_doc_ref.get().to_dict()["recommendations"]
@@ -378,7 +376,9 @@ def resolve_recommendation(clinc_request):
         "intro": city_recommendations['results'][count]['intro'],
         "image": city_recommendations['results'][count]['images'][0]['sizes']['original']['url']
     }
-    count += 1
+    doc_ref.update({
+        "count": count+1
+    })
 
     print("slots:", clinc_request['slots'])
 
