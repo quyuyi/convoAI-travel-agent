@@ -18,6 +18,7 @@ db = firestore.client()
 collection = db.collection('users')
 doc_ref = collection.document('0')
 doc_ref.set({})
+city_collection = db.collection('city')
 
 pp = pprint.PrettyPrinter(indent=4)
 
@@ -181,6 +182,10 @@ def resolve_basic_info(clinc_request):
         doc_ref.update({
             'city': city_value
         })
+
+        ### TO DO:
+        # If the city document already exists, do not request API
+        ###
         recommend = None
 
         # When user talks about city, get request from API
@@ -199,6 +204,11 @@ def resolve_basic_info(clinc_request):
             }
         else:
             city_recommendations[city_value] = recommend
+            city_doc_ref = city_collection.document(city_value)
+            city_doc_ref.set({
+                "recommendations" : recommend
+            })
+
     '''
     else:
         if preferences["city"] != "-1":
@@ -339,35 +349,37 @@ def resolve_recommendation(clinc_request):
     except:
         city = "-1"
     print("city:", city)
+    city_doc_ref = city_collection.document(city)
+    city_recommendations = city_doc_ref.get().to_dict()["recommendations"]
     print('recommendation got from API:', city_recommendations)
-    if city in city_recommendations:
-        clinc_request['slots'] = {
-            "_RECOMMENDATION_": {
-                "type": "string",
-                "values": [
-                    {
-                        "resolved": 1,
-                        "value": city_recommendations[city]['results'][count]['name']               
-                    }
-                ]
-            },
-            "_CITY_": {
-                "type" : "string",
-                "values": [
-                    {
-                        "resolved" : 1,
-                        "value": city
-                    }
-                ]
-            }
+    clinc_request['slots'] = {
+        "_RECOMMENDATION_": {
+            "type": "string",
+            "values": [
+                {
+                    "resolved": 1,
+                    "value": city_recommendations['results'][count]['name']               
+                }
+            ]
+        },
+        "_CITY_": {
+            "type" : "string",
+            "values": [
+                {
+                    "resolved" : 1,
+                    "value": city
+                }
+            ]
         }
-        print("city_recommendations[city]['results'][count]['images'][0].keys():")
-        print(city_recommendations[city]['results'][count]['images'][0].keys())
-        clinc_request['visual_payload'] = {
-            "intro": city_recommendations[city]['results'][count]['intro'],
-            "image": city_recommendations[city]['results'][count]['images'][0]['sizes']['original']['url']
-        }
-        count += 1
+    }
+    print("city_recommendations['results'][count]['images'][0].keys():")
+    print(city_recommendations['results'][count]['images'][0].keys())
+    clinc_request['visual_payload'] = {
+        "intro": city_recommendations['results'][count]['intro'],
+        "image": city_recommendations['results'][count]['images'][0]['sizes']['original']['url']
+    }
+    count += 1
+
     print("slots:", clinc_request['slots'])
 
     # TODO
