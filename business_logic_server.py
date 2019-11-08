@@ -10,6 +10,7 @@ from utils import get
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
+from business_logic_utils import capitalize_name
 
 # Use a service account
 cred = credentials.Certificate('convai498-1572652809131-firebase-adminsdk-i8c6i-de8d470e32.json')
@@ -95,10 +96,6 @@ def business_logic():
     else:
         print("intent out of scope")
 
-
-
-
-
 # Only the state and slots properties can be manipulated
 def resolve_add_destination(clinc_request):
     print("start resolve add_destination...")
@@ -119,7 +116,7 @@ def resolve_add_destination(clinc_request):
         print("No count or city.")
 
     if clinc_request['slots']:
-        destination = clinc_request['slots']['_DESTINATION_']['values'][0]['tokens'].capitalize()
+        destination = capitalize_name(clinc_request['slots']['_DESTINATION_']['values'][0]['tokens'])
         # clinc_request['visual_payload'] = {
         #     'destination': destination
         # }
@@ -171,7 +168,6 @@ def resolve_add_destination(clinc_request):
     print("finish resolving, send response back to clinc...")
     pp.pprint(clinc_request)
     return jsonify(**clinc_request)
-
 
 def resolve_basic_info(clinc_request):
     print("start resolve basic info...")
