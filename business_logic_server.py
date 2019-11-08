@@ -132,6 +132,8 @@ def resolve_add_destination(clinc_request):
         
         print("city_recommendations: ", city_recommendations)
         if destination in ["this place", "this", "it", "there", "that"]:
+            # TODO
+            # Avoid add twice
             print("destination: ", destinations)
             print("count", count)
             destination_name = city_recommendations['results'][count-1]['name']
@@ -155,7 +157,6 @@ def resolve_add_destination(clinc_request):
                         'destinations' : added_destinations
                     })
                 else: # This place is already in your list. No need to add twice.
-                    clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = -1
                     clinc_request['slots']['_ADDTWICE_'] = {
                         "type": "string",
                         "values": [{
