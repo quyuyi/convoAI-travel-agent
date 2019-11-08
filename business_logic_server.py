@@ -145,7 +145,7 @@ def resolve_add_destination(clinc_request):
 
         else: # Directly add place by name
             print('destination: ', destination)
-            print('city_name_dict:', city_name_dict)
+            print('city_name_dict.keys():', city_name_dict.keys())
             if destination in city_name_dict.keys(): # destination exists
                 print('destination in dict')
                 added_destinations = doc_ref.get().to_dict()['destinations']
