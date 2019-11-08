@@ -194,8 +194,8 @@ def resolve_basic_info(clinc_request):
         # When user talks about city, get request from API
         url = 'https://www.triposo.com/api/20190906/poi.json?location_id='+city_key+'&fields=id,name,intro,images,coordinates&count=10&account=8FRG5L0P&token=i0reis6kqrqd7wi7nnwzhkimvrk9zh6a'
         recommend = requests.get(url).json()
-        if not recommend["results"]:
-            clinc_request['slots']["_NORESPONSE_"] = {
+        if not recommend['results']:
+            clinc_request['slots']['_NORESPONSE_'] = {
                 "type": "string",
                 "values": [
                     {
@@ -209,6 +209,13 @@ def resolve_basic_info(clinc_request):
             city_doc_ref.set({
                 "recommendations" : recommend
             })
+            name_index = {}
+            for idx, r in enumerate(recommend['results']):
+                name_index[r['name']] = idx
+            city_doc_ref.update({
+                "name_to_index" : name_index
+            })
+
 
     else:
         if "city" in doc_ref.get().to_dict():
@@ -327,8 +334,6 @@ def resolve_generate_schedule(clinc_request):
 
 
 def resolve_recommendation(clinc_request):
-    global preferences
-    global city_recommendations
     print("start resolve recommendation...")
     print("request body is:")
     pp.pprint(clinc_request)
@@ -338,8 +343,6 @@ def resolve_recommendation(clinc_request):
             clinc_request['state'] = 'basic_info'
             return jsonify(**clinc_request)
     '''
-    
-    print("preferences ", preferences)
     try:
         city = doc_ref.get().to_dict()['city']
         count = doc_ref.get().to_dict()['count']
@@ -349,6 +352,7 @@ def resolve_recommendation(clinc_request):
     print("city:", city)
     city_doc_ref = city_collection.document(city)
     city_recommendations = city_doc_ref.get().to_dict()["recommendations"]
+
     print('recommendation got from API:', city_recommendations)
     clinc_request['slots'] = {
         "_RECOMMENDATION_": {
