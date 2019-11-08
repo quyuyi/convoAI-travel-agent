@@ -146,7 +146,7 @@ def resolve_add_destination(clinc_request):
         else: # Directly add place by name
             if destination in city_name_dict: # destination exists
                 added_destinations = doc_ref.get().to_dict()['destinations']
-                if destination not in  added_destinations # and haven't been added to the list
+                if destination not in  added_destinations: # and haven't been added to the list
                     added_destinations.append(destination)
                     doc_ref.update({
                         'destinations' : added_destinations
