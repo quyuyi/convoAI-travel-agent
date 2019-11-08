@@ -179,7 +179,7 @@ def resolve_basic_info(clinc_request):
         clinc_request['slots']['_CITY_']['values'][0]['value'] = city_value
         doc_ref.update({
             'city': city_value,
-            'count': 0
+            'count': 0,
             'destinations' : []
         })
 
