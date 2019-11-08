@@ -119,7 +119,7 @@ def resolve_add_destination(clinc_request):
         print("No count or city.")
 
     if clinc_request['slots']:
-        destination = clinc_request['slots']['_DESTINATION_']['values'][0]['tokens']
+        destination = clinc_request['slots']['_DESTINATION_']['values'][0]['tokens'].capitalize()
         # clinc_request['visual_payload'] = {
         #     'destination': destination
         # }
@@ -128,19 +128,45 @@ def resolve_add_destination(clinc_request):
     
         city_doc_ref = city_doc_ref = city_collection.document(city)
         city_recommendations = city_doc_ref.get().to_dict()["recommendations"]
+        city_name_dict = city_doc_ref.get().to_dict()["name_to_index"]
         
         print("city_recommendations: ", city_recommendations)
         if destination in ["this place", "this", "it", "there", "that"]:
+            # TODO
+            # Avoid add twice
             print("destination: ", destinations)
             print("count", count)
             destination_name = city_recommendations['results'][count-1]['name']
-            new_destination_list = doc_ref.get().to_dict()['destinations']
-            new_destination_list.append(destination_name)
+            added_destinations = doc_ref.get().to_dict()['destinations']
+            added_destinations.append(destination_name)
             doc_ref.update({
-                'destinations' : new_destination_list
+                'destinations' : added_destinations
             })
 
             clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = destination_name
+
+        else: # Directly add place by name
+            print('destination: ', destination)
+            print('city_name_dict.keys():', city_name_dict)
+            if destination in city_name_dict: # destination exists
+                print('destination in dict')
+                added_destinations = doc_ref.get().to_dict()['destinations']
+                if destination not in  added_destinations: # and haven't been added to the list
+                    added_destinations.append(destination)
+                    doc_ref.update({
+                        'destinations' : added_destinations
+                    })
+                else: # This place is already in your list. No need to add twice.
+                    clinc_request['slots']['_ADDTWICE_'] = {
+                        "type": "string",
+                        "values": [{
+                            "resolved": 1,
+                            "value": destination + " is already in the list. No need to add twice."
+                        }]
+                    }
+            else: # destination not in recommendation list, cannot add
+                clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = -1
+
 
     print("finish resolving, send response back to clinc...")
     pp.pprint(clinc_request)
