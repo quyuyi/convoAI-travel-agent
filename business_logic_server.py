@@ -113,8 +113,10 @@ def resolve_add_destination(clinc_request):
     # clinc_request['state'] = "generate_shedule"
     try:
         count = doc_ref.get().to_dict()["count"]
+        city = doc_ref.get().to_dict()['city']
     except KeyError:
-        print("No count.")
+        city = "-1"
+        print("No count or city.")
 
     if clinc_request['slots']:
         destination = clinc_request['slots']['_DESTINATION_']['values'][0]['tokens']
@@ -124,6 +126,7 @@ def resolve_add_destination(clinc_request):
         clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = destination
         clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 1  # why the value of 'values' is list???
     
+        city_doc_ref = city_doc_ref = city_collection.document(city)
         city_recommendations = city_doc_ref.get().to_dict()["recommendations"]
         
         print("city_recommendations: ", city_recommendations)
