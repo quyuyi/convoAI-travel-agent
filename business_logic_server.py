@@ -252,7 +252,7 @@ def resolve_basic_info(clinc_request):
         number_of_people_str = clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['tokens']
         try:
             print("enter try")
-            clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['value'] = str(int(number_of_people_tr))
+            clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['value'] = str(int(number_of_people_str))
         except:
             print("enter except")
             people_number = 1
