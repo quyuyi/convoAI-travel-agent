@@ -144,7 +144,9 @@ def resolve_add_destination(clinc_request):
             clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = destination_name
 
         else: # Directly add place by name
+            print('destination: ', destination)
             if destination in city_name_dict: # destination exists
+                print('destination in dict')
                 added_destinations = doc_ref.get().to_dict()['destinations']
                 if destination not in  added_destinations: # and haven't been added to the list
                     added_destinations.append(destination)
