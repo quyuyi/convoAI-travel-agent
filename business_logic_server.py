@@ -7,6 +7,19 @@ import requests
 from api import request_clinc
 import pprint
 from utils import get 
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import firestore
+
+# Use a service account
+cred = credentials.Certificate('convai498-1572652809131-firebase-adminsdk-i8c6i-de8d470e32.json')
+firebase_admin.initialize_app(cred)
+db = firestore.client()
+collection = db.collection('users')
+user_id = "10086"
+doc_ref = collection.document(user_id)
+doc_ref.set({})
+city_collection = db.collection('city')
 
 pp = pprint.PrettyPrinter(indent=4)
 
@@ -15,6 +28,9 @@ app = Flask(__name__)
 '''
 global variables
 '''
+
+# userId = 0
+
 preferences = {
     # update global variable (city, length_of_visit, number_of_people)
     # in resolve_basic_info(clinc_request)
@@ -25,19 +41,22 @@ preferences = {
     # update global variable you figured out
     # in resolve_recommendation(clinc_request)
 }
-
+count = 0
 # TODO
 # resolve add_destination and remove destination
 # to update global variable: destinations
 destinations = []
 destinations_info = {}
-
-count = 0
 city_recommendations = {}
 
 @app.route("/")
 def index():
     return render_template('businessLogic.html')
+
+# @app.route("/set_user_id/", methods=["GET", "POST"])
+# def set_user_id(id):
+#     global userId
+#     userId = id
 
 
 # business logic server
@@ -90,7 +109,6 @@ def resolve_add_destination(clinc_request):
     print("start resolve add_destination...")
     print("request body is:")
     pp.pprint(clinc_request)
-    valid = True
     # TODO
     # check validity of state and slots,
     # set valid to false if not valid
@@ -108,6 +126,7 @@ def resolve_add_destination(clinc_request):
         clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = destination
         clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 1  # why the value of 'values' is list???
     
+        
         print("city_recommendations: ", city_recommendations)
         if destination in ["this place", "this", "it", "there", "that"]:
             print("destination: ", destinations)
@@ -123,9 +142,6 @@ def resolve_add_destination(clinc_request):
 
 
 def resolve_basic_info(clinc_request):
-    global preferences
-    global city_recommendations
-    global count
     print("start resolve basic info...")
     print("request body is:")
     pp.pprint(clinc_request)
@@ -158,12 +174,18 @@ def resolve_basic_info(clinc_request):
         if city_key == "Ann_Arbor":
             city_key = "Ann_Arbor2C_Michigan"
         clinc_request['slots']['_CITY_']['values'][0]['value'] = city_value
-        preferences['city'] = city_value
+        doc_ref.update({
+            'city': city_value,
+            'count': 0
+        })
+
+        ### TO DO:
+        # If the city document already exists, do not request API
+        ###
         recommend = None
 
         # When user talks about city, get request from API
         url = 'https://www.triposo.com/api/20190906/poi.json?location_id='+city_key+'&fields=id,name,intro,images,coordinates&count=10&account=8FRG5L0P&token=i0reis6kqrqd7wi7nnwzhkimvrk9zh6a'
-        count = 0
         recommend = requests.get(url).json()
         if not recommend["results"]:
             clinc_request['slots']["_NORESPONSE_"] = {
@@ -176,18 +198,20 @@ def resolve_basic_info(clinc_request):
                 ]
             }
         else:
-            city_recommendations[city_value] = recommend
+            city_doc_ref = city_collection.document(city_value)
+            city_doc_ref.set({
+                "recommendations" : recommend
+            })
 
     else:
-        if preferences["city"] != "-1":
+        if "city" in doc_ref.get().to_dict():
             clinc_request['slots']['_CITY_'] = {
                 "type": "string",
                 "values": [{
                     "resolved": 1,
-                    "value": preferences["city"]
+                    "value": doc_ref.get().to_dict()["city"]
                 }]
             }
-
 
     if '_LENGTH_OF_VISIT_' in clinc_request['slots']:
         clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['resolved'] = 1
@@ -201,19 +225,20 @@ def resolve_basic_info(clinc_request):
         if length_of_visit_tokens in ['weekend']:
             lov = "2"
         clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['value'] = lov
-        preferences['length_of_visit'] = lov
+        # preferences['length_of_visit'] = lov
+        doc_ref.update({
+            'length_of_visit': lov
+        })
 
-    '''
     else:
-        if preferences["length_of_visit"] != -1:
+        if "length_of_visit" in doc_ref.get().to_dict():
             clinc_request['slots']['_LENGTH_OF_VISIT_'] = {
                 "type": "string",
                 "values": [{
                     "resolved": 1,
-                    "value": preferences["length_of_visit"]
+                    "value": doc_ref.get().to_dict()["length_of_visit"]
                 }]
             }
-    '''
 
     if '_NUMBER_OF_PEOPLE_' in clinc_request['slots']:
         clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['resolved'] = 1
@@ -230,19 +255,20 @@ def resolve_basic_info(clinc_request):
                 if t in ['with', 'and', 'take', 'parents', 'grandparents', ',']:
                     people_number += 1
             clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['value'] = str(people_number)
-        preferences['number_of_people'] = clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['value']
+        # preferences['number_of_people'] = clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['value']
+        doc_ref.update({
+            'number_of_people': clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['value']
+        })
 
-    '''
     else:
-        if preferences["number_of_people"] != -1:
+        if "number_of_people" in doc_ref.get().to_dict():
             clinc_request['slots']['_NUMBER_OF_PEOPLE_'] = {
                 "type": "string",
                 "values": [{
                     "resolved": 1,
-                    "value": preferences["number_of_people"]
+                    "value": doc_ref.get().to_dict()["number_of_people"]
                 }]
             }
-    '''
 
 
     print("finish resolving, send response back to clinc...")
@@ -296,7 +322,6 @@ def resolve_generate_schedule(clinc_request):
 def resolve_recommendation(clinc_request):
     global preferences
     global city_recommendations
-    global count
     print("start resolve recommendation...")
     print("request body is:")
     pp.pprint(clinc_request)
@@ -308,37 +333,46 @@ def resolve_recommendation(clinc_request):
     '''
     
     print("preferences ", preferences)
-    city = preferences['city']
+    try:
+        city = doc_ref.get().to_dict()['city']
+        count = doc_ref.get().to_dict()['count']
+    except:
+        city = "-1"
+        count = 0
     print("city:", city)
+    city_doc_ref = city_collection.document(city)
+    city_recommendations = city_doc_ref.get().to_dict()["recommendations"]
     print('recommendation got from API:', city_recommendations)
-    if city in city_recommendations:
-        clinc_request['slots'] = {
-            "_RECOMMENDATION_": {
-                "type": "string",
-                "values": [
-                    {
-                        "resolved": 1,
-                        "value": city_recommendations[city]['results'][count]['name']               
-                    }
-                ]
-            },
-            "_CITY_": {
-                "type" : "string",
-                "values": [
-                    {
-                        "resolved" : 1,
-                        "value": city
-                    }
-                ]
-            }
+    clinc_request['slots'] = {
+        "_RECOMMENDATION_": {
+            "type": "string",
+            "values": [
+                {
+                    "resolved": 1,
+                    "value": city_recommendations['results'][count]['name']               
+                }
+            ]
+        },
+        "_CITY_": {
+            "type" : "string",
+            "values": [
+                {
+                    "resolved" : 1,
+                    "value": city
+                }
+            ]
         }
-        print("city_recommendations[city]['results'][count]['images'][0].keys():")
-        print(city_recommendations[city]['results'][count]['images'][0].keys())
-        clinc_request['visual_payload'] = {
-            "intro": city_recommendations[city]['results'][count]['intro'],
-            "image": city_recommendations[city]['results'][count]['images'][0]['sizes']['original']['url']
-        }
-        count += 1
+    }
+    print("city_recommendations['results'][count]['images'][0].keys():")
+    print(city_recommendations['results'][count]['images'][0].keys())
+    clinc_request['visual_payload'] = {
+        "intro": city_recommendations['results'][count]['intro'],
+        "image": city_recommendations['results'][count]['images'][0]['sizes']['original']['url']
+    }
+    doc_ref.update({
+        "count": count+1
+    })
+
     print("slots:", clinc_request['slots'])
 
     # TODO

@@ -6,9 +6,7 @@ from flask import Flask, render_template, request, jsonify, send_file, url_for
 import requests
 from api import request_clinc
 import pprint
-
 from utils import get 
-
 from record import record
 # Imports the Google Cloud client library
 from google.cloud import speech
@@ -17,7 +15,9 @@ from google.cloud.speech import types
 from google.cloud import texttospeech
 
 pp = pprint.PrettyPrinter(indent=4)
-# os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="/Users/bolu/Downloads/challenge-7382d4f0bf60.json"
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="/Users/quyuyi/Downloads/WebpageClassifier-2cf78af630ef.json"
+
+# comment2
 # Instantiates a speech to text client
 speech_to_text_client = speech.SpeechClient()
 # Instantiates a text to speech client
@@ -144,7 +144,7 @@ def add_destination():
 
     print("speakable response from clinc is:")
     print(result)
-    # text_to_speech(result)
+    text_to_speech(result)
     return jsonify(**data)
 
 
