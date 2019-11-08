@@ -183,7 +183,7 @@ def resolve_basic_info(clinc_request):
         doc_ref.update({
             'city': city_value,
             'count': 0,
-            'destinations' : []
+            'destinations' : ['dummy']
         })
 
         ### TO DO:
