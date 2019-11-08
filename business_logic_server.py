@@ -101,11 +101,6 @@ def business_logic():
 
 # Only the state and slots properties can be manipulated
 def resolve_add_destination(clinc_request):
-    global preferences
-    global destinations
-    global city_recommendations
-    global destinations_info
-    global count
     print("start resolve add_destination...")
     print("request body is:")
     pp.pprint(clinc_request)
@@ -116,7 +111,12 @@ def resolve_add_destination(clinc_request):
     # TODO
     # determine if need business transition
     # clinc_request['state'] = "generate_shedule"
-
+    try:
+        count = doc_ref.get().to_dict()["count"]
+        city = doc_ref.get().to_dict()['city']
+    except KeyError:
+        city = "-1"
+        print("No count or city.")
 
     if clinc_request['slots']:
         destination = clinc_request['slots']['_DESTINATION_']['values'][0]['tokens']
@@ -126,15 +126,21 @@ def resolve_add_destination(clinc_request):
         clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = destination
         clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 1  # why the value of 'values' is list???
     
+        city_doc_ref = city_doc_ref = city_collection.document(city)
+        city_recommendations = city_doc_ref.get().to_dict()["recommendations"]
         
         print("city_recommendations: ", city_recommendations)
         if destination in ["this place", "this", "it", "there", "that"]:
             print("destination: ", destinations)
             print("count", count)
-            destination_name = city_recommendations[preferences["city"]]['results'][count-1]['name']
-            destinations.append(destination_name)
+            destination_name = city_recommendations['results'][count-1]['name']
+            new_destination_list = doc_ref.get().to_dict()['destinations']
+            new_destination_list.append(destination_name)
+            doc_ref.update({
+                'destinations' : new_destination_list
+            })
+
             clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = destination_name
-            destinations_info[destination_name] = city_recommendations[preferences["city"]]['results'][count-1]
 
     print("finish resolving, send response back to clinc...")
     pp.pprint(clinc_request)
@@ -176,7 +182,8 @@ def resolve_basic_info(clinc_request):
         clinc_request['slots']['_CITY_']['values'][0]['value'] = city_value
         doc_ref.update({
             'city': city_value,
-            'count': 0
+            'count': 0,
+            'destinations' : ['dummy']
         })
 
         ### TO DO:
