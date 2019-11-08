@@ -16,7 +16,8 @@ cred = credentials.Certificate('convai498-1572652809131-firebase-adminsdk-i8c6i-
 firebase_admin.initialize_app(cred)
 db = firestore.client()
 collection = db.collection('users')
-doc_ref = collection.document('0')
+user_id = "10086"
+doc_ref = collection.document(user_id)
 doc_ref.set({})
 city_collection = db.collection('city')
 
@@ -108,7 +109,6 @@ def resolve_add_destination(clinc_request):
     print("start resolve add_destination...")
     print("request body is:")
     pp.pprint(clinc_request)
-    valid = True
     # TODO
     # check validity of state and slots,
     # set valid to false if not valid
@@ -126,6 +126,7 @@ def resolve_add_destination(clinc_request):
         clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = destination
         clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 1  # why the value of 'values' is list???
     
+        
         print("city_recommendations: ", city_recommendations)
         if destination in ["this place", "this", "it", "there", "that"]:
             print("destination: ", destinations)
@@ -141,8 +142,6 @@ def resolve_add_destination(clinc_request):
 
 
 def resolve_basic_info(clinc_request):
-    global preferences
-    global city_recommendations
     print("start resolve basic info...")
     print("request body is:")
     pp.pprint(clinc_request)
@@ -175,7 +174,6 @@ def resolve_basic_info(clinc_request):
         if city_key == "Ann_Arbor":
             city_key = "Ann_Arbor2C_Michigan"
         clinc_request['slots']['_CITY_']['values'][0]['value'] = city_value
-        # preferences['city'] = city_value
         doc_ref.update({
             'city': city_value,
             'count': 0
@@ -200,23 +198,20 @@ def resolve_basic_info(clinc_request):
                 ]
             }
         else:
-            city_recommendations[city_value] = recommend
             city_doc_ref = city_collection.document(city_value)
             city_doc_ref.set({
                 "recommendations" : recommend
             })
 
-    '''
     else:
-        if preferences["city"] != "-1":
+        if "city" in doc_ref.get().to_dict():
             clinc_request['slots']['_CITY_'] = {
                 "type": "string",
                 "values": [{
                     "resolved": 1,
-                    "value": preferences["city"]
+                    "value": doc_ref.get().to_dict()["city"]
                 }]
             }
-    '''
 
     if '_LENGTH_OF_VISIT_' in clinc_request['slots']:
         clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['resolved'] = 1
@@ -234,17 +229,16 @@ def resolve_basic_info(clinc_request):
         doc_ref.update({
             'length_of_visit': lov
         })
-    '''
+
     else:
-        if preferences["length_of_visit"] != "-1":
+        if "length_of_visit" in doc_ref.get().to_dict():
             clinc_request['slots']['_LENGTH_OF_VISIT_'] = {
                 "type": "string",
                 "values": [{
                     "resolved": 1,
-                    "value": preferences["length_of_visit"]
+                    "value": doc_ref.get().to_dict()["length_of_visit"]
                 }]
             }
-    '''
 
     if '_NUMBER_OF_PEOPLE_' in clinc_request['slots']:
         clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['resolved'] = 1
@@ -265,17 +259,16 @@ def resolve_basic_info(clinc_request):
         doc_ref.update({
             'number_of_people': clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['value']
         })
-    '''
+
     else:
-        if preferences["number_of_people"] != "-1":
+        if "number_of_people" in doc_ref.get().to_dict():
             clinc_request['slots']['_NUMBER_OF_PEOPLE_'] = {
                 "type": "string",
                 "values": [{
                     "resolved": 1,
-                    "value": preferences["number_of_people"]
+                    "value": doc_ref.get().to_dict()["number_of_people"]
                 }]
             }
-    '''
 
 
     print("finish resolving, send response back to clinc...")
