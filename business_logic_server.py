@@ -119,7 +119,7 @@ def resolve_add_destination(clinc_request):
         print("No count or city.")
 
     if clinc_request['slots']:
-        destination = clinc_request['slots']['_DESTINATION_']['values'][0]['tokens']
+        destination = clinc_request['slots']['_DESTINATION_']['values'][0]['tokens'].capitalize()
         # clinc_request['visual_payload'] = {
         #     'destination': destination
         # }
@@ -145,8 +145,8 @@ def resolve_add_destination(clinc_request):
 
         else: # Directly add place by name
             print('destination: ', destination)
-            print('city_name_dict.keys():', city_name_dict.keys())
-            if destination in city_name_dict.keys(): # destination exists
+            print('city_name_dict.keys():', city_name_dict)
+            if destination in city_name_dict: # destination exists
                 print('destination in dict')
                 added_destinations = doc_ref.get().to_dict()['destinations']
                 if destination not in  added_destinations: # and haven't been added to the list
