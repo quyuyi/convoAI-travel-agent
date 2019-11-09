@@ -128,7 +128,7 @@ def resolve_add_destination(clinc_request):
         city_name_dict = city_doc_ref.get().to_dict()["name_to_index"]
         
         print("city_recommendations: ", city_recommendations)
-        if destination in ["this place", "this", "it", "there", "that"]:
+        if destination in ["This Place", "This", "It", "There", "That"]:
             print("count", count)
             destination_name = city_recommendations['results'][count-1]['name']
             added_destinations = doc_ref.get().to_dict()['destinations']
