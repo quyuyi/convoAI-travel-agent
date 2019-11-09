@@ -431,6 +431,32 @@ def resolve_remove_destination(clinc_request):
     print("request body is:")
     pp.pprint(clinc_request)
 
+    if clinc_request['slots']:
+        destination = capitalize_name(clinc_request['slots']['_DESTINATION_']['values'][0]['tokens'])
+        # clinc_request['visual_payload'] = {
+        #     'destination': destination
+        # }
+        clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = destination
+        clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 1  # why the value of 'values' is list???
+        added_destinations = doc_ref.get().to_dict()['destinations']
+        found_place = 0
+        for idx, d in enumerate(added_destinations):
+            if destination == d:
+                added_destinations.pop(idx)
+                doc_ref.update({
+                    'destinations' : added_destinations
+                })
+                found_place = 1
+                break
+        if found_place == 0:
+            clinc_request['slots']['_NOTINLIST_'] = {
+                "type": "string",
+                "values": [{
+                    "resolved": 1,
+                    "value": destination + " is not in your list."
+                }]
+            }
+
     print("finish resolving, send response back to clinc...")
     pp.pprint(clinc_request)
     return jsonify(**clinc_request)
