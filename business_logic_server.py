@@ -128,17 +128,23 @@ def resolve_add_destination(clinc_request):
         city_name_dict = city_doc_ref.get().to_dict()["name_to_index"]
         
         print("city_recommendations: ", city_recommendations)
-        if destination in ["this place", "this", "it", "there", "that"]:
-            # TODO
-            # Avoid add twice
-            print("destination: ", destinations)
+        if destination in ["This Place", "This", "It", "There", "That"]:
             print("count", count)
             destination_name = city_recommendations['results'][count-1]['name']
             added_destinations = doc_ref.get().to_dict()['destinations']
-            added_destinations.append(destination_name)
-            doc_ref.update({
-                'destinations' : added_destinations
-            })
+            if destination_name not in added_destinations:
+                added_destinations.append(destination_name)
+                doc_ref.update({
+                    'destinations' : added_destinations
+                })
+            else:
+                clinc_request['slots']['_ADDTWICE_'] = {
+                    "type": "string",
+                    "values": [{
+                        "resolved": 1,
+                        "value": destination_name + " is already in the list. No need to add twice."
+                    }]
+                }
 
             clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = destination_name
 
