@@ -19,7 +19,9 @@ db = firestore.client()
 collection = db.collection('users')
 user_id = "10086"
 doc_ref = collection.document(user_id)
-doc_ref.set({})
+doc_ref.set({
+    'dummy' : 'dummy'
+})
 city_collection = db.collection('city')
 
 pp = pprint.PrettyPrinter(indent=4)
