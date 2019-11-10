@@ -19,9 +19,9 @@ db = firestore.client()
 collection = db.collection('users')
 user_id = "10086"
 doc_ref = collection.document(user_id)
-doc_ref.set({
-    'dummy' : 'dummy'
-})
+# doc_ref.set({
+#     'dummy' : 'dummy'
+# })
 city_collection = db.collection('city')
 
 pp = pprint.PrettyPrinter(indent=4)
@@ -56,11 +56,16 @@ city_recommendations = {}
 def index():
     return render_template('businessLogic.html')
 
-# @app.route("/set_user_id/", methods=["GET", "POST"])
-# def set_user_id(id):
-#     global userId
-#     userId = id
-
+@app.route("/set_user_id/", methods=["GET", "POST"])
+def set_user_id():
+    global user_id
+    user_id = request.json['userId']
+    global doc_ref
+    doc_ref = collection.document(user_id)
+    data = {
+        'response': "userId successfully set to" + user_id
+    }
+    return jsonify(**data)
 
 # business logic server
 # http://heroku.travel_agent.com/api/v1/clinc/
