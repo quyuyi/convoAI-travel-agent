@@ -101,9 +101,22 @@ def resolve_add_destination(clinc_request):
     print("start resolve add_destination...")
     print("request body is:")
     pp.pprint(clinc_request)
-    # TODO
-    # check validity of state and slots,
-    # set valid to false if not valid
+
+    city_dict = doc_ref.get().to_dict()
+    if  "city" not in city_dict or "length_of_visit" not in city_dict or "number_of_people" not in city_dict:
+        clinc_request['slots'] = {
+            "_NOBASICINFO_": {
+                "type" : "string",
+                "values" : [
+                    {
+                        "resolved" : 1,
+                        "value" : "Sorry, please provide your basic information before I can add destination. "
+                    }
+                ]
+            }
+        }
+        pp.pprint(clinc_request)
+        return jsonify(**clinc_request)
 
     # TODO
     # determine if need business transition
@@ -123,7 +136,7 @@ def resolve_add_destination(clinc_request):
         clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = destination
         clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 1  # why the value of 'values' is list???
     
-        city_doc_ref = city_doc_ref = city_collection.document(city)
+        city_doc_ref = city_collection.document(city)
         city_recommendations = city_doc_ref.get().to_dict()["recommendations"]
         city_name_dict = city_doc_ref.get().to_dict()["name_to_index"]
         
