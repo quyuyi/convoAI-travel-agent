@@ -66,7 +66,7 @@ def set_user_id():
         'dummy' : 'dummy'
     })
     data = {
-        'response': "userId successfully set to" + user_id
+        'response': "userId successfully set to " + user_id
     }
     return jsonify(**data)
 
