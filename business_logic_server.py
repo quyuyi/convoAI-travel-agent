@@ -365,12 +365,23 @@ def resolve_recommendation(clinc_request):
     print("start resolve recommendation...")
     print("request body is:")
     pp.pprint(clinc_request)
-    '''
-    for p in prefereces:
-        if p == -1:
-            clinc_request['state'] = 'basic_info'
-            return jsonify(**clinc_request)
-    '''
+    city_dict = doc_ref.get().to_dict()
+
+    if  "city" not in city_dict or "length_of_visit" not in city_dict or "number_of_people" not in city_dict:
+        clinc_request['slots'] = {
+            "_NOBASICINFO_": {
+                "type" : "string",
+                "values" : [
+                    {
+                        "resolved" : 1,
+                        "value" : "Sorry, please provide your basic information before I can recommend. "
+                    }
+                ]
+            }
+        }
+        pp.pprint(clinc_request)
+        return jsonify(**clinc_request)
+
     try:
         city = doc_ref.get().to_dict()['city']
         count = doc_ref.get().to_dict()['count']
