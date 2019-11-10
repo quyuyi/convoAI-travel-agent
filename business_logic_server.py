@@ -374,7 +374,7 @@ def resolve_recommendation(clinc_request):
                 "values" : [
                     {
                         "resolved" : 1,
-                        "values" : "Sorry, please provide your basic information before I can recommend. "
+                        "value" : "Sorry, please provide your basic information before I can recommend. "
                     }
                 ]
             }
