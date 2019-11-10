@@ -2,7 +2,7 @@
 
 import os
 import io
-from flask import Flask, render_template, request, jsonify, send_file, url_for
+from flask import Flask, render_template, request, jsonify, send_file, url_for, session
 import requests
 from api import request_clinc
 import pprint
@@ -17,8 +17,8 @@ cred = credentials.Certificate('convai498-1572652809131-firebase-adminsdk-i8c6i-
 firebase_admin.initialize_app(cred)
 db = firestore.client()
 collection = db.collection('users')
-user_id = None
-doc_ref = None
+# user_id = None
+# doc_ref = None
 # doc_ref.set({
 #     'dummy' : 'dummy'
 # })
@@ -58,15 +58,18 @@ def index():
 
 @app.route("/set_user_id/", methods=["GET", "POST"])
 def set_user_id():
-    global user_id
-    user_id = request.json['userId']
-    global doc_ref
+    session['user_id'] = request.json['userId']
+    print(session['user_id'])
+    user_id = session['user_id']
+    # global user_id
+    # user_id = request.json['userId']
+    # global doc_ref
     doc_ref = collection.document(user_id)
     doc_ref.set({
         'dummy' : 'dummy'
     })
     data = {
-        'response': "userId successfully set to " + user_id
+        'response': "userId successfully set to " + session['user_id']
     }
     return jsonify(**data)
 
@@ -111,6 +114,11 @@ def resolve_add_destination(clinc_request):
     print("start resolve add_destination...")
     print("request body is:")
     pp.pprint(clinc_request)
+    if 'user_id' not in session:
+        print("user id error")
+        exit(1)
+    user_id = session['user_id']
+    doc_ref = collection.document(user_id)
 
     city_dict = doc_ref.get().to_dict()
     if  "city" not in city_dict or "length_of_visit" not in city_dict or "number_of_people" not in city_dict:
@@ -199,6 +207,11 @@ def resolve_add_destination(clinc_request):
     return jsonify(**clinc_request)
 
 def resolve_basic_info(clinc_request):
+    if 'user_id' not in session:
+        print("user id error")
+        exit(1)
+    user_id = session['user_id']
+    doc_ref = collection.document(user_id)
     print("start resolve basic info...")
     print("request body is:")
     pp.pprint(clinc_request)
@@ -389,6 +402,11 @@ def resolve_recommendation(clinc_request):
     print("start resolve recommendation...")
     print("request body is:")
     pp.pprint(clinc_request)
+    if 'user_id' not in session:
+        print("user id error")
+        exit(1)
+    user_id = session['user_id']
+    doc_ref = collection.document(user_id)
     city_dict = doc_ref.get().to_dict()
 
     if  "city" not in city_dict or "length_of_visit" not in city_dict or "number_of_people" not in city_dict:
@@ -465,6 +483,11 @@ def resolve_remove_destination(clinc_request):
     print("start resolve remove_destination...")
     print("request body is:")
     pp.pprint(clinc_request)
+    if 'user_id' not in session:
+        print("user id error")
+        exit(1)
+    user_id = session['user_id']
+    doc_ref = collection.document(user_id)
 
     if clinc_request['slots']:
         destination = capitalize_name(clinc_request['slots']['_DESTINATION_']['values'][0]['tokens'])
