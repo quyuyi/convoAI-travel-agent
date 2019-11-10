@@ -19,9 +19,9 @@ db = firestore.client()
 collection = db.collection('users')
 user_id = "10086"
 doc_ref = collection.document(user_id)
-# doc_ref.set({
-#     'dummy' : 'dummy'
-# })
+doc_ref.set({
+    'dummy' : 'dummy'
+})
 city_collection = db.collection('city')
 
 pp = pprint.PrettyPrinter(indent=4)
@@ -62,6 +62,9 @@ def set_user_id():
     user_id = request.json['userId']
     global doc_ref
     doc_ref = collection.document(user_id)
+    doc_ref.set({
+        'dummy' : 'dummy'
+    })
     data = {
         'response': "userId successfully set to" + user_id
     }
@@ -147,7 +150,7 @@ def resolve_add_destination(clinc_request):
         city_recommendations = city_doc_ref.get().to_dict()["recommendations"]
         city_name_dict = city_doc_ref.get().to_dict()["name_to_index"]
         
-        print("city_recommendations: ", city_recommendations)
+        # print("city_recommendations: ", city_recommendations)
         if destination in ["This Place", "This", "It", "There", "That"]:
             print("count", count)
             destination_name = city_recommendations['results'][count-1]['name']
