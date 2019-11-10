@@ -18,7 +18,7 @@ firebase_admin.initialize_app(cred)
 db = firestore.client()
 collection = db.collection('users')
 user_id = ""
-doc_ref = ""
+doc_ref = None
 # doc_ref.set({
 #     'dummy' : 'dummy'
 # })
