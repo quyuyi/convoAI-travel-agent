@@ -210,6 +210,7 @@ def resolve_add_destination(clinc_request):
 
 def resolve_basic_info(clinc_request):
     if 'user_id' not in session:
+        print(session['user_id'])
         print("user id error")
         exit(1)
     user_id = session['user_id']
