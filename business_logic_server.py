@@ -12,7 +12,6 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 from business_logic_utils import capitalize_name
 
-SECRET_KEY = os.urandom(24)
 
 # Use a service account
 cred = credentials.Certificate('convai498-1572652809131-firebase-adminsdk-i8c6i-de8d470e32.json')
@@ -29,6 +28,7 @@ city_collection = db.collection('city')
 pp = pprint.PrettyPrinter(indent=4)
 
 app = Flask(__name__)
+app.secret_key = os.urandom(24)
 
 '''
 global variables
