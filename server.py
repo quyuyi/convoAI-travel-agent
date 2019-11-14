@@ -157,7 +157,7 @@ def add_destination():
 
 all_states = [
     "add_destination", "basic_info", "clean_goodbye", "clean_hello",
-    "destination_info", "generate_shedule", "recommendation", "remove_destination"]
+    "destination_info", "generate_shedule", "recommendation", "remove_destination", "clean_goodbye"]
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=os.environ.get('PORT', 3000), debug=True)
