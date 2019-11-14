@@ -320,12 +320,9 @@ def resolve_basic_info(clinc_request):
 
 
 def resolve_clean_hello(clinc_request):
-    print("start resolve clinc_request..")
-    print("request body is:")
-    pp.pprint(clinc_request)
-
-    print("finish resolving, send response back to clinc...")
-    pp.pprint(clinc_request)
+    doc_ref.set({
+        'dummy' : 'dummy'
+    })
     return jsonify(**clinc_request)
 
 
