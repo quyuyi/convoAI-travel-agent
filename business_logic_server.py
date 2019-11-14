@@ -28,30 +28,6 @@ pp = pprint.PrettyPrinter(indent=4)
 
 app = Flask(__name__)
 
-'''
-global variables
-'''
-
-# userId = 0
-
-preferences = {
-    # update global variable (city, length_of_visit, number_of_people)
-    # in resolve_basic_info(clinc_request)
-    "city": "-1",
-    "length_of_visit": "-1",
-    "number_of_people": "-1",
-    # TODO
-    # update global variable you figured out
-    # in resolve_recommendation(clinc_request)
-}
-count = 0
-# TODO
-# resolve add_destination and remove destination
-# to update global variable: destinations
-destinations = []
-destinations_info = {}
-city_recommendations = {}
-
 @app.route("/")
 def index():
     return render_template('businessLogic.html')
