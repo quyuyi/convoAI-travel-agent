@@ -145,11 +145,10 @@ def resolve_user_query():
     result = get(response, 'no speakableResponse from clinc', 'visuals', 'speakableResponse')
     data = {
         'response': result,
-        'destinations': get_destinations(user_id),
-        # 'destinations': ['for', 'test', 'only'],
+        'destinations': get_destinations(user_id), # current list of destinations added by the user
         'isRecommendation': False if get(response, False, 'visuals', 'intro') == False else True, 
-        'intro': get(response, '', 'visuals', 'intro'),
-        'img': get(response, '', 'visuals', 'image'),
+        'intro': get(response, '', 'visuals', 'intro'), # intro about the destination
+        'img': get(response, '', 'visuals', 'image'), # an exrernal image url for the destination 
         'dest': get(response, '', 'bl_resp', 'slots', '_RECOMMENDATION_', 'values', 0, 'value'),
         'addVisitor': get(response, False, 'slots', '_NUMBER_OF_PEOPLE_'),
         'visitor': get(response, '', 'slots', '_NUMBER_OF_PEOPLE_', 'values', 0, 'value'),

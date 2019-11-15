@@ -8,8 +8,8 @@ import DateRangeIcon from '@material-ui/icons/DateRange';
 class UserInfo extends React.Component {
     constructor (props) {
         super(props);
-        console.log("print from UserInfo constructure");
-        console.log(this.props);
+        // console.log("print from UserInfo constructure");
+        // console.log(this.props);
     }
 
     componentDidMount () {
@@ -17,8 +17,8 @@ class UserInfo extends React.Component {
 
     render(){
         const city = this.props.city;
-        console.log("print from userInfo.jsx");
-        console.log(city);
+        // console.log("print from userInfo.jsx");
+        // console.log(city);
         const duration = this.props.length;
         const visitor = this.props.visitor;
         return (

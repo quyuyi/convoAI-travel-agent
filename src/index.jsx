@@ -124,26 +124,31 @@ class App extends React.Component {
             <div>
             <Container>
                 <h1>Conversational Travel Agent</h1>
-            <Row>
+            <Row> {/*user profile*/}
+            <Col>
                 <UserInfo 
                 city={this.state.city}
                 visitor={this.state.visitor}
                 length={this.state.length}
                 />
+            </Col>
             </Row>
             
-            <Row>
+            <Row> {/*destinations list added by the user*/}
+            <Col md={6}>
                 <List 
                 destinations={this.state.destinations}
                 handleRemove = {this.handleRemove}/>
+            </Col>
             </Row>
             <br></br>
-            <Row>
-                <Col>
+
+            <Row> {/*image and description of the destination recommended*/}
+                <Col md={6}>
                 <DestInfo />
                 </Col>
 
-                <Col>
+                <Col md={6}>
                 <Dialog 
                 userId={this.state.userId}
                 handleUpdate={this.handleUpdate}
@@ -151,11 +156,13 @@ class App extends React.Component {
                 </Col>
             </Row>
             <br></br>
+
             <Row className="justify-content-md-center">
             <Col>
             {this.renderItinerary()}
             </Col>
             </Row>
+
             </Container>
             </div>
         );

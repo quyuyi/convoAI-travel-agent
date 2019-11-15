@@ -17,8 +17,8 @@ class DestInfo extends React.Component {
 
     render (){
         const cardStyle = {
-              maxWidth: 500,
-              maxHeight: 500,
+              maxWidth: 600,
+              maxHeight: 600,
         };
 
         const contentHeaderStyle = {
@@ -26,24 +26,29 @@ class DestInfo extends React.Component {
         }
 
         const contentStyle = {
-            maxHeight: 260,
+            maxHeight: 150,
             overflow: "auto",
         }
 
         const mediaStyle = {
-              height: 140,
+            // height: 140,
+              height: 300,
         };
 
         return (
             <div>
                 <Card style = {cardStyle}>
                 <CardActionArea>
-                    <CardMedia
+                    {/* <CardMedia
                     id = "dest_img"
                     style = {mediaStyle}
-                    image="/static/img/NCRB.jpg"
-                    title="Contemplative Reptile"
-                    />
+                    image = "static/img/NCRB.jpg"
+                    title = "Contemplative Reptile"
+                    /> */}
+                    <img 
+                    id = "dest_img"
+                    style = {mediaStyle}
+                    src="/static/img/NCRB.jpg"></img>
                     <CardContent style = {contentHeaderStyle}>
                     <Typography id = "dest" gutterBottom variant="h5" component="h2">
                         Hi
