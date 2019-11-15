@@ -2,7 +2,7 @@
 
 import os
 import io
-from flask import Flask, render_template, request, jsonify, send_file, url_for, session
+from flask import Flask, render_template, request, jsonify, send_file, url_for
 import requests
 from api import request_clinc
 import pprint
@@ -12,15 +12,14 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 from business_logic_utils import capitalize_name
 
-
 # Use a service account
 cred = credentials.Certificate('convai498-1572652809131-firebase-adminsdk-i8c6i-de8d470e32.json')
 firebase_admin.initialize_app(cred)
 db = firestore.client()
 collection = db.collection('users')
 # user_id = "10086"
-# dummy_doc_ref = collection.document(user_id)
-# dummy_doc_ref.set({
+# doc_ref = collection.document(user_id)
+# doc_ref.set({
 #     'dummy' : 'dummy'
 # })
 city_collection = db.collection('city')
@@ -28,53 +27,10 @@ city_collection = db.collection('city')
 pp = pprint.PrettyPrinter(indent=4)
 
 app = Flask(__name__)
-app.secret_key = os.urandom(24)
-
-# '''
-# global variables
-# '''
-
-# # userId = 0
-
-# preferences = {
-#     # update global variable (city, length_of_visit, number_of_people)
-#     # in resolve_basic_info(clinc_request)
-#     "city": "-1",
-#     "length_of_visit": "-1",
-#     "number_of_people": "-1",
-#     # TODO
-#     # update global variable you figured out
-#     # in resolve_recommendation(clinc_request)
-# }
-# count = 0
-# # TODO
-# # resolve add_destination and remove destination
-# # to update global variable: destinations
-# destinations = []
-# destinations_info = {}
-# city_recommendations = {}
 
 @app.route("/")
 def index():
     return render_template('businessLogic.html')
-
-# @app.route("/set_user_id/", methods=["GET", "POST"])
-# def set_user_id():
-#     # session['user_id'] = request.json['userId']
-#     # print(session['user_id'])
-#     # user_id = session['user_id']
-#     # global user_id
-#     user_id = request.json['userId']
-#     # global doc_ref
-#     user_id = 
-#     doc_ref = collection.document(user_id)
-#     doc_ref.set({
-#         'dummy' : 'dummy'
-#     })
-#     data = {
-#         'response': "userId successfully set to " + session['user_id']
-#     }
-#     return jsonify(**data)
 
 
 
@@ -91,9 +47,7 @@ def business_logic():
     pp.pprint(clinc_request)
     user_id = clinc_request['external_user_id']
     print("user ID is...", user_id)
-
-    # extract state
-    curr_intent = clinc_request['state']
+    curr_intent = clinc_request['state'] # extract state
 
     # resolve request depends on the specific state
     if (curr_intent == "add_destination"):
@@ -171,7 +125,7 @@ def resolve_add_destination(clinc_request):
         city_recommendations = city_doc_ref.get().to_dict()["recommendations"]
         city_name_dict = city_doc_ref.get().to_dict()["name_to_index"]
         
-        # print("city_recommendations: ", city_recommendations)
+        print("city_recommendations: ", city_recommendations)
         if destination in ["This Place", "This", "It", "There", "That"]:
             print("count", count)
             destination_name = city_recommendations['results'][count-1]['name']
@@ -271,7 +225,6 @@ def resolve_basic_info(clinc_request):
             'count': 0,
             'destinations' : ['dummy']
         })
-        print("print from basic info, userId is: ", user_id)
 
         ### TO DO:
         # If the city document already exists, do not request API
@@ -387,6 +340,13 @@ def resolve_basic_info(clinc_request):
 
 def resolve_clean_hello(clinc_request):
     print("start resolve clean hello...")
+
+    print("finish resolving, sned response back to clinc...")
+    pp.pprint(clinc_request)
+    return jsonify(**clinc_request)
+
+def resolve_clean_goodbye(clinc_request):
+    print("start resolve clean goodbye...")
 
     print("finish resolving, sned response back to clinc...")
     pp.pprint(clinc_request)

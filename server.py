@@ -149,7 +149,7 @@ def add_destination():
 
     print("got speakable response from clinc...")
     print(result)
-    text_to_speech(result)
+    # text_to_speech(result)
     return jsonify(**data)
 
 
