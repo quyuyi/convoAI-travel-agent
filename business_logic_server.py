@@ -110,6 +110,8 @@ def business_logic():
         return resolve_recommendation(clinc_request)
     elif (curr_intent == "remove_destination"):
         return resolve_remove_destination(clinc_request)
+    elif (curr_intent == "clean_goodbye"):
+        return resolve_clean_goodbye(clinc_request)
     else:
         print("intent out of scope")
 
