@@ -410,7 +410,7 @@ def resolve_generate_schedule(clinc_request):
 
     try:
         it_gen = ItineraryGen(int(doc_ref.get().to_dict()['length_of_visit']), places)
-	    plan = it_gen.make()
+        plan = it_gen.make()
         print('Schedule Generated:')
         print(plan)
     except TypeError:
@@ -425,7 +425,7 @@ def resolve_generate_schedule(clinc_request):
 
 
 
-    
+
 
 def resolve_recommendation(clinc_request):
     print("start resolve recommendation...")
