@@ -6,20 +6,23 @@ from flask import Flask, render_template, request, jsonify, send_file, url_for
 import requests
 from api import request_clinc
 import pprint
-from utils import get 
+from utils import get
+'''
 from record import record
 from google.cloud import speech # Imports the Google Cloud client library
 from google.cloud.speech import enums
 from google.cloud.speech import types
 from google.cloud import texttospeech
-
+'''
 pp = pprint.PrettyPrinter(indent=4)
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="/Users/quyuyi/Downloads/WebpageClassifier-2cf78af630ef.json"
 
+'''
 # Instantiates a speech to text client
 speech_to_text_client = speech.SpeechClient()
 # Instantiates a text to speech client
 text_to_speech_client = texttospeech.TextToSpeechClient()
+'''
 
 app = Flask(__name__)
 
@@ -29,7 +32,7 @@ def index():
     return render_template('index.html')
 
 
-
+'''
 @app.route("/record_to_text/", methods=["GET", "POST"])
 def record_to_text():
     record() # record the file
@@ -92,7 +95,7 @@ def text_to_speech(text):
         # Write the response to the output file.
         out.write(response.audio_content)
         print('Audio content written to file "output.mp3"')
-
+'''
 
 
 
