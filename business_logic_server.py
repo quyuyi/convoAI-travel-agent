@@ -30,29 +30,29 @@ pp = pprint.PrettyPrinter(indent=4)
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 
-'''
-global variables
-'''
+# '''
+# global variables
+# '''
 
-# userId = 0
+# # userId = 0
 
-preferences = {
-    # update global variable (city, length_of_visit, number_of_people)
-    # in resolve_basic_info(clinc_request)
-    "city": "-1",
-    "length_of_visit": "-1",
-    "number_of_people": "-1",
-    # TODO
-    # update global variable you figured out
-    # in resolve_recommendation(clinc_request)
-}
-count = 0
-# TODO
-# resolve add_destination and remove destination
-# to update global variable: destinations
-destinations = []
-destinations_info = {}
-city_recommendations = {}
+# preferences = {
+#     # update global variable (city, length_of_visit, number_of_people)
+#     # in resolve_basic_info(clinc_request)
+#     "city": "-1",
+#     "length_of_visit": "-1",
+#     "number_of_people": "-1",
+#     # TODO
+#     # update global variable you figured out
+#     # in resolve_recommendation(clinc_request)
+# }
+# count = 0
+# # TODO
+# # resolve add_destination and remove destination
+# # to update global variable: destinations
+# destinations = []
+# destinations_info = {}
+# city_recommendations = {}
 
 @app.route("/")
 def index():
@@ -76,6 +76,8 @@ def index():
 #     }
 #     return jsonify(**data)
 
+
+
 # business logic server
 # http://heroku.travel_agent.com/api/v1/clinc/
 # get request from clinc
@@ -84,15 +86,14 @@ def index():
 # return reponse to clinc
 @app.route("/api/v1/clinc/", methods=["GET", "POST"])
 def business_logic():
-    # read clinc's request.json
-    clinc_request = request.json
-    # print("print from bussiness_logic")
-    # print(clinc_request)
+    clinc_request = request.json # read clinc's request.json
+    print("got request from clinc...")
+    pp.pprint(clinc_request)
+    user_id = clinc_request['external_user_id']
+    print("user ID is...", user_id)
 
     # extract state
     curr_intent = clinc_request['state']
-    # print("current intent is")
-    # print(curr_intent)
 
     # resolve request depends on the specific state
     if (curr_intent == "add_destination"):
@@ -112,14 +113,16 @@ def business_logic():
     else:
         print("intent out of scope")
 
+
+
+
+
+
+
 # Only the state and slots properties can be manipulated
 def resolve_add_destination(clinc_request):
     print("start resolve add_destination...")
-    print("request body is:")
-    pp.pprint(clinc_request)
-
-    user_id = clinc_request['session_id']
-    print("session ID is ", user_id)
+    user_id = clinc_request['external_user_id']
     doc_ref = collection.document(user_id)
     doc = doc_ref.get()
     if not doc.exists:
@@ -140,6 +143,7 @@ def resolve_add_destination(clinc_request):
                 ]
             }
         }
+        print("finish resolving, send response back to clinc...")
         pp.pprint(clinc_request)
         return jsonify(**clinc_request)
 
@@ -213,13 +217,17 @@ def resolve_add_destination(clinc_request):
     pp.pprint(clinc_request)
     return jsonify(**clinc_request)
 
+
+
+
+
+
+
+
+
 def resolve_basic_info(clinc_request):
     print("start resolve basic info...")
-    print("request body is:")
-    pp.pprint(clinc_request)
-
-    user_id = clinc_request['session_id']
-    print("session ID is ", user_id)
+    user_id = clinc_request['external_user_id']
     doc_ref = collection.document(user_id)
     doc = doc_ref.get()
     if not doc.exists:
@@ -369,22 +377,31 @@ def resolve_basic_info(clinc_request):
 
 
 
-def resolve_clean_hello(clinc_request):
-    print("start resolve clinc_request..")
-    print("request body is:")
-    pp.pprint(clinc_request)
 
-    print("finish resolving, send response back to clinc...")
+
+
+
+
+
+def resolve_clean_hello(clinc_request):
+    print("start resolve clean hello...")
+
+    print("finish resolving, sned response back to clinc...")
     pp.pprint(clinc_request)
     return jsonify(**clinc_request)
 
 
 
 
+
+
+
+
+
+
+
 def resolve_destination_info(clinc_request):
     print("start resolve destination_info...")
-    print("request body is:")
-    pp.pprint(clinc_request)
 
     clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = clinc_request['slots']['_DESTINATION_']['values'][0]['tokens']
     clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 1
@@ -399,10 +416,14 @@ def resolve_destination_info(clinc_request):
 
 
 
+
+
+
+
+
+
 def resolve_generate_schedule(clinc_request):
     print("start resolve generate_schedule...")
-    print("request body is:")
-    pp.pprint(clinc_request)
 
     print("finish resolving, send response back to clinc...")
     pp.pprint(clinc_request)
@@ -410,13 +431,17 @@ def resolve_generate_schedule(clinc_request):
 
 
 
+
+
+
+
+
+
+
+
 def resolve_recommendation(clinc_request):
     print("start resolve recommendation...")
-    print("request body is:")
-    pp.pprint(clinc_request)
-
-    user_id = clinc_request['session_id']
-    print("session ID is ", user_id)
+    user_id = clinc_request['external_user_id']
     doc_ref = collection.document(user_id)
     doc = doc_ref.get()
     if not doc.exists:
@@ -496,13 +521,16 @@ def resolve_recommendation(clinc_request):
 
 
 
+
+
+
+
+
+
+
 def resolve_remove_destination(clinc_request):
     print("start resolve remove_destination...")
-    print("request body is:")
-    pp.pprint(clinc_request)
-
-    user_id = clinc_request['session']
-    print("session ID is ", user_id)
+    user_id = clinc_request['external_user_id']
     doc_ref = collection.document(user_id)
     doc = doc_ref.get()
     if not doc.exists:

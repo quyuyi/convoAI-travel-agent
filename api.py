@@ -6,7 +6,8 @@ ai_version = 'd2462c12-e625-49fd-9cfe-c781ddedf060'
 
 pp = pprint.PrettyPrinter(indent=2)
 query = "what's the weather in Boston?"
-def request_clinc(query):
+user_id = "62ea16cb-9c8e-4f0b-86d1-f4e6b98e6815"
+def request_clinc(query, user_id):
     response = requests.post(
         'https://api.clinc.ai:443/v1/query',
         json={
@@ -16,6 +17,7 @@ def request_clinc(query):
             'lon': 0.0,
             'time_offset': 0,
             'device': 'Derp',
+            'external_user_id': user_id,
         },
         headers={
             'Authorization': 'app-key {}'.format(app_key),
@@ -26,4 +28,4 @@ def request_clinc(query):
     return response
 
 if __name__ == "__main__":
-    request_clinc(query)
+    request_clinc(query, user_id)

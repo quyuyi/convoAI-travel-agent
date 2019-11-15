@@ -31,13 +31,13 @@ class App extends React.Component {
     }
 
     componentDidMount(){
-        const proxyurl = "https://cors-anywhere.herokuapp.com/"
-        const url = 'http://convo-ai.herokuapp.com/set_user_id/'
-        this.postData(proxyurl + url, {userId: this.state.userId}) 
-        .then(data => {
-            console.log("get reponse: ", data.response);
-        })
-        .catch(error => console.error(error));
+        // const proxyurl = "https://cors-anywhere.herokuapp.com/"
+        // const url = 'http://convo-ai.herokuapp.com/set_user_id/'
+        // this.postData(proxyurl + url, {userId: this.state.userId}) 
+        // .then(data => {
+        //     console.log("get reponse: ", data.response);
+        // })
+        // .catch(error => console.error(error));
     }
 
     postData(url = '', data = {}) {
@@ -145,6 +145,7 @@ class App extends React.Component {
 
                 <Col>
                 <Dialog 
+                userId={this.state.userId}
                 handleUpdate={this.handleUpdate}
                 handleUserInfo = {this.handleUserInfo}/>
                 </Col>

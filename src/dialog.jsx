@@ -22,6 +22,7 @@ class Dialog extends React.Component {
     constructor (props) {
         super(props);
         this.state = {
+            userId: this.props.userId,
             first: true,
             loading: false,
             history: [
@@ -108,7 +109,7 @@ class Dialog extends React.Component {
     queryClinc (query){
         var cont=document.getElementById("words");
         console.log("post user query to backend which will post to clinc for response...")
-        this.postData('/query_clinc/', {query: query}) 
+        this.postData('/query_clinc/', {query: query, userId: this.props.userId}) 
         .then(data => {
             console.log("get reponse: ", data.response);
             const previous = this.state.history;
