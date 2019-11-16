@@ -417,8 +417,12 @@ def resolve_generate_schedule(clinc_request):
         plan = it_gen.make()
         print('Schedule Generated:')
         print(plan)
+        schedule = []
+        for item in plan:
+            schedule.append(item[1])
+
         doc_ref.update({
-            "schedule": plan
+            "schedule": schedule
         })
         
     except TypeError:
