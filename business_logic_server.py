@@ -12,6 +12,7 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 from business_logic_utils import capitalize_name
 from itinerary_generator import ItineraryGen
+import json
 
 # Use a service account
 cred = credentials.Certificate('convai498-1572652809131-firebase-adminsdk-i8c6i-de8d470e32.json')
@@ -350,7 +351,6 @@ def resolve_clean_hello(clinc_request):
 
 def resolve_clean_goodbye(clinc_request):
     print("start resolve clean goodbye...")
-
     print("finish resolving, sned response back to clinc...")
     pp.pprint(clinc_request)
     return jsonify(**clinc_request)
@@ -417,42 +417,18 @@ def resolve_generate_schedule(clinc_request):
         plan = it_gen.make()
         print('Schedule Generated:')
         print(plan)
-    except TypeError:
-        print('length_of_visit not int')
-
-    user_id = clinc_request['external_user_id']
-    doc_ref = collection.document(user_id)
-    added_destinations = doc_ref.get().to_dict()['destinations']
-    city = doc_ref.get().to_dict()['city']
-    city_doc_ref = city_collection.document(city)
-    city_dict = city_doc_ref.get().to_dict()
-
-    places = []
-    for d in added_destinations:
-        if d == 'dummy':
-            continue
-        index = city_dict['name_to_index'][d]
-        coord = city_dict['recommendations']['results'][index]['coordinates']
-        la = coord['latitude']
-        lo = coord['longitude']
-        places.append({
-            'name' : d,
-            'coordinates' : {
-                'latitude' : la,
-                'longitude' : lo
-            }
-        })
-
-    try:
-        it_gen = ItineraryGen(int(doc_ref.get().to_dict()['length_of_visit']), places)
-        plan = it_gen.make()
-        print('Schedule Generated:')
-        print(plan)
-
+        schedule = []
+        days = len(plan)
+        for i in range(days):
+            places_in_day = []
+            for j in plan[i]:
+                places_in_day.append(j)
+            schedule.append(places_in_day)
+        print('schedule', schedule)
         doc_ref.update({
-            "schedule": plan
+            "schedule": json.dumps(schedule)
         })
-
+        
     except TypeError:
         print('length_of_visit not int')
 
@@ -521,8 +497,7 @@ def resolve_recommendation(clinc_request):
             ]
         }
     }
-    print("city_recommendations['results'][count]['images'][0].keys():")
-    print(city_recommendations['results'][count]['images'][0].keys())
+ 
     clinc_request['visual_payload'] = {
         "intro": city_recommendations['results'][count]['intro'],
         "image": city_recommendations['results'][count]['images'][0]['sizes']['original']['url']
