@@ -18,11 +18,14 @@ cred = credentials.Certificate('convai498-1572652809131-firebase-adminsdk-i8c6i-
 firebase_admin.initialize_app(cred)
 db = firestore.client()
 collection = db.collection('users')
+<<<<<<< HEAD
 # user_id = "10086"
 # doc_ref = collection.document(user_id)
 # doc_ref.set({
 #     'dummy' : 'dummy'
 # })
+=======
+>>>>>>> b823f505bfe2d351cb2c52dc27e67c8c0bf5e0bd
 city_collection = db.collection('city')
 
 pp = pprint.PrettyPrinter(indent=4)
@@ -387,6 +390,7 @@ def resolve_destination_info(clinc_request):
 
 def resolve_generate_schedule(clinc_request):
     print("start resolve generate_schedule...")
+<<<<<<< HEAD
     user_id = clinc_request['external_user_id']
     doc_ref = collection.document(user_id)
     added_destinations = doc_ref.get().to_dict()['destinations']
@@ -417,6 +421,8 @@ def resolve_generate_schedule(clinc_request):
         print(plan)
     except TypeError:
         print('length_of_visit not int')
+=======
+>>>>>>> b823f505bfe2d351cb2c52dc27e67c8c0bf5e0bd
 
     print("finish resolving, send response back to clinc...")
     pp.pprint(clinc_request)
@@ -429,6 +435,12 @@ def resolve_generate_schedule(clinc_request):
 
 
 
+<<<<<<< HEAD
+=======
+
+
+
+>>>>>>> b823f505bfe2d351cb2c52dc27e67c8c0bf5e0bd
 def resolve_recommendation(clinc_request):
     print("start resolve recommendation...")
     user_id = clinc_request['external_user_id']

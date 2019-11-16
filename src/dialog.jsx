@@ -22,6 +22,7 @@ class Dialog extends React.Component {
     constructor (props) {
         super(props);
         this.state = {
+            userId: this.props.userId,
             first: true,
             loading: false,
             history: [
@@ -69,7 +70,7 @@ class Dialog extends React.Component {
         console.log("call backend to record...");
         this.postData('/record_to_text/', {query: "record"}) 
         .then(data => {
-            console.log("get reponse: ", data.response);
+            // console.log("get reponse: ", data.response);
             this.handleSubmit(data.response);
         }) // JSON-string from `response.json()` call
         .catch(error => console.error(error));
@@ -107,10 +108,10 @@ class Dialog extends React.Component {
     // get response from clinc
     queryClinc (query){
         var cont=document.getElementById("words");
-        console.log("post user query to backend which will post to clinc for response...")
-        this.postData('/query_clinc/', {query: query}) 
+        console.log("request backend server..")
+        this.postData('/query_clinc/', {query: query, userId: this.props.userId}) 
         .then(data => {
-            console.log("get reponse: ", data.response);
+            // console.log("get reponse: ", data.response);
             const previous = this.state.history;
             const record_clinc = {
                 "from": "clinc",
@@ -124,15 +125,16 @@ class Dialog extends React.Component {
             if (data.addCity) city = data.city
             if (data.addVisitor) visitor = data.visitor
             if (data.addLength) length = data.length
-            console.log("add city is: ", city);
-            console.log("add visitor is: ", data.visitor);
-            console.log("add length is: ", length);
+            // console.log("add city is: ", city);
+            // console.log("add visitor is: ", data.visitor);
+            // console.log("add length is: ", length);
             this.props.handleUserInfo(city, visitor, length);
 
             // update destInfo window
             if (data.isRecommendation) {
                 let dest = document.getElementById("dest_img");
-                dest.setAttribute("image", data.img);
+                dest.setAttribute("src", data.img);
+                console.log("img element information...");
                 document.getElementById("dest").innerHTML = data.dest;
                 document.getElementById("intro").innerHTML = data.intro;
             }
