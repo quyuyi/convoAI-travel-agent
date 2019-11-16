@@ -81,6 +81,9 @@ class App extends React.Component {
         this.setState({
             generate: true,
         });
+
+        
+
     }
 
     handleUserInfo (c, v, l){

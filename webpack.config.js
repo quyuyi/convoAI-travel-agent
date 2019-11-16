@@ -1,6 +1,7 @@
+var path = require('path');
 module.exports = {
     entry: [
-        './src/index.jsx'
+        path.resolve('./src/index.jsx')
     ],
     module: {
         rules: [

@@ -11,12 +11,20 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 from business_logic_utils import capitalize_name
+from itinerary_generator import ItineraryGen
 
 # Use a service account
 cred = credentials.Certificate('convai498-1572652809131-firebase-adminsdk-i8c6i-de8d470e32.json')
 firebase_admin.initialize_app(cred)
 db = firestore.client()
 collection = db.collection('users')
+
+# user_id = "10086"
+# doc_ref = collection.document(user_id)
+# doc_ref.set({
+#     'dummy' : 'dummy'
+# })
+
 city_collection = db.collection('city')
 
 pp = pprint.PrettyPrinter(indent=4)
@@ -382,13 +390,45 @@ def resolve_destination_info(clinc_request):
 def resolve_generate_schedule(clinc_request):
     print("start resolve generate_schedule...")
 
+    user_id = clinc_request['external_user_id']
+    doc_ref = collection.document(user_id)
+    added_destinations = doc_ref.get().to_dict()['destinations']
+    city = doc_ref.get().to_dict()['city']
+    city_doc_ref = city_collection.document(city)
+    city_dict = city_doc_ref.get().to_dict()
+
+    places = []
+    for d in added_destinations:
+        if d == 'dummy':
+            continue
+        index = city_dict['name_to_index'][d]
+        coord = city_dict['recommendations']['results'][index]['coordinates']
+        la = coord['latitude']
+        lo = coord['longitude']
+        places.append({
+            'name' : d,
+            'coordinates' : {
+                'latitude' : la,
+                'longitude' : lo
+            }
+        })
+
+    try:
+        it_gen = ItineraryGen(int(doc_ref.get().to_dict()['length_of_visit']), places)
+        plan = it_gen.make()
+        print('Schedule Generated:')
+        print(plan)
+
+        doc_ref.update({
+            "schedule": plan
+        })
+
+    except TypeError:
+        print('length_of_visit not int')
+
     print("finish resolving, send response back to clinc...")
     pp.pprint(clinc_request)
     return jsonify(**clinc_request)
-
-
-
-
 
 
 

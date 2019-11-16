@@ -95,7 +95,7 @@ class ItineraryGen(object):
 		day_plan = OrderedDict()
 		chuncks = np.array_split(route, self._num_days)
 		for i, chunck in enumerate(chuncks):
-			day_plan[i] = tuple(self._places[j]['name'] for j in chunck)
+			day_plan[i] = tuple(self._places[j] for j in chunck)
 
 		return day_plan
 
