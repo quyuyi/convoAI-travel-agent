@@ -415,6 +415,10 @@ def resolve_generate_schedule(clinc_request):
         plan = it_gen.make()
         print('Schedule Generated:')
         print(plan)
+        doc_ref.update({
+            "schedule": plan
+        })
+        
     except TypeError:
         print('length_of_visit not int')
 
