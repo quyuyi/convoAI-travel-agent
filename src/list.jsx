@@ -49,7 +49,7 @@ class List extends React.Component {
     // }
 
     render (){
-        console.log(this.props.destinations);
+        // console.log(this.props.destinations);
         return(
             <div>
                 {this.props.destinations.map((value, index) => {

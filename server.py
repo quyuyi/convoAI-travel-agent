@@ -6,25 +6,34 @@ from flask import Flask, render_template, request, jsonify, send_file, url_for
 import requests
 from api import request_clinc
 import pprint
-from utils import get
-'''
-from record import record
+from utils import get 
+from record import record # record utterance query
 from google.cloud import speech # Imports the Google Cloud client library
 from google.cloud.speech import enums
 from google.cloud.speech import types
 from google.cloud import texttospeech
-'''
+import firebase_admin # import database
+from firebase_admin import credentials
+from firebase_admin import firestore
+
 pp = pprint.PrettyPrinter(indent=4)
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="/Users/quyuyi/Downloads/WebpageClassifier-2cf78af630ef.json"
 
-'''
 # Instantiates a speech to text client
 speech_to_text_client = speech.SpeechClient()
 # Instantiates a text to speech client
 text_to_speech_client = texttospeech.TextToSpeechClient()
-'''
 
+# database
+cred = credentials.Certificate('convai498-1572652809131-firebase-adminsdk-i8c6i-de8d470e32.json')
+firebase_admin.initialize_app(cred)
+db = firestore.client()
+collection = db.collection('users')
+
+# app
 app = Flask(__name__)
+
+
 
 
 @app.route("/")
@@ -32,7 +41,7 @@ def index():
     return render_template('index.html')
 
 
-'''
+
 @app.route("/record_to_text/", methods=["GET", "POST"])
 def record_to_text():
     record() # record the file
@@ -95,7 +104,7 @@ def text_to_speech(text):
         # Write the response to the output file.
         out.write(response.audio_content)
         print('Audio content written to file "output.mp3"')
-'''
+
 
 
 
@@ -106,7 +115,7 @@ get the response from clinc, which contains speakableResponse
 return back to the front end
 '''
 @app.route("/query_clinc/", methods=["GET", "POST"])
-def add_destination():
+def resolve_user_query():
     query = request.json['query'] # get query from the front end
     user_id = request.json['userId']
     print("got query from front end...")
@@ -136,11 +145,10 @@ def add_destination():
     result = get(response, 'no speakableResponse from clinc', 'visuals', 'speakableResponse')
     data = {
         'response': result,
-        # 'destinations': dest['result'],
-        'destinations': ['for', 'test', 'only'],
+        'destinations': get_destinations(user_id), # current list of destinations added by the user
         'isRecommendation': False if get(response, False, 'visuals', 'intro') == False else True, 
-        'intro': get(response, '', 'visuals', 'intro'),
-        'img': get(response, '', 'visuals', 'image'),
+        'intro': get(response, '', 'visuals', 'intro'), # intro about the destination
+        'img': get(response, '', 'visuals', 'image'), # an exrernal image url for the destination 
         'dest': get(response, '', 'bl_resp', 'slots', '_RECOMMENDATION_', 'values', 0, 'value'),
         'addVisitor': get(response, False, 'slots', '_NUMBER_OF_PEOPLE_'),
         'visitor': get(response, '', 'slots', '_NUMBER_OF_PEOPLE_', 'values', 0, 'value'),
@@ -152,8 +160,30 @@ def add_destination():
 
     print("got speakable response from clinc...")
     print(result)
-    # text_to_speech(result)
+    text_to_speech(result)
     return jsonify(**data)
+
+
+
+'''get destinations list of the user from database
+Returns: a list of destinations
+'''
+def get_destinations(user_id):
+    doc_ref = collection.document(user_id)
+    try:
+        destinations = doc_ref.get().to_dict()["destinations"]
+        if destinations[0] == 'dummy':
+            destinations = destinations[1:]
+    except:
+        destinations = []
+        print("no destinations for now...")
+    print("fetch destinations list from database...")
+    print(destinations)
+    return destinations
+
+
+
+
 
 
 
