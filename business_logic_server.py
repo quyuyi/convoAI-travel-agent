@@ -12,6 +12,7 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 from business_logic_utils import capitalize_name
 from itinerary_generator import ItineraryGen
+import json
 
 # Use a service account
 cred = credentials.Certificate('convai498-1572652809131-firebase-adminsdk-i8c6i-de8d470e32.json')
