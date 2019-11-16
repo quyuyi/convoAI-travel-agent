@@ -351,7 +351,6 @@ def resolve_clean_hello(clinc_request):
 
 def resolve_clean_goodbye(clinc_request):
     print("start resolve clean goodbye...")
-
     print("finish resolving, sned response back to clinc...")
     pp.pprint(clinc_request)
     return jsonify(**clinc_request)
@@ -498,8 +497,7 @@ def resolve_recommendation(clinc_request):
             ]
         }
     }
-    print("city_recommendations['results'][count]['images'][0].keys():")
-    print(city_recommendations['results'][count]['images'][0].keys())
+ 
     clinc_request['visual_payload'] = {
         "intro": city_recommendations['results'][count]['intro'],
         "image": city_recommendations['results'][count]['images'][0]['sizes']['original']['url']
