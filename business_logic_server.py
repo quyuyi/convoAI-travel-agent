@@ -426,7 +426,7 @@ def resolve_generate_schedule(clinc_request):
             schedule.append(places_in_day)
         print('schedule', schedule)
         doc_ref.update({
-            "schedule": schedule
+            "schedule": json.dumps(schedule)
         })
         
     except TypeError:
