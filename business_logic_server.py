@@ -420,7 +420,7 @@ def resolve_generate_schedule(clinc_request):
         schedule = []
         for item in plan:
             schedule.append(item[1])
-
+        print('schedule', schedule)
         doc_ref.update({
             "schedule": schedule
         })
