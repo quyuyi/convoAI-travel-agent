@@ -428,6 +428,7 @@ def resolve_generate_schedule(clinc_request):
         doc_ref.update({
             "schedule": json.dumps(schedule)
         })
+        
     except TypeError:
         print('length_of_visit not int')
 
@@ -436,14 +437,6 @@ def resolve_generate_schedule(clinc_request):
     return jsonify(**clinc_request)
 
 
-
-
-<<<<<<< HEAD
-=======
-
-
-
->>>>>>> d568cf3c21bc999fc100dac679702aaf07373094
 def resolve_recommendation(clinc_request):
     print("start resolve recommendation...")
     user_id = clinc_request['external_user_id']

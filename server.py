@@ -6,7 +6,7 @@ from flask import Flask, render_template, request, jsonify, send_file, url_for
 import requests
 from api import request_clinc
 import pprint
-from utils import get 
+from utils import get
 from record import record # record utterance query
 from google.cloud import speech # Imports the Google Cloud client library
 from google.cloud.speech import enums
@@ -17,7 +17,7 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 
 pp = pprint.PrettyPrinter(indent=4)
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="/Users/bolu/Downloads/challenge-7382d4f0bf60.json"
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="/Users/quyuyi/Downloads/WebpageClassifier-2cf78af630ef.json"
 
 # Instantiates a speech to text client
 speech_to_text_client = speech.SpeechClient()
@@ -39,7 +39,6 @@ app = Flask(__name__)
 @app.route("/")
 def index():
     return render_template('index.html')
-
 
 
 @app.route("/record_to_text/", methods=["GET", "POST"])
@@ -160,7 +159,7 @@ def resolve_user_query():
 
     print("got speakable response from clinc...")
     print(result)
-    text_to_speech(result)
+    # text_to_speech(result)
     return jsonify(**data)
 
 
