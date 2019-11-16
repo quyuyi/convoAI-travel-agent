@@ -388,6 +388,8 @@ def resolve_destination_info(clinc_request):
 def resolve_generate_schedule(clinc_request):
     print("start resolve generate_schedule...")
     added_destinations = doc_ref.get().to_dict()['destinations']
+    user_id = clinc_request['external_user_id']
+    doc_ref = collection.document(user_id)
     city = doc_ref.get().to_dict()['city']
     city_doc_ref = city_collection.document(city)
     city_dict = city_doc_ref.get().to_dict()
