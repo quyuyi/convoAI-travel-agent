@@ -17,7 +17,7 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 
 pp = pprint.PrettyPrinter(indent=4)
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="/Users/bolu/Downloads/challenge-7382d4f0bf60.json"
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="/Users/quyuyi/Downloads/WebpageClassifier-2cf78af630ef.json"
 
 # Instantiates a speech to text client
 speech_to_text_client = speech.SpeechClient()

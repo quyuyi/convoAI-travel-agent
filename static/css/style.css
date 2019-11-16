@@ -70,3 +70,37 @@
 .player {
     autoplay: true;
 }
+
+
+
+body {
+    margin: 0;
+    padding: 0;
+  }
+
+  #map {
+    /* position: absolute;
+    top: 0;
+    bottom: 0; */
+    height: 500px;
+    width: 100%;
+  }
+
+  .info-box {
+    position: absolute;
+    margin: 20px;
+    width: 25%;
+    top: 0;
+    bottom: 40%;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.9);
+    overflow-y: scroll;
+    font-family: sans-serif;
+    font-size: 0.8em;
+    line-height: 2em;
+  }
+
+  #info {
+    font-size: 10px;
+    font-weight: bold;
+  }

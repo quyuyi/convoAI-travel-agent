@@ -108,10 +108,18 @@ class App extends React.Component {
         if (this.state.generate){
             return (
                 <div>
-                    <Itinerary
-                    destinations={this.state.destinations} />
-                    <br></br>
-                    <Button type="button" className="btn btn-primary" onClick={()=>this.handleGenerate()}>Regenerate my travel itinerary!</Button>
+                <div id='map'></div>
+
+                <div className="info-box">
+                <div id="info">
+                </div>
+                <div id="directions"></div>
+                </div>
+
+                <Itinerary
+                destinations={this.state.destinations} />
+                <br></br>
+                {/* <Button type="button" className="btn btn-primary" onClick={()=>this.handleGenerate()}>Regenerate my travel itinerary!</Button> */}
                 </div>
             );
         }
@@ -160,7 +168,7 @@ class App extends React.Component {
             </Row>
             <br></br>
 
-            <Row className="justify-content-md-center">
+            <Row className='map_container'>
             <Col>
             {this.renderItinerary()}
             </Col>
