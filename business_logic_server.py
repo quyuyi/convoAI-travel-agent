@@ -437,8 +437,6 @@ def resolve_generate_schedule(clinc_request):
     return jsonify(**clinc_request)
 
 
-
-
 def resolve_recommendation(clinc_request):
     print("start resolve recommendation...")
     user_id = clinc_request['external_user_id']
