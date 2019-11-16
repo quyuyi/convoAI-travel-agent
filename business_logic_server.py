@@ -389,6 +389,10 @@ def resolve_destination_info(clinc_request):
 
 def resolve_generate_schedule(clinc_request):
     print("start resolve generate_schedule...")
+<<<<<<< HEAD
+=======
+
+>>>>>>> d568cf3c21bc999fc100dac679702aaf07373094
     user_id = clinc_request['external_user_id']
     doc_ref = collection.document(user_id)
     added_destinations = doc_ref.get().to_dict()['destinations']
@@ -417,6 +421,7 @@ def resolve_generate_schedule(clinc_request):
         plan = it_gen.make()
         print('Schedule Generated:')
         print(plan)
+<<<<<<< HEAD
         schedule = []
         days = len(plan)
         for i in range(days):
@@ -429,6 +434,13 @@ def resolve_generate_schedule(clinc_request):
             "schedule": json.dumps(schedule)
         })
         
+=======
+
+        doc_ref.update({
+            "schedule": plan
+        })
+
+>>>>>>> d568cf3c21bc999fc100dac679702aaf07373094
     except TypeError:
         print('length_of_visit not int')
 
@@ -439,6 +451,12 @@ def resolve_generate_schedule(clinc_request):
 
 
 
+<<<<<<< HEAD
+=======
+
+
+
+>>>>>>> d568cf3c21bc999fc100dac679702aaf07373094
 def resolve_recommendation(clinc_request):
     print("start resolve recommendation...")
     user_id = clinc_request['external_user_id']
