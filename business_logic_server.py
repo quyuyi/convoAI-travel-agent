@@ -12,20 +12,20 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 from business_logic_utils import capitalize_name
 from itinerary_generator import ItineraryGen
+import json
 
 # Use a service account
 cred = credentials.Certificate('convai498-1572652809131-firebase-adminsdk-i8c6i-de8d470e32.json')
 firebase_admin.initialize_app(cred)
 db = firestore.client()
 collection = db.collection('users')
-<<<<<<< HEAD
+
 # user_id = "10086"
 # doc_ref = collection.document(user_id)
 # doc_ref.set({
 #     'dummy' : 'dummy'
 # })
-=======
->>>>>>> b823f505bfe2d351cb2c52dc27e67c8c0bf5e0bd
+
 city_collection = db.collection('city')
 
 pp = pprint.PrettyPrinter(indent=4)
@@ -351,7 +351,6 @@ def resolve_clean_hello(clinc_request):
 
 def resolve_clean_goodbye(clinc_request):
     print("start resolve clean goodbye...")
-
     print("finish resolving, sned response back to clinc...")
     pp.pprint(clinc_request)
     return jsonify(**clinc_request)
@@ -390,7 +389,6 @@ def resolve_destination_info(clinc_request):
 
 def resolve_generate_schedule(clinc_request):
     print("start resolve generate_schedule...")
-<<<<<<< HEAD
     user_id = clinc_request['external_user_id']
     doc_ref = collection.document(user_id)
     added_destinations = doc_ref.get().to_dict()['destinations']
@@ -419,10 +417,20 @@ def resolve_generate_schedule(clinc_request):
         plan = it_gen.make()
         print('Schedule Generated:')
         print(plan)
+        schedule = []
+        days = len(plan)
+        for i in range(days):
+            places_in_day = []
+            for j in plan[i]:
+                places_in_day.append(j)
+            schedule.append(places_in_day)
+        print('schedule', schedule)
+        doc_ref.update({
+            "schedule": json.dumps(schedule)
+        })
+        
     except TypeError:
         print('length_of_visit not int')
-=======
->>>>>>> b823f505bfe2d351cb2c52dc27e67c8c0bf5e0bd
 
     print("finish resolving, send response back to clinc...")
     pp.pprint(clinc_request)
@@ -431,16 +439,6 @@ def resolve_generate_schedule(clinc_request):
 
 
 
-
-
-
-
-<<<<<<< HEAD
-=======
-
-
-
->>>>>>> b823f505bfe2d351cb2c52dc27e67c8c0bf5e0bd
 def resolve_recommendation(clinc_request):
     print("start resolve recommendation...")
     user_id = clinc_request['external_user_id']
@@ -499,8 +497,7 @@ def resolve_recommendation(clinc_request):
             ]
         }
     }
-    print("city_recommendations['results'][count]['images'][0].keys():")
-    print(city_recommendations['results'][count]['images'][0].keys())
+ 
     clinc_request['visual_payload'] = {
         "intro": city_recommendations['results'][count]['intro'],
         "image": city_recommendations['results'][count]['images'][0]['sizes']['original']['url']
