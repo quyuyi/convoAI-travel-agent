@@ -418,8 +418,12 @@ def resolve_generate_schedule(clinc_request):
         print('Schedule Generated:')
         print(plan)
         schedule = []
-        for item in plan:
-            schedule.append(item[1])
+        days = len(plan)
+        for i in range(days):
+            places_in_day = []
+            for j in plan[i]:
+                places_in_day.append(j)
+            schedule.append(places_in_day)
         print('schedule', schedule)
         doc_ref.update({
             "schedule": schedule
