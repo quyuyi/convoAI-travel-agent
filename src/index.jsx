@@ -108,13 +108,6 @@ class App extends React.Component {
         if (this.state.generate){
             return (
                 <div>
-                <div id='map'></div>
-
-                <div className="info-box">
-                <div id="info">
-                </div>
-                <div id="directions"></div>
-                </div>
 
                 <Itinerary
                 destinations={this.state.destinations} />
@@ -171,6 +164,20 @@ class App extends React.Component {
             <Row className='map_container'>
             <Col>
             {this.renderItinerary()}
+            </Col>
+            </Row>
+
+            <Row>
+            <Col>
+            <div>
+            <div id='map'></div>
+
+            <div className="info-box">
+            <div id="info">
+            </div>
+            <div id="directions"></div>
+            </div>
+            </div>
             </Col>
             </Row>
 
