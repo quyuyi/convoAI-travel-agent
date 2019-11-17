@@ -17,17 +17,17 @@ import { AccessAlarm, ThreeDRotation } from '@material-ui/icons';
 const sample_props = [
   [
     {'name': 'place1',
-    'coordinates': {'latitude': '-122.42060084672637', 'longitude': '37.80337168883928'}},
+    'coordinates': {'latitude': '-122.40060084672637', 'longitude': '37.80337168883928'}},
     {'name': 'place2',
-    'coordinates': {'latitude': '-122.41051199129258', 'longitude': '37.79931950915626'}},
+    'coordinates': {'latitude': '-122.49051199129258', 'longitude': '37.29931950915626'}},
     {'name': 'place3',
-    'coordinates': {'latitude': '-122.41851199129268', 'longitude': '37.79931950915616'}}
+    'coordinates': {'latitude': '-122.31851199129268', 'longitude': '37.79931950915616'}}
   ],
   [
     {'name': 'place4',
     'coordinates': {'latitude': '-122.42060584673637', 'longitude': '37.80337168873928'}},
     {'name': 'place5',
-    'coordinates': {'latitude': '-122.41851199121258', 'longitude': '37.79931950905626'}},
+    'coordinates': {'latitude': '-122.21851199121258', 'longitude': '37.79931950905626'}},
   ],
   // [
   //   {'name': 'Newbury Street', 
@@ -127,8 +127,6 @@ class Itinerary extends React.Component {
     }
 
 }
-
-
 
 
 
