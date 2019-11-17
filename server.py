@@ -2,6 +2,7 @@
 
 import os
 import io
+import json
 from flask import Flask, render_template, request, jsonify, send_file, url_for
 import requests
 from api import request_clinc
@@ -154,12 +155,13 @@ def resolve_user_query():
         'addLength': get(response, False, 'slots', '_LENGTH_OF_VISIT_'),
         'length': get(response, '', 'slots', '_LENGTH_OF_VISIT_', 'values', 0, 'value'),
         'addCity': get(response, False, 'slots', '_CITY_'),
-        'city': get(response, '', 'slots', '_CITY_', 'values', 0, 'value')
+        'city': get(response, '', 'slots', '_CITY_', 'values', 0, 'value'),
+        'schedule': get_coords(user_id),
     }
 
     print("got speakable response from clinc...")
     print(result)
-    # text_to_speech(result)
+    text_to_speech(result)
     return jsonify(**data)
 
 
@@ -181,6 +183,17 @@ def get_destinations(user_id):
     return destinations
 
 
+def get_coords(user_id):
+    doc_ref = collection.document(user_id)
+    try:
+        coords = doc_ref.get().to_dict()["schedule"]
+        schedule = json.loads(coords)
+    except:
+        schedule = []
+        print("no schedule for now...")
+    print("fetch schedule list from database...")
+    print(schedule)
+    return schedule
 
 
 

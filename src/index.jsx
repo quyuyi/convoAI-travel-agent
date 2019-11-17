@@ -21,7 +21,8 @@ class App extends React.Component {
           city: '',
           visitor: '',
           length: '',
-          destinations : []
+          destinations : [],
+          schedule: [],
       }
       console.log(this.state.userId);
       this.handleGenerate = this.handleGenerate.bind(this);
@@ -58,11 +59,20 @@ class App extends React.Component {
             .then(response => response.json()); // parses JSON response into native JavaScript objects 
     }
 
-    handleUpdate (new_dest){
-        console.log("Updating the destination list...");
-        this.setState({
-            destinations: new_dest,
-        })
+    handleUpdate (type, new_list){
+        if (type == 'destinations'){
+            console.log("Updating the destination list...");
+            this.setState({
+                destinations: new_list,
+            });
+        }
+        if (type == 'schedule'){
+            console.log("Updating the schedule list...");
+            this.setState({
+                schedule: new_list,
+            });
+        }
+
     }
 
     handleRemove (idx){
@@ -110,7 +120,7 @@ class App extends React.Component {
                 <div>
 
                 <Itinerary
-                destinations={this.state.destinations} />
+                schedule={this.state.schedule} />
                 <br></br>
                 {/* <Button type="button" className="btn btn-primary" onClick={()=>this.handleGenerate()}>Regenerate my travel itinerary!</Button> */}
                 </div>
@@ -161,17 +171,13 @@ class App extends React.Component {
             </Row>
             <br></br>
 
-            <Row className='map_container'>
-            <Col>
+            <Row>
+            <Col md={4}>
             {this.renderItinerary()}
             </Col>
-            </Row>
-
-            <Row>
-            <Col>
+            <Col md={8}>
             <div>
             <div id='map'></div>
-
             <div className="info-box">
             <div id="info">
             </div>

@@ -13,15 +13,61 @@ import { AccessAlarm, ThreeDRotation } from '@material-ui/icons';
 // TODO
 // Better display itinerary?
 
+
+const sample_props = [
+  [
+    {'name': 'place1',
+    'coordinates': {'latitude': '-122.42060084672637', 'longitude': '37.80337168883928'}},
+    {'name': 'place2',
+    'coordinates': {'latitude': '-122.41051199129258', 'longitude': '37.79931950915626'}},
+    {'name': 'place3',
+    'coordinates': {'latitude': '-122.41851199129268', 'longitude': '37.79931950915616'}}
+  ],
+  [
+    {'name': 'place4',
+    'coordinates': {'latitude': '-122.42060584673637', 'longitude': '37.80337168873928'}},
+    {'name': 'place5',
+    'coordinates': {'latitude': '-122.41851199121258', 'longitude': '37.79931950905626'}},
+  ],
+  // [
+  //   {'name': 'Newbury Street', 
+  //   'coordinates': {'latitude': '42.34916666666667', 'longitude': '-71.08416666666666'}},
+  //   {'name': 'Veggie Galaxy',
+  //   'coordinates': {'latitude': '42.3636635', 'longitude': '-71.1011293'}},
+  // ],
+  // [
+  //   {'name': 'Liberty Hotel', 
+  //   'coordinates': {'latitude': '42.36208408084301', 'longitude': '-71.07024616922506'}},
+  //   {'name': 'Stadium',
+  //   'coordinates': {'latitude': '42.348333333333336', 'longitude': '-71.08083333333333'}},
+  //   {'name': 'Ocean Prime',
+  //   'coordinates': {'latitude': '42.35121985162622', 'longitude': '-71.04348767362461'}}
+  // ]
+];
+
 class Itinerary extends React.Component {
 
     constructor (props) {
       super(props);
-      this.state = {
-        // coords: this.props.destinations,
-        coords: [['-122.42060584672637', '37.80337168883928'], ['-122.41851199129258', '37.79931950915626']],
-      };
+      console.log("print props for itinerary...")
       console.log(this.props);
+      var coords = []
+      var destinations = []
+      this.props.schedule.map((day, index) => {
+        day.map((dest, idx) => {
+          console.log(dest.name);
+          const coord = [dest.coordinates.latitude, dest.coordinates.longitude];
+          coords.push(coord);
+          destinations.push(dest.name);
+        })
+
+      })
+      this.state = {
+        // coords: [['-122.42060584672637', '37.80337168883928'], ['-122.41851199129258', '37.79931950915626']],
+        coords: coords,
+        destinations: destinations,
+      };
+      console.log(this.state.coords);
     }
 
 
@@ -31,12 +77,19 @@ class Itinerary extends React.Component {
       var map = new mapboxgl.Map({
         container: 'map', // Specify the container ID
         style: 'mapbox://styles/mapbox/streets-v11', // Specify which map style to use
-        center: [-122.42136449,37.80176523], // Specify the starting position
+        center: ['-122.42060584672637', '37.80337168883928'], // Specify the starting position
         zoom: 14.5, // Specify the starting zoom
       });
-      updateRoute(map, this.state.coords);
+
+      // get coords list from this.props.schedule
+      sample_props.map((day, idx) => {
+        updateRoute(map, day, idx);
+      });
     }
 
+    handleGenerate(){
+      console.log("handle regenerate need implementation...");
+    }
 
 
   
@@ -44,21 +97,21 @@ class Itinerary extends React.Component {
 
     render(){
       let d = [];
-      this.props.destinations.map((dest, index)=> {
+      ['place1','place2','place3'].map((day, index)=> {
         let record = {
           'day': index+1,
-          'destination': dest,
-          'description': 'https://caennews.engin.umich.edu/wp-content/uploads/sites/304/2017/05/ggbl2505-article-300x231.jpg'
+          'destination': day,
+          // 'description': 'https://caennews.engin.umich.edu/wp-content/uploads/sites/304/2017/05/ggbl2505-article-300x231.jpg'
         };
         d.push(record);
       });
         const columns = [
             { title: 'Day', field: 'day' },
             { title: 'Destination', field: 'destination' },
-            { title: 'Description', field: 'description',
-            render: rowData => <img src = {rowData.description} 
-                                  style = {{width:200}}/>
-            },
+            // { title: 'Description', field: 'description',
+            // render: rowData => <img src = {rowData.description} 
+            //                       style = {{width:200}}/>
+            // },
         ];
         const data = d;
       return(
@@ -77,9 +130,12 @@ class Itinerary extends React.Component {
 
 
 
-function updateRoute(map, coords) {
+
+
+function updateRoute(map, coords, i) {
   // Set the profile
-  var profile = "driving";
+  // var profile = "driving";
+  var profile = "driving-traffic";
   // Get the coordinates that were drawn on the map
 
 
@@ -87,7 +143,14 @@ function updateRoute(map, coords) {
   //var lastFeature = data.features.length - 1;
   //var coords = data.features[lastFeature].geometry.coordinates;
   //console.log(coords);
-
+  
+  // format the record in our database
+  let format_coords = [];
+  coords.map((dest, idx) => {
+    let coord = [dest.coordinates.latitude, dest.coordinates.longitude];
+    format_coords.push(coord);
+  })
+  coords = format_coords;
   // Format the coordinates
   var newCoords = coords.join(';')
  // console.log(newCoords);
@@ -98,10 +161,17 @@ function updateRoute(map, coords) {
   coords.forEach(element => {
     radius.push(25);
   });
-  getMatch(map, newCoords, radius, profile);
+  getMatch(map, newCoords, radius, profile, i);
 }
+
+
+
+
+
     
-function getMatch(map, coordinates, radius, profile) {
+function getMatch(map, coordinates, radius, profile, i) {
+  console.log("print from getMatch...")
+  console.log(coordinates);
   // Separate the radiuses with semicolons
   var radiuses = radius.join(';')
   // Create the query
@@ -111,13 +181,19 @@ function getMatch(map, coordinates, radius, profile) {
     method: 'GET',
     url: query
   }).done(function(data) {
+    console.log(data);
     // Get the coordinates from the response
     let coords = data.matchings[0].geometry;
     // Draw the route on the map
-    addRoute(map, coords);
+    addRoute(map, coords, i);
     getInstructions(data.matchings[0]);
   });
 }
+
+
+
+
+
 
 // If the user clicks the delete draw button, remove the layer if it exists
 function removeRoute() {
@@ -129,14 +205,22 @@ function removeRoute() {
   }
 }
 
-function addRoute(map, coords) {
+
+
+
+
+
+function addRoute(map, coords, idx) {
   // If a route is already loaded, remove it
-  if (map.getSource('route')) {
-    map.removeLayer('route')
-    map.removeSource('route')
-  } else {
+  // if (map.getSource('route')) {
+  //   map.removeLayer('route')
+  //   map.removeSource('route')
+  // } else {
+    const colors= ["#03AA46", "#FF0000"];
+    const name = "route"+idx.toString();
+    console.log(name);
     map.addLayer({
-      "id": "route",
+      "id": name,
       "type": "line",
       "source": {
         "type": "geojson",
@@ -151,7 +235,7 @@ function addRoute(map, coords) {
         "line-cap": "round"
       },
       "paint": {
-        "line-color": "#03AA46",
+        "line-color": colors[idx],
         "line-width": 8,
         "line-opacity": 0.8
       }
@@ -167,7 +251,7 @@ function addRoute(map, coords) {
           "coordinates": coords.coordinates[i].map(i => parseFloat(i))
         },
         "properties": {
-          "title": "test",
+          "title": 'destination_name',
           "icon": "monument"
         }
       }
@@ -175,7 +259,7 @@ function addRoute(map, coords) {
     }
 
     map.addLayer({
-    "id": "points",
+    "id": "points"+idx.toString(),
     "type": "symbol",
     "source": {
     "type": "geojson",
@@ -197,8 +281,13 @@ function addRoute(map, coords) {
     });
 
 
-  };
+  // };
 }
+
+
+
+
+
 
 
 function getInstructions(data) {

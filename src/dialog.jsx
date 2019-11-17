@@ -140,7 +140,14 @@ class Dialog extends React.Component {
             }
 
             // update distination list
-            this.props.handleUpdate(data.destinations);
+            this.props.handleUpdate('destinations',data.destinations);
+
+            // update schedule list
+            if (data.schedule != []){
+                this.props.handleUpdate('schedule', data.schedule);
+            }
+
+            // update chat histoty
             this.setState({
                 loading: false,
                 history: [...previous, record_clinc],
