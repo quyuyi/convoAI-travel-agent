@@ -14,37 +14,37 @@ import { AccessAlarm, ThreeDRotation } from '@material-ui/icons';
 // Better display itinerary?
 
 
-const sample_props = [
-  [
-    {'name': 'place1',
-    'coordinates': {'latitude': '-122.40060084672637', 'longitude': '37.80337168883928'}},
-    {'name': 'place2',
-    'coordinates': {'latitude': '-122.49051199129258', 'longitude': '37.29931950915626'}},
-    {'name': 'place3',
-    'coordinates': {'latitude': '-122.31851199129268', 'longitude': '37.79931950915616'}}
-  ],
-  [
-    {'name': 'place4',
-    'coordinates': {'latitude': '-122.42060584673637', 'longitude': '37.80337168873928'}},
-    {'name': 'place5',
-    'coordinates': {'latitude': '-122.21851199121258', 'longitude': '37.79931950905626'}},
-  ],
-  // [
-  //   {'name': 'Newbury Street', 
-  //   'coordinates': {'latitude': '42.34916666666667', 'longitude': '-71.08416666666666'}},
-  //   {'name': 'Veggie Galaxy',
-  //   'coordinates': {'latitude': '42.3636635', 'longitude': '-71.1011293'}},
-  // ],
-  // [
-  //   {'name': 'Liberty Hotel', 
-  //   'coordinates': {'latitude': '42.36208408084301', 'longitude': '-71.07024616922506'}},
-  //   {'name': 'Stadium',
-  //   'coordinates': {'latitude': '42.348333333333336', 'longitude': '-71.08083333333333'}},
-  //   {'name': 'Ocean Prime',
-  //   'coordinates': {'latitude': '42.35121985162622', 'longitude': '-71.04348767362461'}}
-  // ]
-];
-
+// const sample_props = [
+//   [
+//     {'name': 'place1',
+//     'coordinates': {'latitude': '-122.40060084672637', 'longitude': '37.80337168883928'}},
+//     {'name': 'place2',
+//     'coordinates': {'latitude': '-122.49051199129258', 'longitude': '37.29931950915626'}},
+//     {'name': 'place3',
+//     'coordinates': {'latitude': '-122.31851199129268', 'longitude': '37.79931950915616'}}
+//   ],
+//   [
+//     {'name': 'place4',
+//     'coordinates': {'latitude': '-122.42060584673637', 'longitude': '37.80337168873928'}},
+//     {'name': 'place5',
+//     'coordinates': {'latitude': '-122.21851199121258', 'longitude': '37.79931950905626'}},
+//   ]
+  
+//   // [
+//   //   {'name': 'Newbury Street', 
+//   //   'coordinates': {'latitude': '42.34916666666667', 'longitude': '-71.08416666666666'}},
+//   //   {'name': 'Veggie Galaxy',
+//   //   'coordinates': {'latitude': '42.3636635', 'longitude': '-71.1011293'}},
+//   // ],
+//   // [
+//   //   {'name': 'Liberty Hotel', 
+//   //   'coordinates': {'latitude': '42.36208408084301', 'longitude': '-71.07024616922506'}},
+//   //   {'name': 'Stadium',
+//   //   'coordinates': {'latitude': '42.348333333333336', 'longitude': '-71.08083333333333'}},
+//   //   {'name': 'Ocean Prime',
+//   //   'coordinates': {'latitude': '42.35121985162622', 'longitude': '-71.04348767362461'}}
+//   // ]
+// ];
 class Itinerary extends React.Component {
 
     constructor (props) {
