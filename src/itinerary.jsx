@@ -81,8 +81,8 @@ class Itinerary extends React.Component {
         zoom: 14.5, // Specify the starting zoom
       });
 
-      // get coords list from this.props.schedule
-      sample_props.map((day, idx) => {
+      // get coords list from this.props.
+      this.props.map((day, idx) => {
         updateRoute(map, day, idx);
       });
     }
