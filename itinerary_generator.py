@@ -96,6 +96,9 @@ class ItineraryGen(object):
 		chuncks = np.array_split(route, self._num_days)
 		for i, chunck in enumerate(chuncks):
 			day_plan[i] = tuple(self._places[j] for j in chunck)
+			for idx, t in enumerate(day_plan[i]):
+				day_plan[i][idx]['coordinates']['latitude'] = str(day_plan[i][idx]['coordinates']['latitude'])
+				day_plan[i][idx]['coordinates']['longitude'] = str(day_plan[i][idx]['coordinates']['longitude'])
 
 		return day_plan
 
