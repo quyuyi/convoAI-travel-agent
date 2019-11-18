@@ -8,6 +8,7 @@
 2. Suggest user stop adding destination when there're enough places
 3. Implement destination_info function (user asks for info of a place, and UI displays info)
 4. Recommend nearby restaurant/hotel based on route
+5. Recommend according to user preference
 ### UI:
 1. Improve visualization of top left destination lists
 2. Enable top left cancel button
