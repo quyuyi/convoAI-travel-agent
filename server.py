@@ -176,7 +176,10 @@ def resolve_user_query():
 @app.route("/define_your_name/", methods=["GET", "POST"])
 def define_your_name():
     # TODO
-
+    data = {
+        'response': 'succefully added destination.',
+    }
+    return jsonify(**data)
 
 
 
