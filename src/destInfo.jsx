@@ -45,9 +45,10 @@ class DestInfo extends React.Component {
         let data = {destination: document.getElementById("dest").innerHTML, user_id: this.props.userId}
         console.log(data)
         this.postData('/add_destination/', data) 
-        .then(data => {
+        .then(dat => {
             // console.log("get reponse: ", data.response);
-            console.log("data", data)
+            console.log("data", dat);
+            this.props.handleUpdate('destinations',dat.destinations);
         }) // JSON-string from `response.json()` call
         .catch(error => console.error(error));
     }

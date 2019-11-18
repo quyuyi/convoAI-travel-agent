@@ -27,7 +27,7 @@ const sample_props = [
     {'name': 'place4',
     'coordinates': {'longitude': '-122.42060584673637', 'latitude': '37.80337168873928'}},
     {'name': 'place5',
-    'coordinates': {'longitute': '-122.41851199121258', 'latitude': '37.79931950905626'}},
+    'coordinates': {'longitude': '-122.41851199121258', 'latitude': '37.79931950905626'}},
   ],
 ];
 
