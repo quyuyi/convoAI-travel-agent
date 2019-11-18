@@ -223,6 +223,10 @@ def resolve_basic_info(clinc_request):
             city_key = "New_York_City"
         if city_key == "Ann_Arbor":
             city_key = "Ann_Arbor2C_Michigan"
+        if city_key == "Shanghai":
+            city_key = "wv__Shanghai"
+        if city_key == "Beijing":
+            city_key = "wv_Beijing"
         clinc_request['slots']['_CITY_']['values'][0]['value'] = city_value
         doc_ref.update({
             'city': city_value,
