@@ -187,11 +187,12 @@ def add_distination():
         # print(destination)
         doc_ref = collection.document(user_id)
         destinations = doc_ref.get().to_dict()["destinations"]
+        if destination in destinations:
+            destinations.append(destination)
+            doc_ref.update({
+                "destinations": destinations
+            })
         # print(destinations)
-        destinations.append(destination)
-        doc_ref.update({
-            "destinations": destinations
-        })
         # print(doc_ref.get().to_dict()["destinations"])
 
     data = {
