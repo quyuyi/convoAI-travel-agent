@@ -17,17 +17,17 @@ import { AccessAlarm, ThreeDRotation } from '@material-ui/icons';
 const sample_props = [
   [
     {'name': 'place1',
-    'coordinates': {'latitude': '-122.42060084672637', 'longitude': '37.80337168883928'}},
+    'coordinates': {'longitude': '-122.42060084672637', 'latitude': '37.80337168883928'}},
     {'name': 'place2',
-    'coordinates': {'latitude': '-122.41051199129258', 'longitude': '37.79931950915626'}},
+    'coordinates': {'longitude': '-122.41051199129258', 'latitude': '37.79931950915626'}},
     {'name': 'place3',
-    'coordinates': {'latitude': '-122.41851199129268', 'longitude': '37.79931950915616'}}
+    'coordinates': {'longitude': '-122.41851199129268', 'latitude': '37.79931950915616'}}
   ],
   [
     {'name': 'place4',
-    'coordinates': {'latitude': '-122.42060584673637', 'longitude': '37.80337168873928'}},
+    'coordinates': {'longitude': '-122.42060584673637', 'latitude': '37.80337168873928'}},
     {'name': 'place5',
-    'coordinates': {'latitude': '-122.41851199121258', 'longitude': '37.79931950905626'}},
+    'coordinates': {'longitute': '-122.41851199121258', 'latitude': '37.79931950905626'}},
   ],
 ];
 
@@ -38,7 +38,7 @@ class Itinerary extends React.Component {
       console.log(this.props);
       console.log(this.props.schedule.length);
       if (this.props.schedule.length > 0) {
-        const center_coords = [this.props.schedule[0][0].coordinates.latitude, this.props.schedule[0][0].coordinates.longitude];  
+        const center_coords = [this.props.schedule[0][0].coordinates.longitude, this.props.schedule[0][0].coordinates.latitude];  
         this.state = {
           center_coords: center_coords,
           schedule: this.props.schedule,
@@ -80,6 +80,8 @@ class Itinerary extends React.Component {
         }
       });
     }
+
+
 
     handleGenerate(){
       console.log("handle regenerate need implementation...");
@@ -130,9 +132,9 @@ class Itinerary extends React.Component {
 
 function updateRoute(map, coords, i) {
   // Set the profile
-  // var profile = "driving";
+  var profile = "driving";
   // var profile = "driving-traffic";
-  var profile = "cycling";
+  // var profile = "cycling";
   // Get the coordinates that were drawn on the map
 
 
@@ -144,7 +146,7 @@ function updateRoute(map, coords, i) {
   // format the record in our database
   let format_coords = [];
   coords.map((dest, idx) => {
-    let coord = [dest.coordinates.latitude, dest.coordinates.longitude];
+    let coord = [dest.coordinates.longitude, dest.coordinates.latitude];
     format_coords.push(coord);
   })
   coords = format_coords;
@@ -178,9 +180,10 @@ function getMatch(map, coordinates, radius, profile, i) {
     method: 'GET',
     url: query
   }).done(function(data) {
+    console.log(query);
     console.log(data);
     // Get the coordinates from the response
-    if ("matchings" in data){
+    if ("matchings" in data && data.matchings.length > 0){
       let coords = data.matchings[0].geometry;
       // Draw the route on the map
       addRoute(map, coords, i);
@@ -207,7 +210,6 @@ function removeRoute() {
     return;
   }
 }
-
 
 
 
