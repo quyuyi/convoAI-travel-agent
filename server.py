@@ -166,7 +166,7 @@ def resolve_user_query():
 
     print("got speakable response from clinc...")
     print(result)
-    # text_to_speech(result)
+    text_to_speech(result)
     return jsonify(**data)
 
 
@@ -187,7 +187,7 @@ def add_distination():
         # print(destination)
         doc_ref = collection.document(user_id)
         destinations = doc_ref.get().to_dict()["destinations"]
-        if destination in destinations:
+        if destination not in destinations:
             destinations.append(destination)
             doc_ref.update({
                 "destinations": destinations

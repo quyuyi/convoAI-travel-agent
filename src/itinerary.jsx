@@ -172,7 +172,9 @@ function getMatch(map, coordinates, radius, profile, i) {
   // Separate the radiuses with semicolons
   var radiuses = radius.join(';')
   // Create the query
-  let query = 'https://api.mapbox.com/matching/v5/mapbox/' + profile + '/' + coordinates + '?geometries=geojson&radiuses=' + radiuses + '&steps=true&access_token=' + mapboxgl.accessToken;
+  // let query = 'https://api.mapbox.com/matching/v5/mapbox/' + profile + '/' + coordinates + '?geometries=geojson&radiuses=' + radiuses + '&steps=true&access_token=' + mapboxgl.accessToken;
+  let query = 'https://api.mapbox.com/directions/v5/mapbox/' + profile + '/' + coordinates + '?geometries=geojson&steps=true&access_token=' + mapboxgl.accessToken;
+
 
   $.ajax({
     method: 'GET',
@@ -181,15 +183,18 @@ function getMatch(map, coordinates, radius, profile, i) {
     console.log(query);
     console.log(data);
     // Get the coordinates from the response
-    if ("matchings" in data && data.matchings.length > 0){
-      let coords = data.matchings[0].geometry;
-      // Draw the route on the map
-      addRoute(map, coords, i);
-      getInstructions(data.matchings[0]);
-    }
-    else {
-      console.log(data);
-    }
+    // if ("matchings" in data && data.matchings.length > 0){
+    //   let coords = data.matchings[0].geometry;
+    //   // Draw the route on the map
+    //   addRoute(map, coords, i);
+    //   getInstructions(data.matchings[0]);
+    // }
+    // else {
+    //   console.log(data);
+    // }
+    let coords = data.routes[0].geometry;
+    addRoute(map, coords, data.waypoints, i,);
+    getInstructions(data.routes[0]);
 
   });
 }
@@ -213,7 +218,7 @@ function removeRoute() {
 
 
 
-function addRoute(map, coords, idx) {
+function addRoute(map, coords, waypoints, idx) {
   // If a route is already loaded, remove it
   // if (map.getSource('route')) {
   //   map.removeLayer('route')
@@ -245,19 +250,32 @@ function addRoute(map, coords, idx) {
 
     let feats = [];
     console.log(coords.coordinates);
+    console.log(waypoints);
     for (let i = 0; i < coords.coordinates.length; ++i) {
-      let item = {
-        "type": "Feature",
-        "geometry": {
-          "type": "Point",
-          "coordinates": coords.coordinates[i].map(i => parseFloat(i))
-        },
-        "properties": {
-          "title": 'destination_name',
-          "icon": "monument"
+      if (i==0 || i==coords.coordinates.length-1){
+        let item = {
+          "type": "Feature",
+          "geometry": {
+            "type": "Point",
+            "coordinates": coords.coordinates[i].map(i => parseFloat(i))
+          },
+          "properties": {
+            "title": i==0 ? waypoints[0].name : waypoints[1].name,
+            "icon": "monument"
+          }
         }
+        feats.push(item);
       }
-      feats.push(item);
+      else {
+        let item = {
+          "type": "Feature",
+          "geometry": {
+            "type": "Point",
+            "coordinates": coords.coordinates[i].map(i => parseFloat(i))
+          },
+        }        
+        feats.push(item);
+      }
     }
 
     map.addLayer({
