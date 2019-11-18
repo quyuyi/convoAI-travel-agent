@@ -113,9 +113,10 @@ def resolve_add_destination(clinc_request):
     try:
         count = doc_ref.get().to_dict()["count"]
         city = doc_ref.get().to_dict()['city']
+        ndays = doc_ref.get().to_dict()['length_of_visit']
     except KeyError:
         city = "-1"
-        print("No count or city.")
+        print("No count or city or ndays.")
 
     if clinc_request['slots']:
         destination = capitalize_name(clinc_request['slots']['_DESTINATION_']['values'][0]['tokens'])
@@ -134,11 +135,20 @@ def resolve_add_destination(clinc_request):
             print("count", count)
             destination_name = city_recommendations['results'][count-1]['name']
             added_destinations = doc_ref.get().to_dict()['destinations']
-            if destination_name not in added_destinations:
+            if destination_name not in added_destinations: # Add successfully
                 added_destinations.append(destination_name)
                 doc_ref.update({
                     'destinations' : added_destinations
                 })
+                nplaces = len(added_destinations)-1
+                if float(nplaces)/float(ndays) >= 3:
+                    clinc_request['slots']['_SUGGEST_'] = {
+                        "type": "string",
+                        "values": [{
+                            "resolved": 1,
+                            "value": "You have added " + str(nplaces) + " destinations in your " + str(ndays) + "-day trip. I think that's enough. You may go to generate itinerary."
+                        }]
+                    }
             else:
                 clinc_request['slots']['_ADDTWICE_'] = {
                     "type": "string",
@@ -400,11 +410,10 @@ def resolve_destination_info(clinc_request):
         return jsonify(**clinc_request)
 
     try:
-        count = doc_ref.get().to_dict()["count"]
         city = doc_ref.get().to_dict()['city']
     except KeyError:
         city = "-1"
-        print("No count or city.")
+        print("No city.")
 
     if clinc_request['slots']:
         destination = capitalize_name(clinc_request['slots']['_DESTINATION_']['values'][0]['tokens'])
