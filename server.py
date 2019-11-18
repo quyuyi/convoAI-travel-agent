@@ -194,7 +194,7 @@ def add_distination():
         # print(doc_ref.get().to_dict()["destinations"])
 
     data = {
-        'response': 'succefully added destination.',
+        'destinations': get_destinations(user_id),
     }
     return jsonify(**data)
 
