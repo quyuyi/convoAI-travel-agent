@@ -15,7 +15,7 @@ from itinerary_generator import ItineraryGen
 import json
 
 # Use a service account
-cred = credentials.Certificate('convai498-1572652809131-7fc020a15ecf.json')
+cred = credentials.Certificate('convai498-1572652809131-firebase-adminsdk-i8c6i-de8d470e32.json')
 firebase_admin.initialize_app(cred)
 db = firestore.client()
 collection = db.collection('users')
