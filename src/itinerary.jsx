@@ -128,8 +128,6 @@ class Itinerary extends React.Component {
 
 
 
-
-
 function updateRoute(map, coords, i) {
   // Set the profile
   var profile = "driving";
