@@ -12,8 +12,7 @@ class DestInfo extends React.Component {
 
     constructor (props) {
         super(props);
-        this.handleClick = this.handleClick.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleAdd = this.handleAdd.bind(this);
     }
     
     postData(url = '', data = {}) {
@@ -34,36 +33,17 @@ class DestInfo extends React.Component {
             .then(response => response.json()); // parses JSON response into native JavaScript objects 
     }
     
-    handleClick(){
-        console.log("call backend to record...");
-        this.postData('/record_to_text/', {query: "record"}) 
-        .then(data => {
-            console.log("get reponse: ", data.response);
-            this.handleSubmit(data.response);
-        }) // JSON-string from `response.json()` call
-       .catch(error => console.error(error));
+
+
+
+    // TODO
+    handleAdd(){
+        // implement a function in server.py
+        // call that function to update database
     }
-   
-    handleSubmit (text){
-        var cont=document.getElementById("words");
-        let regu = "^[ ]+$";
-        let re = new RegExp(regu);
-        if (!re.test(text) & !(text==="")){
-            const previous = this.state.history;
-            const record_user = {
-                "from": "user",
-                "msg": text,
-            }
-            this.setState({
-                first: false,
-                loading: true,
-                history: [...previous, record_user],
-            });
-            cont.scrollTop = cont.scrollHeight;
-            document.getElementById("userInput").value='';
-            this.queryClinc(text);
-        };
-    }
+
+
+    
     
     render (){
         const cardStyle = {
@@ -112,7 +92,7 @@ class DestInfo extends React.Component {
                     </CardContent>
                 </CardActionArea>
                 <CardActions>
-                    <Button type ="button" onClick={()=>this.handleClick} size="small" color="primary">
+                    <Button type ="button" onClick={()=>this.handleAdd()} size="small" color="primary">
                     Add
                     </Button>
                     <Button size="small" color="primary">

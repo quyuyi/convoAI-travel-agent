@@ -166,6 +166,26 @@ def resolve_user_query():
 
 
 
+
+
+
+# TODO
+# add destination to database by clicking the add button on UI
+# define the route name and the function name
+# call this function in destInfo.jsx onClick Add button
+@app.route("/define_your_name/", methods=["GET", "POST"])
+def define_your_name():
+    # TODO
+
+
+
+
+
+
+
+
+
+
 '''get destinations list of the user from database
 Returns: a list of destinations
 '''
