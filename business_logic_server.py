@@ -371,9 +371,57 @@ def resolve_clean_goodbye(clinc_request):
 
 def resolve_destination_info(clinc_request):
     print("start resolve destination_info...")
-
     clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = clinc_request['slots']['_DESTINATION_']['values'][0]['tokens']
     clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 1
+
+    user_id = clinc_request['external_user_id']
+    doc_ref = collection.document(user_id)
+    doc = doc_ref.get()
+    if not doc.exists:
+        doc_ref.set({
+            'sessionId' : user_id
+        })
+
+    city_dict = doc_ref.get().to_dict()
+
+    if  "city" not in city_dict:
+        clinc_request['slots'] = {
+            "_NOCITY_": {
+                "type" : "string",
+                "values" : [
+                    {
+                        "resolved" : 1,
+                        "value" : "Sorry, please tell me which city you're going to before I can give you information. "
+                    }
+                ]
+            }
+        }
+        pp.pprint(clinc_request)
+        return jsonify(**clinc_request)
+
+    try:
+        count = doc_ref.get().to_dict()["count"]
+        city = doc_ref.get().to_dict()['city']
+    except KeyError:
+        city = "-1"
+        print("No count or city.")
+
+    if clinc_request['slots']:
+        destination = capitalize_name(clinc_request['slots']['_DESTINATION_']['values'][0]['tokens'])
+        # clinc_request['visual_payload'] = {
+        #     'destination': destination
+        # }
+    
+        city_doc_ref = city_collection.document(city)
+        city_recommendations = city_doc_ref.get().to_dict()["recommendations"]
+        city_name_dict = city_doc_ref.get().to_dict()["name_to_index"]
+        
+        if destination in city_name_dict: # destination exists
+            print('destination in dict')
+            clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = destination
+            clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 1  # why the value of 'values' is list???
+        else: # destination not in recommendation list, cannot add
+            clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = -1
 
     # TODO
     # request the trip api to get information about the destination
@@ -509,10 +557,6 @@ def resolve_recommendation(clinc_request):
     })
 
     print("slots:", clinc_request['slots'])
-
-    # TODO
-    # figure out other preferences need by the trip api
-    # tell Tianchun to add slots in clinc
 
     print("finish resolving, send response back to clinc...")
     pp.pprint(clinc_request)
