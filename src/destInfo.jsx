@@ -12,6 +12,7 @@ class DestInfo extends React.Component {
 
     constructor (props) {
         super(props);
+        this.state = {"destination": ""}
         this.handleAdd = this.handleAdd.bind(this);
     }
     
@@ -33,13 +34,22 @@ class DestInfo extends React.Component {
             .then(response => response.json()); // parses JSON response into native JavaScript objects 
     }
     
-
-
-
+    componentDidMount() {
+        // Call REST API to get number of likes
+        this.setState({"destination": document.getElementById("dest").innerHTML, user_id: this.props.userId});
+    }
+    
     // TODO
     handleAdd(){
-        // implement a function in server.py
-        // call that function to update database
+        console.log("click on button");
+        let data = {destination: document.getElementById("dest").innerHTML, user_id: this.props.userId}
+        console.log(data)
+        this.postData('/add_destination/', data) 
+        .then(data => {
+            // console.log("get reponse: ", data.response);
+            console.log("data", data)
+        }) // JSON-string from `response.json()` call
+        .catch(error => console.error(error));
     }
 
 
@@ -92,6 +102,7 @@ class DestInfo extends React.Component {
                     </CardContent>
                 </CardActionArea>
                 <CardActions>
+                    {/* <button type="button" onClick={()=>this.handleAdd()}> add </button> */}
                     <Button type ="button" onClick={()=>this.handleAdd()} size="small" color="primary">
                     Add
                     </Button>

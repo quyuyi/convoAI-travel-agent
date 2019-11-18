@@ -159,7 +159,7 @@ class App extends React.Component {
 
             <Row> {/*image and description of the destination recommended*/}
                 <Col md={6}>
-                <DestInfo />
+                <DestInfo userId={this.state.userId}/>
                 </Col>
 
                 <Col md={6}>

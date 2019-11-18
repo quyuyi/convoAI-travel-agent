@@ -18,7 +18,7 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 
 pp = pprint.PrettyPrinter(indent=4)
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="/Users/quyuyi/Downloads/WebpageClassifier-2cf78af630ef.json"
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="convai498-1572652809131-6959028fb278.json"
 
 # Instantiates a speech to text client
 speech_to_text_client = speech.SpeechClient()
@@ -26,7 +26,7 @@ speech_to_text_client = speech.SpeechClient()
 text_to_speech_client = texttospeech.TextToSpeechClient()
 
 # database
-cred = credentials.Certificate('convai498-1572652809131-firebase-adminsdk-i8c6i-de8d470e32.json')
+cred = credentials.Certificate('convai498-1572652809131-6959028fb278.json')
 firebase_admin.initialize_app(cred)
 db = firestore.client()
 collection = db.collection('users')
@@ -173,9 +173,22 @@ def resolve_user_query():
 # add destination to database by clicking the add button on UI
 # define the route name and the function name
 # call this function in destInfo.jsx onClick Add button
-@app.route("/define_your_name/", methods=["GET", "POST"])
-def define_your_name():
-    # TODO
+@app.route("/add_destination/", methods=["GET", "POST"])
+def add_distination():
+    user_id = request.json["user_id"]
+    print(user_id)
+    if request.method == "POST":
+        destination = request.json["destination"]
+        # print(destination)
+        doc_ref = collection.document(user_id)
+        destinations = doc_ref.get().to_dict()["destinations"]
+        # print(destinations)
+        destinations.append(destination)
+        doc_ref.update({
+            "destinations": destinations
+        })
+        # print(doc_ref.get().to_dict()["destinations"])
+
     data = {
         'response': 'succefully added destination.',
     }
