@@ -29,45 +29,30 @@ const sample_props = [
     {'name': 'place5',
     'coordinates': {'latitude': '-122.41851199121258', 'longitude': '37.79931950905626'}},
   ],
-  // [
-  //   {'name': 'Newbury Street', 
-  //   'coordinates': {'latitude': '42.34916666666667', 'longitude': '-71.08416666666666'}},
-  //   {'name': 'Veggie Galaxy',
-  //   'coordinates': {'latitude': '42.3636635', 'longitude': '-71.1011293'}},
-  // ],
-  // [
-  //   {'name': 'Liberty Hotel', 
-  //   'coordinates': {'latitude': '42.36208408084301', 'longitude': '-71.07024616922506'}},
-  //   {'name': 'Stadium',
-  //   'coordinates': {'latitude': '42.348333333333336', 'longitude': '-71.08083333333333'}},
-  //   {'name': 'Ocean Prime',
-  //   'coordinates': {'latitude': '42.35121985162622', 'longitude': '-71.04348767362461'}}
-  // ]
 ];
 
 class Itinerary extends React.Component {
 
     constructor (props) {
       super(props);
-      console.log("print props for itinerary...")
       console.log(this.props);
-      var coords = []
-      var destinations = []
-      this.props.schedule.map((day, index) => {
-        day.map((dest, idx) => {
-          console.log(dest.name);
-          const coord = [dest.coordinates.latitude, dest.coordinates.longitude];
-          coords.push(coord);
-          destinations.push(dest.name);
-        })
-
-      })
-      this.state = {
-        // coords: [['-122.42060584672637', '37.80337168883928'], ['-122.41851199129258', '37.79931950915626']],
-        coords: coords,
-        destinations: destinations,
-      };
-      console.log(this.state.coords);
+      console.log(this.props.schedule.length);
+      if (this.props.schedule.length > 0) {
+        const center_coords = [this.props.schedule[0][0].coordinates.latitude, this.props.schedule[0][0].coordinates.longitude];  
+        this.state = {
+          center_coords: center_coords,
+          schedule: this.props.schedule,
+        };      
+      }
+      else {
+        this.state = {
+          center_coords: ['-122.42060584672637', '37.80337168883928'],
+          schedule: sample_props,
+        }
+      }      
+      console.log("print state for itinerary...")
+      console.log(this.state.schedule);
+      console.log(this.state.center_coords);
     }
 
 
@@ -77,13 +62,22 @@ class Itinerary extends React.Component {
       var map = new mapboxgl.Map({
         container: 'map', // Specify the container ID
         style: 'mapbox://styles/mapbox/streets-v11', // Specify which map style to use
-        center: ['-122.42060584672637', '37.80337168883928'], // Specify the starting position
+        // center: ['-122.42060584672637', '37.80337168883928'], // Specify the starting position
+        center: this.state.center_coords,
         zoom: 14.5, // Specify the starting zoom
       });
 
       // get coords list from this.props.schedule
-      sample_props.map((day, idx) => {
-        updateRoute(map, day, idx);
+      // this.props.schedule
+      this.state.schedule.map((day, idx) => {
+        console.log("update route for day ", idx);    
+        if (day.length >=2) {
+          updateRoute(map, day, idx);  
+          console.log("finding route between places...")    
+        }
+        else {
+          console.log("one place doesn't need route.")
+        }
       });
     }
 
@@ -97,13 +91,15 @@ class Itinerary extends React.Component {
 
     render(){
       let d = [];
-      ['place1','place2','place3'].map((day, index)=> {
-        let record = {
-          'day': index+1,
-          'destination': day,
-          // 'description': 'https://caennews.engin.umich.edu/wp-content/uploads/sites/304/2017/05/ggbl2505-article-300x231.jpg'
-        };
-        d.push(record);
+      this.state.schedule.map((day, idx)=> {
+        day.map((dest, idx2) => {
+          let record = {
+            'day': idx+1,
+            'destination': dest.name,
+            // 'description': 'https://caennews.engin.umich.edu/wp-content/uploads/sites/304/2017/05/ggbl2505-article-300x231.jpg'
+          };
+          d.push(record);
+        })
       });
         const columns = [
             { title: 'Day', field: 'day' },
@@ -135,7 +131,8 @@ class Itinerary extends React.Component {
 function updateRoute(map, coords, i) {
   // Set the profile
   // var profile = "driving";
-  var profile = "driving-traffic";
+  // var profile = "driving-traffic";
+  var profile = "cycling";
   // Get the coordinates that were drawn on the map
 
 
@@ -183,10 +180,16 @@ function getMatch(map, coordinates, radius, profile, i) {
   }).done(function(data) {
     console.log(data);
     // Get the coordinates from the response
-    let coords = data.matchings[0].geometry;
-    // Draw the route on the map
-    addRoute(map, coords, i);
-    getInstructions(data.matchings[0]);
+    if ("matchings" in data){
+      let coords = data.matchings[0].geometry;
+      // Draw the route on the map
+      addRoute(map, coords, i);
+      getInstructions(data.matchings[0]);
+    }
+    else {
+      console.log(data);
+    }
+
   });
 }
 
@@ -216,11 +219,10 @@ function addRoute(map, coords, idx) {
   //   map.removeLayer('route')
   //   map.removeSource('route')
   // } else {
-    const colors= ["#03AA46", "#FF0000"];
-    const name = "route"+idx.toString();
-    console.log(name);
+    const colors = ["#FF0000", "#00FF00", "#0000FF", "#FFFFFF", "#000000"];
+    // const colors= ["#03AA46", "#FF0000"];
     map.addLayer({
-      "id": name,
+      "id": "route"+idx.toString(),
       "type": "line",
       "source": {
         "type": "geojson",
