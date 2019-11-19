@@ -4,7 +4,7 @@ import os
 import io
 from flask import Flask, render_template, request, jsonify, send_file, url_for
 import requests
-from api import request_clinc
+from api import request_clinc, FIREBASE_AUTH
 import pprint
 from utils import get 
 import firebase_admin
@@ -15,7 +15,7 @@ from itinerary_generator import ItineraryGen
 import json
 
 # Use a service account
-cred = credentials.Certificate('convai498-1572652809131-firebase-adminsdk-i8c6i-de8d470e32.json')
+cred = credentials.Certificate(FIREBASE_AUTH)
 firebase_admin.initialize_app(cred)
 db = firestore.client()
 collection = db.collection('users')
@@ -113,9 +113,10 @@ def resolve_add_destination(clinc_request):
     try:
         count = doc_ref.get().to_dict()["count"]
         city = doc_ref.get().to_dict()['city']
+        ndays = doc_ref.get().to_dict()['length_of_visit']
     except KeyError:
         city = "-1"
-        print("No count or city.")
+        print("No count or city or ndays.")
 
     if clinc_request['slots']:
         destination = capitalize_name(clinc_request['slots']['_DESTINATION_']['values'][0]['tokens'])
@@ -134,11 +135,20 @@ def resolve_add_destination(clinc_request):
             print("count", count)
             destination_name = city_recommendations['results'][count-1]['name']
             added_destinations = doc_ref.get().to_dict()['destinations']
-            if destination_name not in added_destinations:
+            if destination_name not in added_destinations: # Add successfully
                 added_destinations.append(destination_name)
                 doc_ref.update({
                     'destinations' : added_destinations
                 })
+                nplaces = len(added_destinations)-1
+                if float(nplaces)/float(ndays) >= 3:
+                    clinc_request['slots']['_SUGGEST_'] = {
+                        "type": "string",
+                        "values": [{
+                            "resolved": 1,
+                            "value": "You have added " + str(nplaces) + " destinations in your " + str(ndays) + "-day trip. I think that's enough. You may go to generate itinerary."
+                        }]
+                    }
             else:
                 clinc_request['slots']['_ADDTWICE_'] = {
                     "type": "string",
@@ -371,9 +381,56 @@ def resolve_clean_goodbye(clinc_request):
 
 def resolve_destination_info(clinc_request):
     print("start resolve destination_info...")
-
     clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = clinc_request['slots']['_DESTINATION_']['values'][0]['tokens']
     clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 1
+
+    user_id = clinc_request['external_user_id']
+    doc_ref = collection.document(user_id)
+    doc = doc_ref.get()
+    if not doc.exists:
+        doc_ref.set({
+            'sessionId' : user_id
+        })
+
+    city_dict = doc_ref.get().to_dict()
+
+    if  "city" not in city_dict:
+        clinc_request['slots'] = {
+            "_NOCITY_": {
+                "type" : "string",
+                "values" : [
+                    {
+                        "resolved" : 1,
+                        "value" : "Sorry, please tell me which city you're going to before I can give you information. "
+                    }
+                ]
+            }
+        }
+        pp.pprint(clinc_request)
+        return jsonify(**clinc_request)
+
+    try:
+        city = doc_ref.get().to_dict()['city']
+    except KeyError:
+        city = "-1"
+        print("No city.")
+
+    if clinc_request['slots']:
+        destination = capitalize_name(clinc_request['slots']['_DESTINATION_']['values'][0]['tokens'])
+        # clinc_request['visual_payload'] = {
+        #     'destination': destination
+        # }
+    
+        city_doc_ref = city_collection.document(city)
+        city_recommendations = city_doc_ref.get().to_dict()["recommendations"]
+        city_name_dict = city_doc_ref.get().to_dict()["name_to_index"]
+        
+        if destination in city_name_dict: # destination exists
+            print('destination in dict')
+            clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = destination
+            clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 1  # why the value of 'values' is list???
+        else: # destination not in recommendation list, cannot add
+            clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = -1
 
     # TODO
     # request the trip api to get information about the destination
@@ -509,10 +566,6 @@ def resolve_recommendation(clinc_request):
     })
 
     print("slots:", clinc_request['slots'])
-
-    # TODO
-    # figure out other preferences need by the trip api
-    # tell Tianchun to add slots in clinc
 
     print("finish resolving, send response back to clinc...")
     pp.pprint(clinc_request)

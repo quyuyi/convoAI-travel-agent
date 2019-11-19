@@ -1,18 +1,21 @@
 # EECS498 Conversational AI - Travel Agent
 
 ## TODO
-
-### UI
-1. Conversational AI font
-2. ~~destination list~~
-3. ~~destination info popup window~~
-4. ~~add ASR~~
-5. add destination from destInfo card
-6. change picture of destInfo
-7. UserInfo should generate dynamically
-
-### Business Logic Server
-1. if change state, can we know the slots of the new state?
+### Clinc:
+1. Test Clinc classification and slot mapping, use Clinc slot mapper
+### Backend:
+1. Avoid getting "no speakable response" when itinerary cannot be generated
+2. Suggest user stop adding destination when there're enough places
+3. Recommend nearby restaurant/hotel based on route
+4. Recommend according to user preference
+### UI:
+1. Improve visualization of top left destination lists
+2. Enable top left cancel button
+3. Enable cancel button in schedule list or enable modify order of places in schedule
+4. Enable route guide for multiple days
+5. Display destination information at resolve_destination_info
+### TTS&STT:
+(1. Can user directly speak to AI without clicking 'record' button?)
 
 
 ## Notes:
