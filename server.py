@@ -8,14 +8,14 @@ import requests
 from api import request_clinc
 import pprint
 from utils import get
-
+'''
 from record import record # record utterance query
 
 from google.cloud import speech # Imports the Google Cloud client library
 from google.cloud.speech import enums
 from google.cloud.speech import types
 from google.cloud import texttospeech
-
+'''
 import firebase_admin # import database
 from firebase_admin import credentials
 from firebase_admin import firestore
@@ -23,12 +23,12 @@ from firebase_admin import firestore
 pp = pprint.PrettyPrinter(indent=4)
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="convai498-1572652809131-firebase-adminsdk-i8c6i-de8d470e32.json"
 
-
+'''
 # Instantiates a speech to text client
 speech_to_text_client = speech.SpeechClient()
 # Instantiates a text to speech client
 text_to_speech_client = texttospeech.TextToSpeechClient()
-
+'''
 
 # database
 cred = credentials.Certificate('convai498-1572652809131-firebase-adminsdk-i8c6i-de8d470e32.json')
@@ -46,7 +46,7 @@ app = Flask(__name__)
 def index():
     return render_template('index.html')
 
-
+'''
 @app.route("/record_to_text/", methods=["GET", "POST"])
 def record_to_text():
     record() # record the file
@@ -109,7 +109,7 @@ def text_to_speech(text):
         # Write the response to the output file.
         out.write(response.audio_content)
         print('Audio content written to file "output.mp3"')
-
+'''
 
 
 
@@ -166,7 +166,7 @@ def resolve_user_query():
 
     print("got speakable response from clinc...")
     print(result)
-    text_to_speech(result)
+    # text_to_speech(result)
     return jsonify(**data)
 
 
