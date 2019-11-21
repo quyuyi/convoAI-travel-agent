@@ -132,11 +132,11 @@ class Dialog extends React.Component {
 
             // update destInfo window
             if (data.isRecommendation) {
-                let dest = document.getElementById("destination-img");
+                let dest = document.getElementById("dest_img");
                 dest.setAttribute("src", data.img);
                 console.log("img element information...");
-                document.getElementById("destination-name").innerHTML = data.dest;
-                document.getElementById("destination-intro").innerHTML = data.intro;
+                document.getElementById("dest").innerHTML = data.dest;
+                document.getElementById("intro").innerHTML = data.intro;
             }
 
             // update distination list
@@ -231,18 +231,23 @@ class Dialog extends React.Component {
         );
     }
 
-    render () {
+    render (){
+        // if (this.state.first) {
+        //     window.audio = new Audio();
+        //     window.audio.src = "/get_audio";
+        //     window.audio.play();
+        // }
         return (
-        <div className="talk_con">
-            <div className="talk_show" id="words">
-                {this.state.history.map((record,index)=>{
-                    return (
-                        <div key={index}>
-                            {this.renderMsg(record)}
-                        </div>
-                    );
-                })}
-                {this.state.loading ? this.renderLoader() : this.renderNothing()}
+    <div className="talk_con">
+        <div className="talk_show" id="words">
+            {this.state.history.map((record,index)=>{
+                return (
+                    <div key={index}>
+                        {this.renderMsg(record)}
+                    </div>
+                );
+            })}
+            {this.state.loading ? this.renderLoader() : this.renderNothing()}
         </div>
         {/* <div className="talk_input">
             <form onSubmit = {this.handleSubmit}>
@@ -251,7 +256,7 @@ class Dialog extends React.Component {
             </form>
         </div> */}
         {this.renderInput()}
-         </div>
+    </div>
         );
     }
 }

@@ -1,10 +1,12 @@
 import React from "react";
 import ReactDOM from 'react-dom';
 import Container from 'react-bootstrap/Container'
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 import List from "./list.jsx";
 import UserInfo from "./userInfo.jsx";
 import DestInfo from "./destInfo.jsx";
-import { Button, Row, Col, Modal } from "react-bootstrap";
+import Button from "react-bootstrap/Button";
 import Itinerary from "./itinerary.jsx";
 import Dialog from "./dialog.jsx";
 
@@ -21,7 +23,6 @@ class App extends React.Component {
           length: '',
           destinations : [],
           schedule: [],
-          showMap: false,
       }
       console.log(this.state.userId);
       this.handleGenerate = this.handleGenerate.bind(this);
@@ -89,14 +90,10 @@ class App extends React.Component {
     handleGenerate (){
         this.setState({
             generate: true,
-            showMap: true
         });
-    }
 
-    setShowMap = (status) => this.setState({ showMap: status });
+        
 
-    handleModalVisibility = (status) => {
-        this.setState({ isModalVisible: status });
     }
 
     handleUserInfo (c, v, l){
@@ -117,7 +114,7 @@ class App extends React.Component {
         }
     }
 
-    renderItinerary() {
+    renderItinerary (){
         if (this.state.generate){
             return (
                 <div>
@@ -129,45 +126,45 @@ class App extends React.Component {
                 </div>
             );
         }
+        else {
+            return (
+                <Button type="button" className="btn btn-primary" onClick={()=>this.handleGenerate()}>Generate my travel itinerary!</Button>
+            )
+        }
     }
 
     render () {
         return (
             <div>
             <Container>
-                <div className="top-menu">
-                    <h1>Trippy</h1>
-                    <div className="trip-data">
-                        <UserInfo 
-                            city={this.state.city}
-                            visitor={this.state.visitor}
-                            length={this.state.length}
-                        /> 
-                        <Button disabled={ !this.state.showMap }
-                            type="button" className="btn btn-primary map-button" 
-                            onClick={() => this.setShowMap(false)}>
-                            Close Itinerary
-                        </Button>
-                        <Button type="button" className="btn btn-primary" onClick={this.handleGenerate}>Generate Itinerary</Button>
-                    </div>
-                </div>           
+                <h1>Conversational Travel Agent</h1>
+            <Row> {/*user profile*/}
+            <Col>
+                <UserInfo 
+                city={this.state.city}
+                visitor={this.state.visitor}
+                length={this.state.length}
+                />
+            </Col>
+            </Row>
+            
             <Row> {/*destinations list added by the user*/}
-                <Col md={6}>
-                    <List 
-                    destinations={this.state.destinations}
-                    handleRemove = {this.handleRemove}/>
-                </Col>
+            <Col md={6}>
+                <List 
+                destinations={this.state.destinations}
+                handleRemove = {this.handleRemove}/>
+            </Col>
             </Row>
             <br></br>
 
             <Row> {/*image and description of the destination recommended*/}
-                <Col md={8}>
+                <Col md={6}>
                 <DestInfo 
                 userId={this.state.userId}
                 handleUpdate={this.handleUpdate}/>
                 </Col>
 
-                <Col md={4}>
+                <Col md={6}>
                 <Dialog 
                 userId={this.state.userId}
                 handleUpdate={this.handleUpdate}
@@ -175,21 +172,23 @@ class App extends React.Component {
                 </Col>
             </Row>
             <br></br>
-            <Row className={this.state.showMap? "map-container" : "map-container-hidden"}>
-                <Col md={4}>
-                    {this.renderItinerary()}
-                </Col>
-                <Col md={8}>
-                    <div>
-                    <div id='map'></div>
-                    <div className="info-box">
-                    <div id="info">
-                    </div>
-                    <div id="directions"></div>
-                    </div>
-                    </div>
-                </Col>
+
+            <Row>
+            <Col md={4}>
+            {this.renderItinerary()}
+            </Col>
+            <Col md={8}>
+            <div>
+            <div id='map'></div>
+            <div className="info-box">
+            <div id="info">
+            </div>
+            <div id="directions"></div>
+            </div>
+            </div>
+            </Col>
             </Row>
+
             </Container>
             </div>
         );

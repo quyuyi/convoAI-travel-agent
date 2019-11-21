@@ -12,8 +12,7 @@ class UserInfo extends React.Component {
         // console.log(this.props);
     }
 
-    componentDidMount() {
-        
+    componentDidMount () {
     }
 
     render(){
@@ -23,10 +22,10 @@ class UserInfo extends React.Component {
         const duration = this.props.length;
         const visitor = this.props.visitor;
         return (
-            <div className="user-info"> 
-                { city ? <Chip id = "city" color="primary" icon = {<LocationCityIcon />} label = {this.props.city} /> : '' }
-                { duration ? <Chip id = "duration" color="secondary" icon = {<DateRangeIcon />} label = {duration + " days"} /> : '' }
-                { visitor ? <Chip id = "visitor" color="default" icon = {<GroupIcon />} label = {visitor + " people"} /> : '' }
+            <div> 
+            <Chip id = "city" color="primary" icon = {<LocationCityIcon />} label = {this.props.city} />
+            <Chip id = "duration" color="secondary" icon = {<DateRangeIcon />} label = {duration + " days"} />
+            <Chip id = "visitor" color="default" icon = {<GroupIcon />} label = {visitor + " people"} />
             </div>
         );
     }
