@@ -23,7 +23,10 @@ from firebase_admin import firestore
 pp = pprint.PrettyPrinter(indent=4)
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="convai498-1572652809131-firebase-adminsdk-i8c6i-de8d470e32.json"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> parent of 9841e96... some updates
 
 >>>>>>> parent of 9841e96... some updates
 
