@@ -82,7 +82,7 @@ body {
     /* position: absolute;
     top: 0;
     bottom: 0; */
-    height: 500px;
+    height: 92vh;
     width: 100%;
   }
 
@@ -104,3 +104,135 @@ body {
     font-size: 10px;
     font-weight: bold;
   }
+
+  /* further */
+  .container {
+    background: #f2f2f2;
+    box-sizing: border-box;
+    max-width: 100%;
+    margin: 0;
+    padding: 0 0;
+    min-height: 100vh;
+  }
+
+  .destination-details {
+      overflow: hidden;
+      margin-left: -15px;
+  }
+
+  .destination-img-container {
+    position: relative;
+    width: 100%;
+    height: 40vh;
+    overflow: hidden;
+  }
+
+  #destination-img {
+      max-width: 100%;
+      position: absolute;
+      height: auto;
+      top: 0;
+      min-height:100%;
+      min-width:100%;
+      width:auto;
+      height:auto;
+      transform: translateY(-25%);
+  }
+
+  #destination-name {
+      font-size: 24px;
+      font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+      color: darkslategray;
+      font-weight: bold;
+      margin-top: 15px;
+      margin-left: 35px;
+  }
+
+  #destination-intro {
+      font-size: 14px;
+      margin-left: 35px;
+  }
+
+  .top-menu {
+    background: #30404e;
+    align-items: center;
+    display: flex;
+    height: 8vh;
+    padding: 0 25px;
+    justify-content: space-between;
+  }
+
+  .top-menu h1 {
+    color: #fefefe;
+    font-family: Arial, Helvetica, sans-serif;
+    font-style: italic;
+    font-weight: bolder;
+    margin: 0;
+  }
+
+  .trip-data {
+      align-items: center;
+      display: flex;
+      justify-content: end;
+  }
+
+  .user-info {
+    box-sizing: border-box;
+    padding-right: 20px;
+    width: 100%;
+  }
+
+  .user-info * {
+      margin-left: 5px;
+  }
+
+  .talk_con, .talk_input, .talk_show, .talk_word {
+      width: 100%;
+  }
+
+.talk_word {
+    overflow: inherit;
+}
+
+.row {
+    max-width: 100%;
+    margin: 0;
+}
+
+.map-container {
+    background: #30404e;
+    position: absolute;
+    top: 8vh;
+    width: 100%;
+    height: 92vh;    
+    z-index: 10;
+    transition: top .5s, opacity .4s;
+    opacity: 1;
+}
+
+.map-container-hidden {
+    position: absolute;
+    top: 0vh;
+    opacity: 0;
+    width: 100%;
+    z-index: -999;
+    transition: top .5s, opacity .4s, z-index .8s 1s;
+}
+
+.map-button:disabled {
+    background: #777;
+    border-color: #777;
+}
+
+.map-button {
+    margin-right: 15px;
+}
+
+#talkwords {
+    overflow: hidden;
+    padding: 10px;
+}
+
+.atalk {
+    display: flex;
+}

@@ -4,7 +4,7 @@ import os
 import io
 from flask import Flask, render_template, request, jsonify, send_file, url_for
 import requests
-from api import request_clinc
+from api import request_clinc, FIREBASE_AUTH
 import pprint
 from utils import get 
 import firebase_admin
@@ -15,7 +15,7 @@ from itinerary_generator import ItineraryGen
 import json
 
 # Use a service account
-cred = credentials.Certificate('convai498-1572652809131-firebase-adminsdk-i8c6i-de8d470e32.json')
+cred = credentials.Certificate(FIREBASE_AUTH)
 firebase_admin.initialize_app(cred)
 db = firestore.client()
 collection = db.collection('users')
