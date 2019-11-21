@@ -6,14 +6,14 @@
 ### Backend:
 1. Avoid getting "no speakable response" when itinerary cannot be generated
 2. Suggest user stop adding destination when there're enough places
-3. Implement destination_info function (user asks for info of a place, and UI displays info)
-4. Recommend nearby restaurant/hotel based on route
-5. Recommend according to user preference
+3. Recommend nearby restaurant/hotel based on route
+4. Recommend according to user preference
 ### UI:
 1. Improve visualization of top left destination lists
 2. Enable top left cancel button
 3. Enable cancel button in schedule list or enable modify order of places in schedule
 4. Enable route guide for multiple days
+5. Display destination information at resolve_destination_info
 ### TTS&STT:
 (1. Can user directly speak to AI without clicking 'record' button?)
 
