@@ -6,11 +6,11 @@ class Destinations extends Component {
       super(props);
       this.state = {"destination": ""}
   }
-  // make list look nice, add remove button next each destination, possibly use ReactDND
   render () {
     return (
       <div className={this.props.show ? "destination-list" : "destination-list-hidden"}>
         <h1>Selected Destinations</h1>
+        <p>here we add destinations and removal, possibly use react dnd</p>
         <ul>
           {
             this.props.destinations.map((idx, dest) => {
