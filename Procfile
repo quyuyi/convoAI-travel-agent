@@ -1,1 +1,1 @@
-web: gunicorn business_logic_server:app
+web: gunicorn server:app
