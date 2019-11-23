@@ -7,6 +7,7 @@ import DestInfo from "./destInfo.jsx";
 import { Button, Row, Col, Modal } from "react-bootstrap";
 import Itinerary from "./itinerary.jsx";
 import Dialog from "./dialog.jsx";
+import Destinations from "./destinations.jsx";
 
 // https://material-ui.com/zh/
 class App extends React.Component {
@@ -22,6 +23,7 @@ class App extends React.Component {
           destinations : [],
           schedule: [],
           showMap: false,
+          showDrawer: false,
       }
       console.log(this.state.userId);
       this.handleGenerate = this.handleGenerate.bind(this);
@@ -74,16 +76,13 @@ class App extends React.Component {
 
     }
 
-    handleRemove (idx){
+    handleRemove(idx) {
         let previous = this.state.destinations;
         const removed = previous.splice(idx,1);
 
         console.log("Removing...");
         console.log(removed);
-        this.setState({
-            destinations: previous,
-        }
-        );
+        this.setState({ destinations: previous });
     }
 
     handleGenerate (){
@@ -95,9 +94,7 @@ class App extends React.Component {
 
     setShowMap = (status) => this.setState({ showMap: status });
 
-    handleModalVisibility = (status) => {
-        this.setState({ isModalVisible: status });
-    }
+    setShowDestinations = (status) => this.setState({ showDrawer: status });
 
     handleUserInfo (c, v, l){
         if (c != ''){
@@ -143,6 +140,10 @@ class App extends React.Component {
                             visitor={this.state.visitor}
                             length={this.state.length}
                         /> 
+                        <Button type="button" className="btn btn-primary destinations-menu" 
+                            onClick={() => this.setShowDestinations(!this.state.showDrawer)}>
+                            Selected Destinations: ({this.state.destinations.length})
+                        </Button>
                         <Button disabled={ !this.state.showMap }
                             type="button" className="btn btn-primary map-button" 
                             onClick={() => this.setShowMap(false)}>
@@ -175,7 +176,7 @@ class App extends React.Component {
                 </Col>
             </Row>
             <br></br>
-            <Row className={this.state.showMap? "map-container" : "map-container-hidden"}>
+            <Row className={this.state.showMap ? "map-container" : "map-container-hidden"}>
                 <Col md={4}>
                     {this.renderItinerary()}
                 </Col>
@@ -190,6 +191,9 @@ class App extends React.Component {
                     </div>
                 </Col>
             </Row>
+            <Destinations show={this.state.showDrawer } 
+                         destinations={this.state.destinations}>
+            </Destinations>
             </Container>
             </div>
         );
