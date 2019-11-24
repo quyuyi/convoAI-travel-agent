@@ -5,7 +5,7 @@
 1. Test Clinc classification and slot mapping, use Clinc slot mapper
 ### Backend:
 1. Avoid getting "no speakable response" when itinerary cannot be generated
-2. Suggest user stop adding destination when there're enough places
+2. ~~Suggest user stop adding destination when there're enough places~~
 3. Recommend nearby restaurant/hotel based on route
 4. Recommend according to user preference
 ### UI:
