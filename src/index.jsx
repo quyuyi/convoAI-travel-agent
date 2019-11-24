@@ -25,11 +25,6 @@ class App extends React.Component {
           showMap: false,
           showDrawer: false,
       }
-      console.log(this.state.userId);
-      this.handleGenerate = this.handleGenerate.bind(this);
-      this.handleUpdate = this.handleUpdate.bind(this);
-      this.handleRemove = this.handleRemove.bind(this);
-      this.handleUserInfo = this.handleUserInfo.bind(this);
     }
 
     componentDidMount(){
@@ -42,13 +37,13 @@ class App extends React.Component {
         // .catch(error => console.error(error));
     }
 
-    postData(url = '', data = {}) {
+    postData = (url = '', data = {}) => {
         // Default options are marked with *
             return fetch(url, {
                 method: 'POST', // *GET, POST, PUT, DELETE, etc.
                 mode: 'cors', // no-cors, cors, *same-origin
                 cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-                credentials: 'omit', // include, *same-origin, omit
+                credentials: 'same-origin', // include, *same-origin, omit
                 headers: {
                     'Content-Type': 'application/json',
                     // 'Content-Type': 'application/x-www-form-urlencoded',
@@ -60,7 +55,7 @@ class App extends React.Component {
             .then(response => response.json()); // parses JSON response into native JavaScript objects 
     }
 
-    handleUpdate (type, new_list){
+    handleUpdate = (type, new_list) => {
         if (type == 'destinations'){
             console.log("Updating the destination list...");
             this.setState({
@@ -73,19 +68,34 @@ class App extends React.Component {
                 schedule: new_list,
             });
         }
-
     }
 
-    handleRemove(idx) {
-        let previous = this.state.destinations;
-        const removed = previous.splice(idx,1);
-
-        console.log("Removing...");
-        console.log(removed);
-        this.setState({ destinations: previous });
+    destinationRequests = (q) => {
+        // silly, but whatever
+        this.postData('/query_clinc/', {query: q, userId: this.state.userId}) 
+        .then(data => {
+            this.handleUpdate('destinations', data.destinations);
+            this.setState({
+                loading: false,
+                destinations: data.destinations,
+            });
+            if (q == "Recommend")  { // don't do this in real work
+                let dest = document.getElementById("destination-img");
+                dest.setAttribute("src", data.img);
+                document.getElementById("destination-name").innerHTML = data.dest;
+                document.getElementById("destination-intro").innerHTML = data.intro;
+            }
+        })
+        .catch(error => console.error(error));
     }
 
-    handleGenerate (){
+    handleRemove = (idx) => { this.destinationRequests("Remove " + this.state.destinations[idx]) }
+
+    handleAddDestination = () => { this.destinationRequests("Add this") }
+    
+    handleSkipDestination = () => { this.destinationRequests("Recommend") }
+
+    handleGenerate = () => {
         this.setState({
             generate: true,
             showMap: true
@@ -93,10 +103,10 @@ class App extends React.Component {
     }
 
     setShowMap = (status) => this.setState({ showMap: status });
-
+    
     setShowDestinations = (status) => this.setState({ showDrawer: status });
 
-    handleUserInfo (c, v, l){
+    handleUserInfo = (c, v, l) => {
         if (c != ''){
             this.setState({
                 city: c,
@@ -114,7 +124,7 @@ class App extends React.Component {
         }
     }
 
-    renderItinerary() {
+    renderItinerary = () => {
         if (this.state.generate){
             return (
                 <div>
@@ -152,24 +162,19 @@ class App extends React.Component {
                         <Button type="button" className="btn btn-primary" onClick={this.handleGenerate}>Generate Itinerary</Button>
                     </div>
                 </div>           
-            <Row> {/*destinations list added by the user*/}
-                <Col md={6}>
-                    <List 
-                    destinations={this.state.destinations}
-                    handleRemove = {this.handleRemove}/>
-                </Col>
-            </Row>
-            <br></br>
 
-            <Row> {/*image and description of the destination recommended*/}
+            <Row className="page-content"> {/*image and description of the destination recommended*/}
                 <Col md={8}>
                 <DestInfo 
-                userId={this.state.userId}
-                handleUpdate={this.handleUpdate}/>
+                    addDestination={this.handleAddDestination}
+                    skipDestination={this.handleSkipDestination}
+                    userId={this.state.userId}
+                    handleUpdate={this.handleUpdate}/>
                 </Col>
 
                 <Col md={4}>
                 <Dialog 
+                post={this.postData}
                 userId={this.state.userId}
                 handleUpdate={this.handleUpdate}
                 handleUserInfo = {this.handleUserInfo}/>
@@ -191,7 +196,9 @@ class App extends React.Component {
                     </div>
                 </Col>
             </Row>
-            <Destinations show={this.state.showDrawer } 
+            <Destinations show={this.state.showDrawer }
+                         post={this.postData}
+                         removeDestination={this.handleRemove}
                          destinations={this.state.destinations}>
             </Destinations>
             </Container>

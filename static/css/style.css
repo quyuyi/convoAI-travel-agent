@@ -107,23 +107,27 @@ body {
 
   /* further */
   .container {
-    background: #f2f2f2;
+    background: #fff;
     box-sizing: border-box;
     max-width: 100%;
     margin: 0;
     padding: 0 0;
     min-height: 100vh;
+    display: flex;
+    flex-direction: column;
   }
 
   .destination-details {
-      overflow: hidden;
-      margin-left: -15px;
+    overflow: hidden;
+    margin-left: -15px;
+    position: relative;
+    height: 100%;
   }
 
   .destination-img-container {
     position: relative;
     width: 100%;
-    height: 40vh;
+    height: 50vh;
     overflow: hidden;
   }
 
@@ -136,7 +140,7 @@ body {
       min-width:100%;
       width:auto;
       height:auto;
-      transform: translateY(-25%);
+      transform: translateY(-10%);
   }
 
   #destination-name {
@@ -144,17 +148,20 @@ body {
       font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
       color: darkslategray;
       font-weight: bold;
-      margin-top: 15px;
+      margin-top: 25px;
       margin-left: 35px;
   }
 
   #destination-intro {
       font-size: 14px;
       margin-left: 35px;
+      max-height: 20vh;
+    overflow-y: auto;
+        padding-right: 25px;
   }
 
   .top-menu {
-    background: #30404e;
+    background: #17477b;
     align-items: center;
     display: flex;
     height: 8vh;
@@ -189,6 +196,14 @@ body {
   .talk_con, .talk_input, .talk_show, .talk_word {
       width: 100%;
   }
+
+.talk_con {
+    margin-top: 15px;
+}
+
+.talk_show {
+    height: 71vh;
+}
 
 .talk_word {
     overflow: inherit;
@@ -237,10 +252,18 @@ body {
     display: flex;
 }
 
+.page-content {
+    margin: 0 auto;
+    height: 100%;
+    margin-top: 30px;
+    background: #f5f5f5;
+    width: 1368px;
+    flex-grow: 1;
+}
+
 .destination-list-hidden {
     box-sizing: border-box;
-    width: 400px;
-    padding: 25px;
+    width: 450px;
     background: #fff;
     position: absolute;
     left: 0;
@@ -248,15 +271,14 @@ body {
     height: 100%;
     box-shadow: 0px 10px 10px #000;
     height: 100%;    
-    left: -400px;
+    left: -460px;
     top: 0;
     transition: left .5s;
 }
 
 .destination-list {
     box-sizing: border-box;
-    width: 400px;
-    padding: 25px;
+    width: 450px;
     background: #fff;
     position: absolute;
     left: 0;
@@ -270,10 +292,112 @@ body {
     font-size: 24px;
     background: #007bff;
     color: #fff;
-    margin: -25px -25px 0 -25px;
     padding: 20px;
+    margin-bottom: 0;
 }
 
 .destinations-menu {
     margin-right: 15px;
+}
+
+.destinations-list-items {
+    padding: 0;
+}
+
+.destinations-list-items li {
+    list-style: none;
+    border-bottom: 1px solid #e8e8e8;
+    background: #f7f7f7;
+    margin-top: 1px;
+    padding: 10px 20px;
+    font-size: 14px;
+    color: #333;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.destinations-list-items li:hover {
+    background: #fff;
+}
+
+.destinations-list-items li span {
+    border-radius: 0;
+    border: 0 solid #f7f7f7;    
+    font-size: 16px;
+    font-weight: bold;
+    display: flex;
+    font-weight: 300;
+    width: 32px;
+    height: 32px;
+    justify-content: center;
+    align-items: center;
+}
+
+.destinations-list-items li span:hover {
+    cursor: pointer;
+    color: #fff;
+    display: flex;
+    font-weight: 300;
+    justify-content: center;
+    width: 32px;
+    align-items: center;
+    height: 32px;
+    border-radius: 16px;
+    text-align: center;
+    border: 16px solid #f50057;
+    transition: border .3s;
+}
+
+.destination-add {
+    width: 115px;
+    padding: 10px 0 10px 40px;
+    background: #0181cc;
+    position: absolute;
+    color: #fff;
+    font-weight: bold;
+    bottom: 0;
+    left: -5px;
+    transform: skewX(-10deg);
+}
+
+.destination-add:hover {
+    cursor: pointer;
+    background: #1992d8;
+}
+
+.destination-skip {
+    width: 115px;
+    padding: 10px 0 10px 40px;
+    background: #ef8201;
+    position: absolute;
+    color: #fff;
+    font-weight: bold;
+    bottom: 0;
+    left: 111px;
+    transform: skewX(-10deg);
+}
+
+.destination-skip:hover {
+    cursor: pointer;
+    background: #f39322;
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+    }
+
+/* Track */
+::-webkit-scrollbar-track {
+background: #f1f1f1; 
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+background: #888; 
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+background: #555; 
 }

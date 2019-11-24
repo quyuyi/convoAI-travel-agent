@@ -39,23 +39,23 @@ class Dialog extends React.Component {
         var cont= document.getElementById("talkSub");
     }
 
-    postData(url = '', data = {}) {
-        // Default options are marked with *
-            return fetch(url, {
-                method: 'POST', // *GET, POST, PUT, DELETE, etc.
-                mode: 'cors', // no-cors, cors, *same-origin
-                cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-                credentials: 'same-origin', // include, *same-origin, omit
-                headers: {
-                    'Content-Type': 'application/json',
-                    // 'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                redirect: 'follow', // manual, *follow, error
-                referrer: 'no-referrer', // no-referrer, *client
-                body: JSON.stringify(data), // body data type must match "Content-Type" header
-            })
-            .then(response => response.json()); // parses JSON response into native JavaScript objects 
-    }
+    // postData(url = '', data = {}) {
+    //     // Default options are marked with *
+    //         return fetch(url, {
+    //             method: 'POST', // *GET, POST, PUT, DELETE, etc.
+    //             mode: 'cors', // no-cors, cors, *same-origin
+    //             cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+    //             credentials: 'same-origin', // include, *same-origin, omit
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //                 // 'Content-Type': 'application/x-www-form-urlencoded',
+    //             },
+    //             redirect: 'follow', // manual, *follow, error
+    //             referrer: 'no-referrer', // no-referrer, *client
+    //             body: JSON.stringify(data), // body data type must match "Content-Type" header
+    //         })
+    //         .then(response => response.json()); // parses JSON response into native JavaScript objects 
+    // }
 
 
     onKeyDown (event){
@@ -68,7 +68,7 @@ class Dialog extends React.Component {
 
     onRecord (){
         console.log("call backend to record...");
-        this.postData('/record_to_text/', {query: "record"}) 
+        this.props.post('/record_to_text/', {query: "record"}) 
         .then(data => {
             // console.log("get reponse: ", data.response);
             this.handleSubmit(data.response);
@@ -106,10 +106,11 @@ class Dialog extends React.Component {
 
     // send user utterence to backend which post to clinc
     // get response from clinc
-    queryClinc (query){
+    queryClinc(query) {
         var cont=document.getElementById("words");
         console.log("request backend server..")
-        this.postData('/query_clinc/', {query: query, userId: this.props.userId}) 
+        console.log(query)
+        this.props.post('/query_clinc/', {query: query, userId: this.props.userId}) 
         .then(data => {
             // console.log("get reponse: ", data.response);
             const previous = this.state.history;

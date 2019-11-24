@@ -5,16 +5,21 @@ class Destinations extends Component {
   constructor (props) {
       super(props);
       this.state = {"destination": ""}
-  }
+  }  
+
   render () {
     return (
       <div className={this.props.show ? "destination-list" : "destination-list-hidden"}>
         <h1>Selected Destinations</h1>
-        <p>here we add destinations and removal, possibly use react dnd</p>
-        <ul>
+        <ul className="destinations-list-items">
           {
-            this.props.destinations.map((idx, dest) => {
-              return <li key={idx}>{dest.name}</li>
+            this.props.destinations.map((dest, idx) => {
+              return (
+                <li key={idx}>
+                  {dest}
+                  <span onClick={() => this.props.removeDestination(idx)}>x</span>
+                </li>
+              )
             })
           }
         </ul>
