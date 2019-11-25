@@ -34,7 +34,7 @@ class ItineraryGen(object):
 
 	def __init__(self, num_days, places):
 
-		assert (len(places) / num_days <= 3)
+		#assert (len(places) / num_days <= 3)
 
 		self._num_days = num_days
 		self._places = places
