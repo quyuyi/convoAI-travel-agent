@@ -220,6 +220,18 @@ def resolve_basic_info(clinc_request):
     # try:
     #     clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['value'] = int()
 
+    number_mapper = {"one" : "1",
+                                  "two" : "2",
+                                  "three" : "3",
+                                  "four" : "4",
+                                  "five" : "5",
+                                  "six" : "6",
+                                  "seven" : "7",
+                                  "eight" : "8",
+                                  "nine" : "9",
+                                  "ten" : "10"
+    }
+
     if '_CITY_' in clinc_request['slots']:
         clinc_request['slots']['_CITY_']['values'][0]['resolved'] = 1
         city_str = clinc_request['slots']['_CITY_']['values'][0]['tokens']
@@ -250,7 +262,7 @@ def resolve_basic_info(clinc_request):
         recommend = None
 
         # When user talks about city, get request from API
-        url = 'https://www.triposo.com/api/20190906/poi.json?location_id='+city_key+'&fields=id,name,intro,images,coordinates&count=10&account=8FRG5L0P&token=i0reis6kqrqd7wi7nnwzhkimvrk9zh6a'
+        url = 'https://www.triposo.com/api/20190906/poi.json?location_id='+city_key+'&fields=id,name,intro,images,coordinates&count=30&account=8FRG5L0P&token=i0reis6kqrqd7wi7nnwzhkimvrk9zh6a'
         recommend = requests.get(url).json()
         if not recommend['results']:
             clinc_request['slots']['_NORESPONSE_'] = {
@@ -290,6 +302,8 @@ def resolve_basic_info(clinc_request):
         length_of_visit_tokens = clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['tokens']
         lov = length_of_visit_tokens
         lov_tokens = length_of_visit_tokens.split()
+        if length_of_visit_tokens in number_mapper:
+            lov = number_mapper[length_of_visit_tokens]
         if len(lov_tokens) == 2 and lov_tokens[1] == "days":
             lov = lov_tokens[0]
         if length_of_visit_tokens in ['a week', 'one week', '1 week']:
