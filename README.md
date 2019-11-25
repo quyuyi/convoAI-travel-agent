@@ -2,12 +2,14 @@
 
 ## TODO
 ### Clinc:
-1. Test Clinc classification and slot mapping, use Clinc slot mapper
+1. Test Clinc classification and slot mapping
 ### Backend:
 1. ~~Avoid getting "no speakable response" when itinerary cannot be generated~~
 2. ~~Suggest user stop adding destination when there're enough places~~
 3. Recommend nearby restaurant/hotel based on route
 4. Recommend according to user preference
+5. Use dynamic slot mapper in business logic to map destinations
+6. Add business logic for mapping length_of_visit and number_of_people
 ### UI:
 1. ~~Improve visualization of top left destination lists~~
 2. ~~Enable top left cancel button~~
