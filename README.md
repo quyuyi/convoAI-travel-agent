@@ -4,16 +4,19 @@
 ### Clinc:
 1. Test Clinc classification and slot mapping, use Clinc slot mapper
 ### Backend:
-1. Avoid getting "no speakable response" when itinerary cannot be generated
+1. ~~Avoid getting "no speakable response" when itinerary cannot be generated~~
 2. ~~Suggest user stop adding destination when there're enough places~~
 3. Recommend nearby restaurant/hotel based on route
 4. Recommend according to user preference
 ### UI:
-1. Improve visualization of top left destination lists
-2. Enable top left cancel button
-3. Enable cancel button in schedule list or enable modify order of places in schedule
+1. ~~Improve visualization of top left destination lists~~
+2. ~~Enable top left cancel button~~
+3. Enable cancel button in schedule list or enable modifying order of places in schedule
 4. Enable route guide for multiple days
 5. Display destination information at resolve_destination_info
+6. Generate itinerary directly by clicking the "generate" button without speaking to it
+7. Automatically displaying itinerary without clicking after saying "generate schedule"
+8. Make "regenerate schedule" work
 ### TTS&STT:
 (1. Can user directly speak to AI without clicking 'record' button?)
 
