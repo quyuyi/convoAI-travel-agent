@@ -10,6 +10,7 @@
 4. Recommend according to user preference
 5. Use dynamic slot mapper in business logic to map destinations
 6. Add business logic for mapping length_of_visit and number_of_people
+7. Debug recommendation by looking at firebase, find reason for "out of index"
 ### UI:
 1. ~~Improve visualization of top left destination lists~~
 2. ~~Enable top left cancel button~~
