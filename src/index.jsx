@@ -74,10 +74,11 @@ class App extends React.Component {
         // silly, but whatever
         this.postData('/query_clinc/', {query: q, userId: this.state.userId}) 
         .then(data => {
+            console.log(data);
             this.handleUpdate('destinations', data.destinations);
             this.setState({
                 loading: false,
-                destinations: data.destinations,
+                destinations: [...data.destinations],
             });
             if (q == "Recommend")  { // don't do this in real work
                 let dest = document.getElementById("destination-img");
@@ -89,7 +90,9 @@ class App extends React.Component {
         .catch(error => console.error(error));
     }
 
-    handleRemove = (idx) => { this.destinationRequests("Remove " + this.state.destinations[idx]) }
+    handleRemove = (idx) => { 
+        this.destinationRequests("Remove " + this.state.destinations[idx]) 
+    }
 
     handleAddDestination = () => { this.destinationRequests("Add this") }
     
@@ -105,6 +108,11 @@ class App extends React.Component {
     setShowMap = (status) => this.setState({ showMap: status });
     
     setShowDestinations = (status) => this.setState({ showDrawer: status });
+
+    reorderDestinations = (arr) => {
+        console.log(arr);
+        this.setState({ destinations: arr });
+    }
 
     handleUserInfo = (c, v, l) => {
         if (c != ''){
@@ -151,6 +159,7 @@ class App extends React.Component {
                             length={this.state.length}
                         /> 
                         <Button type="button" className="btn btn-primary destinations-menu" 
+                            disabled = {this.state.showMap}
                             onClick={() => this.setShowDestinations(!this.state.showDrawer)}>
                             Selected Destinations: ({this.state.destinations.length})
                         </Button>
@@ -159,7 +168,11 @@ class App extends React.Component {
                             onClick={() => this.setShowMap(false)}>
                             Close Itinerary
                         </Button>
-                        <Button type="button" className="btn btn-primary" onClick={this.handleGenerate}>Generate Itinerary</Button>
+                        <Button disabled={this.state.showDrawer}
+                            type="button" className="btn btn-primary" 
+                            onClick={this.handleGenerate}>
+                                Generate Itinerary
+                        </Button>
                     </div>
                 </div>           
 
@@ -183,7 +196,13 @@ class App extends React.Component {
             <br></br>
             <Row className={this.state.showMap ? "map-container" : "map-container-hidden"}>
                 <Col md={4}>
-                    {this.renderItinerary()}
+                    <Destinations
+                            reorderDestinations={this.reorderDestinations}
+                            post={this.postData}
+                            removeDestination={this.handleRemove}
+                            destinations={this.state.destinations}>
+                    </Destinations>
+                    {this.renderItinerary()} 
                 </Col>
                 <Col md={8}>
                     <div>
@@ -196,11 +215,15 @@ class App extends React.Component {
                     </div>
                 </Col>
             </Row>
-            <Destinations show={this.state.showDrawer }
-                         post={this.postData}
-                         removeDestination={this.handleRemove}
-                         destinations={this.state.destinations}>
-            </Destinations>
+            <div className={this.state.showDrawer ? "destination-list" : "destination-list-hidden"}>
+                <h1>Selected Destinations</h1>
+                <Destinations
+                            reorderDestinations={this.reorderDestinations}
+                            post={this.postData}
+                            removeDestination={this.handleRemove}
+                            destinations={this.state.destinations}>
+                </Destinations>
+            </div>
             </Container>
             </div>
         );

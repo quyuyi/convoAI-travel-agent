@@ -82,7 +82,7 @@ body {
     /* position: absolute;
     top: 0;
     bottom: 0; */
-    height: 92vh;
+    height: calc(92vh + 10px);
     width: 100%;
   }
 
@@ -112,7 +112,7 @@ body {
     max-width: 100%;
     margin: 0;
     padding: 0 0;
-    min-height: 100vh;
+    height: 100vh;
     display: flex;
     flex-direction: column;
   }
@@ -199,10 +199,13 @@ body {
 
 .talk_con {
     margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    height: calc(100% - 30px);
 }
 
 .talk_show {
-    height: 71vh;
+    flex-grow: 1;
 }
 
 .talk_word {
@@ -217,9 +220,9 @@ body {
 .map-container {
     background: #30404e;
     position: absolute;
-    top: 8vh;
+    top: calc(8vh - 10px);
     width: 100%;
-    height: 92vh;    
+    height: calc(92vh + 10px);  
     z-index: 10;
     transition: top .5s, opacity .4s;
     opacity: 1;
@@ -253,6 +256,7 @@ body {
 }
 
 .page-content {
+    display: flex;
     margin: 0 auto;
     height: 100%;
     margin-top: 30px;
@@ -304,7 +308,7 @@ body {
     padding: 0;
 }
 
-.destinations-list-items li {
+.destinations-list-items .dest-item {
     list-style: none;
     border-bottom: 1px solid #e8e8e8;
     background: #f7f7f7;
@@ -317,11 +321,11 @@ body {
     align-items: center;
 }
 
-.destinations-list-items li:hover {
-    background: #fff;
+.destinations-list-items .dest-item:active {
+    background: #d9ebff;
 }
 
-.destinations-list-items li span {
+.destinations-list-items .dest-item span {
     border-radius: 0;
     border: 0 solid #f7f7f7;    
     font-size: 16px;
@@ -334,7 +338,7 @@ body {
     align-items: center;
 }
 
-.destinations-list-items li span:hover {
+.destinations-list-items .dest-item span:hover {
     cursor: pointer;
     color: #fff;
     display: flex;
@@ -400,4 +404,18 @@ background: #888;
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
 background: #555; 
+}
+
+.map-container .col-md-4 {
+    position: relative;
+}
+
+.map-container .destinations-list-items {
+    padding: 30px 0;
+}
+
+.regen {
+    bottom: 20px;
+    position: absolute;
+    width: calc(100% - 30px);
 }

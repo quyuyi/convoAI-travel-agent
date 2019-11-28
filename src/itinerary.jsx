@@ -114,12 +114,7 @@ class Itinerary extends React.Component {
         const data = d;
       return(
       <div>
-        <MaterialTable
-          title="itinerary"
-          columns={columns}
-          data={data}
-        />
-        <Button type="button" className="btn btn-primary" onClick={()=>this.handleGenerate()}>Regenerate my travel itinerary!</Button>
+        <Button type="button" className="btn btn-primary regen" onClick={()=>this.handleGenerate()}>Regenerate my travel itinerary!</Button>
       </div>
       );
     }
