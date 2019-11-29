@@ -236,3 +236,40 @@ body {
 .atalk {
     display: flex;
 }
+
+.destination-list-hidden {
+    box-sizing: border-box;
+    width: 400px;
+    padding: 25px;
+    background: #fff;
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    box-shadow: 0px 10px 10px #000;
+    height: 100%;    
+    left: -400px;
+    top: 0;
+    transition: left .5s;
+}
+
+.destination-list {
+    box-sizing: border-box;
+    width: 400px;
+    padding: 25px;
+    background: #fff;
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    transition: left .5s;
+    box-shadow: 0px 10px 10px #000
+}
+
+.destination-list h1, .destination-list-hidden h1 {
+    font-size: 24px;
+    background: #007bff;
+    color: #fff;
+    margin: -25px -25px 0 -25px;
+    padding: 20px;
+}

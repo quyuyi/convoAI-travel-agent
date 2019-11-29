@@ -21,18 +21,7 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 
 pp = pprint.PrettyPrinter(indent=4)
-<<<<<<< HEAD
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="convai498-1572652809131-firebase-adminsdk-i8c6i-de8d470e32.json"
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> parent of 9841e96... some updates
-
->>>>>>> parent of 9841e96... some updates
-=======
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"]=FIREBASE_AUTH
->>>>>>> parent of 5258a11... nothing
 
 '''
 # Instantiates a speech to text client
