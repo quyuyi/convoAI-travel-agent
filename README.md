@@ -11,6 +11,7 @@
 5. Use dynamic slot mapper in business logic to map destinations
 6. Add business logic for mapping length_of_visit and number_of_people
 7. Debug recommendation by looking at firebase, find reason for "out of index"
+8. Say "Remove this place" to remove
 ### UI:
 1. ~~Improve visualization of top left destination lists~~
 2. ~~Enable top left cancel button~~
@@ -20,6 +21,7 @@
 6. Generate itinerary directly by clicking the "generate" button without speaking to it
 7. Automatically displaying itinerary without clicking after saying "generate schedule"
 8. Make "regenerate schedule" work
+9. When clicking button, send request to clinc so that there's speakable response
 ### TTS&STT:
 (1. Can user directly speak to AI without clicking 'record' button?)
 
