@@ -343,7 +343,9 @@ def resolve_basic_info(clinc_request):
                 try:
                     if t in number_mapper:
                         t = number_mapper[t]
-                        people_number += int(t)-1
+                    people_number += int(t)-1
+                except:
+                    pass
             clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['value'] = str(people_number)
         # preferences['number_of_people'] = clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['value']
         doc_ref.update({
