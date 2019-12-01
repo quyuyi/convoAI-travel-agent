@@ -5,9 +5,13 @@ import List from "./list.jsx";
 import UserInfo from "./userInfo.jsx";
 import DestInfo from "./destInfo.jsx";
 import { Button, Row, Col, Modal } from "react-bootstrap";
-import Itinerary from "./itinerary.jsx";
+import { Itinerary, updateRoute } from "./itinerary.jsx";
 import Dialog from "./dialog.jsx";
 import Destinations from "./destinations.jsx";
+import firebase from './firestore';
+
+const db = firebase.firestore();
+const userCollection = db.collection('users');
 
 // https://material-ui.com/zh/
 class App extends React.Component {
@@ -35,6 +39,17 @@ class App extends React.Component {
         //     console.log("get reponse: ", data.response);
         // })
         // .catch(error => console.error(error));
+        let userRef = userCollection.doc(this.state.userId);
+        userRef.get().then(function(doc) {
+            if (doc.exists) {
+                console.log("Document data:", doc.data());
+            } else {
+                // doc.data() will be undefined in this case
+                console.log("No such document!");
+            }
+        }).catch(function(error) {
+            console.log("Error getting document:", error);
+        });
     }
 
     postData = (url = '', data = {}) => {
@@ -74,8 +89,8 @@ class App extends React.Component {
         // silly, but whatever
         this.postData('/query_clinc/', {query: q, userId: this.state.userId}) 
         .then(data => {
-            console.log(data);
             this.handleUpdate('destinations', data.destinations);
+            this.handleUpdate('schedule', data.schedule);
             this.setState({
                 loading: false,
                 destinations: [...data.destinations],
@@ -98,21 +113,19 @@ class App extends React.Component {
     
     handleSkipDestination = () => { this.destinationRequests("Recommend") }
 
-    handleGenerate = () => {
-        this.setState({
-            generate: true,
-            showMap: true
-        });
+    // update in FB easiest way
+    updateDestinations = () => {
+        const userRef = userCollection.doc(this.state.userId);
+        const dests = this.state.destinations;
+        userRef.update({ destinations: dests });
+        this.destinationRequests("Generate itinerary");
     }
 
     setShowMap = (status) => this.setState({ showMap: status });
     
     setShowDestinations = (status) => this.setState({ showDrawer: status });
 
-    reorderDestinations = (arr) => {
-        console.log(arr);
-        this.setState({ destinations: arr });
-    }
+    reorderDestinations = (arr) => { this.setState({ destinations: arr }); }
 
     handleUserInfo = (c, v, l) => {
         if (c != ''){
@@ -129,20 +142,6 @@ class App extends React.Component {
             this.setState({
                 length: l,
             });
-        }
-    }
-
-    renderItinerary = () => {
-        if (this.state.generate){
-            return (
-                <div>
-
-                <Itinerary
-                schedule={this.state.schedule} />
-                <br></br>
-                {/* <Button type="button" className="btn btn-primary" onClick={()=>this.handleGenerate()}>Regenerate my travel itinerary!</Button> */}
-                </div>
-            );
         }
     }
 
@@ -170,8 +169,8 @@ class App extends React.Component {
                         </Button>
                         <Button disabled={this.state.showDrawer}
                             type="button" className="btn btn-primary" 
-                            onClick={this.handleGenerate}>
-                                Generate Itinerary
+                            onClick={() => this.setShowMap(true)}>
+                            Generate Itinerary
                         </Button>
                     </div>
                 </div>           
@@ -202,7 +201,11 @@ class App extends React.Component {
                             removeDestination={this.handleRemove}
                             destinations={this.state.destinations}>
                     </Destinations>
-                    {this.renderItinerary()} 
+                    <Itinerary
+                        show={this.state.showMap}
+                        schedule={this.state.schedule} 
+                        updateDest={this.updateDestinations}
+                    />
                 </Col>
                 <Col md={8}>
                     <div>

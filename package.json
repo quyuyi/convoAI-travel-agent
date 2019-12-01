@@ -23,6 +23,7 @@
     "date-fns": "^2.6.0",
     "deep-assign": "^3.0.0",
     "file-loader": "^4.2.0",
+    "firebase": "^7.5.0",
     "html-to-react": "^1.4.2",
     "material-table": "^1.53.0",
     "material-ui": "^0.20.2",

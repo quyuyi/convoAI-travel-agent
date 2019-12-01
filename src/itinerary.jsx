@@ -14,115 +14,6 @@ import { AccessAlarm, ThreeDRotation } from '@material-ui/icons';
 // Better display itinerary?
 
 
-const sample_props = [
-  [
-    {'name': 'place1',
-    'coordinates': {'longitude': '-122.42060084672637', 'latitude': '37.80337168883928'}},
-    {'name': 'place2',
-    'coordinates': {'longitude': '-122.41051199129258', 'latitude': '37.79931950915626'}},
-    {'name': 'place3',
-    'coordinates': {'longitude': '-122.41851199129268', 'latitude': '37.79931950915616'}}
-  ],
-  [
-    {'name': 'place4',
-    'coordinates': {'longitude': '-122.42060584673637', 'latitude': '37.80337168873928'}},
-    {'name': 'place5',
-    'coordinates': {'longitude': '-122.41851199121258', 'latitude': '37.79931950905626'}},
-  ],
-];
-
-class Itinerary extends React.Component {
-
-    constructor (props) {
-      super(props);
-      console.log(this.props);
-      console.log(this.props.schedule.length);
-      if (this.props.schedule.length > 0) {
-        const center_coords = [this.props.schedule[0][0].coordinates.longitude, this.props.schedule[0][0].coordinates.latitude];  
-        this.state = {
-          center_coords: center_coords,
-          schedule: this.props.schedule,
-        };      
-      }
-      else {
-        this.state = {
-          center_coords: ['-122.42060584672637', '37.80337168883928'],
-          schedule: sample_props,
-        }
-      }      
-      console.log("print state for itinerary...")
-      console.log(this.state.schedule);
-      console.log(this.state.center_coords);
-    }
-
-
-    componentDidMount (){
-      // Add your Mapbox access token
-      mapboxgl.accessToken = 'pk.eyJ1IjoibHVib3VtaWNoIiwiYSI6ImNrMm5vdWRlODB2M3kzY205aTNwdTMxb2gifQ.Ax7uNaNJhLQVn00dJev4TA';
-      var map = new mapboxgl.Map({
-        container: 'map', // Specify the container ID
-        style: 'mapbox://styles/mapbox/streets-v11', // Specify which map style to use
-        // center: ['-122.42060584672637', '37.80337168883928'], // Specify the starting position
-        center: this.state.center_coords,
-        zoom: 14.5, // Specify the starting zoom
-      });
-
-      // get coords list from this.props.schedule
-      // this.props.schedule
-      this.state.schedule.map((day, idx) => {
-        console.log("update route for day ", idx);    
-        if (day.length >=2) {
-          updateRoute(map, day, idx);  
-          console.log("finding route between places...")    
-        }
-        else {
-          console.log("one place doesn't need route.")
-        }
-      });
-    }
-
-
-
-    handleGenerate(){
-      console.log("handle regenerate need implementation...");
-    }
-
-
-  
-
-
-    render(){
-      let d = [];
-      this.state.schedule.map((day, idx)=> {
-        day.map((dest, idx2) => {
-          let record = {
-            'day': idx+1,
-            'destination': dest.name,
-            // 'description': 'https://caennews.engin.umich.edu/wp-content/uploads/sites/304/2017/05/ggbl2505-article-300x231.jpg'
-          };
-          d.push(record);
-        })
-      });
-        const columns = [
-            { title: 'Day', field: 'day' },
-            { title: 'Destination', field: 'destination' },
-            // { title: 'Description', field: 'description',
-            // render: rowData => <img src = {rowData.description} 
-            //                       style = {{width:200}}/>
-            // },
-        ];
-        const data = d;
-      return(
-      <div>
-        <Button type="button" className="btn btn-primary regen" onClick={()=>this.handleGenerate()}>Regenerate my travel itinerary!</Button>
-      </div>
-      );
-    }
-
-}
-
-
-
 function updateRoute(map, coords, i) {
   // Set the profile
   var profile = "driving";
@@ -299,12 +190,6 @@ function addRoute(map, coords, waypoints, idx) {
   // };
 }
 
-
-
-
-
-
-
 function getInstructions(data) {
   // Target the sidebar to add the instructions
   var directions = document.getElementById('directions');
@@ -321,8 +206,84 @@ function getInstructions(data) {
   directions.innerHTML = '<br><h5>Trip duration: ' + Math.floor(data.duration / 60) + ' min.</h5>' + tripDirections;
 }
 
+class Itinerary extends React.Component {
 
-export default Itinerary;
+    constructor (props) {
+      super(props);
+    }
+
+    componentDidUpdate(prevProps) {
+      if (this.props.show !== prevProps.show) {
+        this.handleGenerate();
+      }
+    }
+
+    componentDidMount() {
+      // Add your Mapbox access token
+      this.setState({ generated: false });
+      if (this.props.schedule.length > 0) {
+        mapboxgl.accessToken = 'pk.eyJ1IjoibHVib3VtaWNoIiwiYSI6ImNrMm5vdWRlODB2M3kzY205aTNwdTMxb2gifQ.Ax7uNaNJhLQVn00dJev4TA';
+        var map = new mapboxgl.Map({
+          container: 'map', // Specify the container ID
+          style: 'mapbox://styles/mapbox/streets-v11', // Specify which map style to use
+          // center: ['-122.42060584672637', '37.80337168883928'], // Specify the starting position
+          center: [this.props.schedule[0][0].coordinates.longitude, this.props.schedule[0][0].coordinates.latitude],
+          zoom: 14.5, // Specify the starting zoom
+        });
+
+        // get coords list from this.props.schedule
+        // this.props.schedule
+        this.props.schedule.map((day, idx) => {
+          console.log("update route for day ", idx);    
+          if (day.length >=2) {
+            updateRoute(map, day, idx);  
+            console.log("finding route between places...")    
+          }
+          else {
+            console.log("one place doesn't need route.")
+          }
+        });
+      }
+    }
+
+    handleGenerate(){
+      this.props.updateDest();
+      if (this.props.schedule.length > 0) {
+        mapboxgl.accessToken = 'pk.eyJ1IjoibHVib3VtaWNoIiwiYSI6ImNrMm5vdWRlODB2M3kzY205aTNwdTMxb2gifQ.Ax7uNaNJhLQVn00dJev4TA';
+        var map = new mapboxgl.Map({
+          container: 'map', // Specify the container ID
+          style: 'mapbox://styles/mapbox/streets-v11', // Specify which map style to use
+          // center: ['-122.42060584672637', '37.80337168883928'], // Specify the starting position
+          center: [this.props.schedule[0][0].coordinates.longitude, this.props.schedule[0][0].coordinates.latitude],
+          zoom: 14.5, // Specify the starting zoom
+        });
+
+        // get coords list from this.props.schedule
+        // this.props.schedule
+        this.props.schedule.map((day, idx) => {
+          console.log("update route for day ", idx);    
+          if (day.length >=2) {
+            updateRoute(map, day, idx);  
+            console.log("finding route between places...")    
+          }
+          else {
+            console.log("one place doesn't need route.")
+          }
+        });
+      }
+    }
+
+    render(){
+      return(
+      <div>
+        <Button type="button" className="btn btn-primary regen" onClick={()=>this.handleGenerate()}>Regenerate my travel itinerary!</Button>
+      </div>
+      );
+    }
+
+}
+
+export { Itinerary, updateRoute };
 
 
 
