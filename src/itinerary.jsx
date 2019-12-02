@@ -30,7 +30,8 @@ function updateRoute(map, coords, i) {
   // format the record in our database
   let format_coords = [];
   coords.map((dest, idx) => {
-    let coord = [dest.coordinates.longitude, dest.coordinates.latitude];
+    let coord;
+    coord = [dest.coordinates.longitude, dest.coordinates.latitude];
     format_coords.push(coord);
   })
   coords = format_coords;
@@ -213,54 +214,106 @@ class Itinerary extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-      if (this.props.show !== prevProps.show) {
-        this.handleGenerate();
+      console.log(this.props.schedule);
+      if (this.props.show !== prevProps.show || this.props.schedule != prevProps.schedule) {
+        if (this.props.schedule.length > 0) {
+          mapboxgl.accessToken = 'pk.eyJ1IjoibHVib3VtaWNoIiwiYSI6ImNrMm5vdWRlODB2M3kzY205aTNwdTMxb2gifQ.Ax7uNaNJhLQVn00dJev4TA';
+          var map = new mapboxgl.Map({
+            container: 'map', // Specify the container ID
+            style: 'mapbox://styles/mapbox/streets-v11', // Specify which map style to use
+            // center: ['-122.42060584672637', '37.80337168883928'], // Specify the starting position
+            center: [this.props.schedule[0][0].coordinates.longitude, this.props.schedule[0][0].coordinates.latitude],
+            zoom: 14.5, // Specify the starting zoom
+          });
+  
+          // get coords list from this.props.schedule
+          // this.props.schedule
+          this.props.schedule.map((day, idx) => {
+            console.log("update route for day ", idx);    
+            if (day.length >=2) {
+              updateRoute(map, day, idx);  
+              console.log("finding route between places...")    
+            }
+            else {
+              console.log("one place doesn't need route.")
+            }
+          });
+        }
       }
     }
 
-    componentDidMount() {
-      // Add your Mapbox access token
-      this.setState({ generated: false });
-      if (this.props.schedule.length > 0) {
-        mapboxgl.accessToken = 'pk.eyJ1IjoibHVib3VtaWNoIiwiYSI6ImNrMm5vdWRlODB2M3kzY205aTNwdTMxb2gifQ.Ax7uNaNJhLQVn00dJev4TA';
-        var map = new mapboxgl.Map({
-          container: 'map', // Specify the container ID
-          style: 'mapbox://styles/mapbox/streets-v11', // Specify which map style to use
-          // center: ['-122.42060584672637', '37.80337168883928'], // Specify the starting position
-          center: [this.props.schedule[0][0].coordinates.longitude, this.props.schedule[0][0].coordinates.latitude],
-          zoom: 14.5, // Specify the starting zoom
-        });
+    // componentDidMount() {
+    //   // Add your Mapbox access token
+    //   if (this.props.schedule.length > 0) {
+    //     mapboxgl.accessToken = 'pk.eyJ1IjoibHVib3VtaWNoIiwiYSI6ImNrMm5vdWRlODB2M3kzY205aTNwdTMxb2gifQ.Ax7uNaNJhLQVn00dJev4TA';
+    //     var map = new mapboxgl.Map({
+    //       container: 'map', // Specify the container ID
+    //       style: 'mapbox://styles/mapbox/streets-v11', // Specify which map style to use
+    //       // center: ['-122.42060584672637', '37.80337168883928'], // Specify the starting position
+    //       center: [this.props.schedule[0][0].coordinates.longitude, this.props.schedule[0][0].coordinates.latitude],
+    //       zoom: 14.5, // Specify the starting zoom
+    //     });
 
-        // get coords list from this.props.schedule
-        // this.props.schedule
-        this.props.schedule.map((day, idx) => {
-          console.log("update route for day ", idx);    
-          if (day.length >=2) {
-            updateRoute(map, day, idx);  
-            console.log("finding route between places...")    
-          }
-          else {
-            console.log("one place doesn't need route.")
-          }
-        });
-      }
-    }
+    //     // get coords list from this.props.schedule
+    //     // this.props.schedule
+    //     this.props.schedule.map((day, idx) => {
+    //       console.log("update route for day ", idx);    
+    //       if (day.length >=2) {
+    //         updateRoute(map, day, idx);  
+    //         console.log("finding route between places...")    
+    //       }
+    //       else {
+    //         console.log("one place doesn't need route.")
+    //       }
+    //     });
+    //   }
+    // }
 
     handleGenerate(){
-      this.props.updateDest();
+      //this.props.updateDest();
+      
       if (this.props.schedule.length > 0) {
+        let divideByDay = this.props.destinations.length / this.props.trip_length;
+        let count = 0;
+        let dayDest = [];
+
+        let coordsByDestination = [];
+        for (let i = 0; i < this.props.destinations.length; ++i) {
+          for (let j = 0; j < this.props.schedule.length; ++j) {
+            for (let h = 0; h < this.props.schedule[j].length; ++h) {
+              if (this.props.schedule[j][h].name == this.props.destinations[i]) {
+                count++;
+                dayDest.push(this.props.schedule[j][h]);
+                if (count === divideByDay) {
+                  count == 0;
+                  coordsByDestination.push(dayDest);
+                  dayDest = [];
+                }
+                break;
+              }
+            }
+          }
+        }
+
+        if (dayDest.length > 0) {
+          coordsByDestination.push(dayDest);
+        }
+  
+        console.log("coords by destination", coordsByDestination);
+
         mapboxgl.accessToken = 'pk.eyJ1IjoibHVib3VtaWNoIiwiYSI6ImNrMm5vdWRlODB2M3kzY205aTNwdTMxb2gifQ.Ax7uNaNJhLQVn00dJev4TA';
         var map = new mapboxgl.Map({
           container: 'map', // Specify the container ID
           style: 'mapbox://styles/mapbox/streets-v11', // Specify which map style to use
           // center: ['-122.42060584672637', '37.80337168883928'], // Specify the starting position
-          center: [this.props.schedule[0][0].coordinates.longitude, this.props.schedule[0][0].coordinates.latitude],
+          center: [coordsByDestination[0][0].coordinates.longitude, coordsByDestination[0][0].coordinates.latitude],
           zoom: 14.5, // Specify the starting zoom
         });
 
         // get coords list from this.props.schedule
         // this.props.schedule
-        this.props.schedule.map((day, idx) => {
+
+        coordsByDestination.map((day, idx) => {
           console.log("update route for day ", idx);    
           if (day.length >=2) {
             updateRoute(map, day, idx);  

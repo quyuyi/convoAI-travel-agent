@@ -86,15 +86,24 @@ class App extends React.Component {
     }
 
     destinationRequests = (q) => {
-        // silly, but whatever
         this.postData('/query_clinc/', {query: q, userId: this.state.userId}) 
         .then(data => {
             this.handleUpdate('destinations', data.destinations);
             this.handleUpdate('schedule', data.schedule);
-            this.setState({
-                loading: false,
-                destinations: [...data.destinations],
-            });
+            if (q == "Generate itinerary") { 
+                // we do this because we need to show right order of dests when a new
+                // itinerary is generated
+                let temp = [];
+                for (let i = 0; i < data.schedule.length; ++i) {
+                    for (let j = 0; j < data.schedule[i].length; ++j) {
+                        temp.push(data.schedule[i][j].name);
+                    }
+                }
+                this.setState({ 
+                    destinations: temp,
+                    showMap: true 
+                });
+            }
             if (q == "Recommend")  { // don't do this in real work
                 let dest = document.getElementById("destination-img");
                 dest.setAttribute("src", data.img);
@@ -114,10 +123,9 @@ class App extends React.Component {
     handleSkipDestination = () => { this.destinationRequests("Recommend") }
 
     // update in FB easiest way
-    updateDestinations = () => {
-        const userRef = userCollection.doc(this.state.userId);
-        const dests = this.state.destinations;
-        userRef.update({ destinations: dests });
+    updateDestinations = (arr) => {
+        // const userRef = userCollection.doc(this.state.userId);
+        // userRef.update({ destinations: arr });
         this.destinationRequests("Generate itinerary");
     }
 
@@ -125,7 +133,10 @@ class App extends React.Component {
     
     setShowDestinations = (status) => this.setState({ showDrawer: status });
 
-    reorderDestinations = (arr) => { this.setState({ destinations: arr }); }
+    reorderDestinations = (arr) => { 
+        this.setState({ destinations: arr }); 
+        //this.updateDestinations(arr);
+    }
 
     handleUserInfo = (c, v, l) => {
         if (c != ''){
@@ -143,6 +154,8 @@ class App extends React.Component {
                 length: l,
             });
         }
+        // because there is no NCRB in every city :)
+        if (c.length > 0) this.destinationRequests("Recommend");
     }
 
     render () {
@@ -167,9 +180,9 @@ class App extends React.Component {
                             onClick={() => this.setShowMap(false)}>
                             Close Itinerary
                         </Button>
-                        <Button disabled={this.state.showDrawer}
+                        <Button disabled={this.state.showDrawer || this.state.showMap}
                             type="button" className="btn btn-primary" 
-                            onClick={() => this.setShowMap(true)}>
+                            onClick={() => {this.destinationRequests("Generate itinerary")}}>
                             Generate Itinerary
                         </Button>
                     </div>
@@ -204,7 +217,9 @@ class App extends React.Component {
                     <Itinerary
                         show={this.state.showMap}
                         schedule={this.state.schedule} 
-                        updateDest={this.updateDestinations}
+                        destinations={this.state.destinations}
+                        trip_length={this.state.length}
+                        //updateDest={this.updateDestinations}
                     />
                 </Col>
                 <Col md={8}>
