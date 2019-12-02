@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import Button from "react-bootstrap/Button";
 import MaterialTable from 'material-table';
 import { AccessAlarm, ThreeDRotation } from '@material-ui/icons';
@@ -213,67 +213,48 @@ class Itinerary extends React.Component {
       super(props);
     }
 
+    buildMap = () => {
+      mapboxgl.accessToken = 'pk.eyJ1IjoibHVib3VtaWNoIiwiYSI6ImNrMm5vdWRlODB2M3kzY205aTNwdTMxb2gifQ.Ax7uNaNJhLQVn00dJev4TA';
+      var map = new mapboxgl.Map({
+        container: 'map', // Specify the container ID
+        style: 'mapbox://styles/mapbox/streets-v11', // Specify which map style to use
+        // center: ['-122.42060584672637', '37.80337168883928'], // Specify the starting position
+        center: [this.props.schedule[0][0].coordinates.longitude, this.props.schedule[0][0].coordinates.latitude],
+        zoom: 14.5, // Specify the starting zoom
+      });
+
+      // get coords list from this.props.schedule
+      // this.props.schedule
+      this.props.schedule.map((day, idx) => {
+        console.log("update route for day ", idx);    
+        if (day.length >=2) {
+          updateRoute(map, day, idx);  
+          console.log("finding route between places...")    
+        }
+        else {
+          console.log("one place doesn't need route.")
+        }
+      });
+    }
+
     componentDidUpdate(prevProps) {
-      console.log(this.props.schedule);
-      if (this.props.show !== prevProps.show || this.props.schedule != prevProps.schedule) {
+      if (this.props.show && this.props.destinations.length != prevProps.destinations.length) {
+        this.handleGenerate();
+      } else if (this.props.show && JSON.stringify(this.props.destinations) != JSON.stringify(prevProps.destinations)) {
+        this.handleGenerate(); // meh, just cleaner not combining long conditions
+      } 
+      else if (this.props.show !== prevProps.show) {
         if (this.props.schedule.length > 0) {
-          mapboxgl.accessToken = 'pk.eyJ1IjoibHVib3VtaWNoIiwiYSI6ImNrMm5vdWRlODB2M3kzY205aTNwdTMxb2gifQ.Ax7uNaNJhLQVn00dJev4TA';
-          var map = new mapboxgl.Map({
-            container: 'map', // Specify the container ID
-            style: 'mapbox://styles/mapbox/streets-v11', // Specify which map style to use
-            // center: ['-122.42060584672637', '37.80337168883928'], // Specify the starting position
-            center: [this.props.schedule[0][0].coordinates.longitude, this.props.schedule[0][0].coordinates.latitude],
-            zoom: 14.5, // Specify the starting zoom
-          });
-  
-          // get coords list from this.props.schedule
-          // this.props.schedule
-          this.props.schedule.map((day, idx) => {
-            console.log("update route for day ", idx);    
-            if (day.length >=2) {
-              updateRoute(map, day, idx);  
-              console.log("finding route between places...")    
-            }
-            else {
-              console.log("one place doesn't need route.")
-            }
-          });
+          this.buildMap();
         }
       }
     }
-
-    // componentDidMount() {
-    //   // Add your Mapbox access token
-    //   if (this.props.schedule.length > 0) {
-    //     mapboxgl.accessToken = 'pk.eyJ1IjoibHVib3VtaWNoIiwiYSI6ImNrMm5vdWRlODB2M3kzY205aTNwdTMxb2gifQ.Ax7uNaNJhLQVn00dJev4TA';
-    //     var map = new mapboxgl.Map({
-    //       container: 'map', // Specify the container ID
-    //       style: 'mapbox://styles/mapbox/streets-v11', // Specify which map style to use
-    //       // center: ['-122.42060584672637', '37.80337168883928'], // Specify the starting position
-    //       center: [this.props.schedule[0][0].coordinates.longitude, this.props.schedule[0][0].coordinates.latitude],
-    //       zoom: 14.5, // Specify the starting zoom
-    //     });
-
-    //     // get coords list from this.props.schedule
-    //     // this.props.schedule
-    //     this.props.schedule.map((day, idx) => {
-    //       console.log("update route for day ", idx);    
-    //       if (day.length >=2) {
-    //         updateRoute(map, day, idx);  
-    //         console.log("finding route between places...")    
-    //       }
-    //       else {
-    //         console.log("one place doesn't need route.")
-    //       }
-    //     });
-    //   }
-    // }
 
     handleGenerate(){
       //this.props.updateDest();
       
       if (this.props.schedule.length > 0) {
-        let divideByDay = this.props.destinations.length / this.props.trip_length;
+        let divideByDay = Math.ceil(this.props.destinations.length / this.props.trip_length);
         let count = 0;
         let dayDest = [];
 
@@ -282,10 +263,10 @@ class Itinerary extends React.Component {
           for (let j = 0; j < this.props.schedule.length; ++j) {
             for (let h = 0; h < this.props.schedule[j].length; ++h) {
               if (this.props.schedule[j][h].name == this.props.destinations[i]) {
-                count++;
                 dayDest.push(this.props.schedule[j][h]);
+                count++;
                 if (count === divideByDay) {
-                  count == 0;
+                  count = 0;
                   coordsByDestination.push(dayDest);
                   dayDest = [];
                 }
@@ -328,9 +309,7 @@ class Itinerary extends React.Component {
 
     render(){
       return(
-      <div>
-        <Button type="button" className="btn btn-primary regen" onClick={()=>this.handleGenerate()}>Regenerate my travel itinerary!</Button>
-      </div>
+        <Fragment></Fragment>
       );
     }
 

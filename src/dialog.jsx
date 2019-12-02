@@ -139,7 +139,6 @@ class Dialog extends React.Component {
                 document.getElementById("destination-name").innerHTML = data.dest;
                 document.getElementById("destination-intro").innerHTML = data.intro;
             }
-
             // update distination list
             this.props.handleUpdate('destinations',data.destinations);
 

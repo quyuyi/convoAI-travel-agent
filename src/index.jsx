@@ -115,19 +115,17 @@ class App extends React.Component {
     }
 
     handleRemove = (idx) => { 
-        this.destinationRequests("Remove " + this.state.destinations[idx]) 
+        const result = this.state.destinations.filter((dest, i) => { if (i != idx) return dest; });
+        this.setState({ destinations: result });
+        // we still have to update FB because destinations are stored there as well,
+        // and when we send request to clinc we use destinations from FB
+        const userRef = userCollection.doc(this.state.userId);
+        userRef.update({ destinations: result });
     }
 
     handleAddDestination = () => { this.destinationRequests("Add this") }
     
     handleSkipDestination = () => { this.destinationRequests("Recommend") }
-
-    // update in FB easiest way
-    updateDestinations = (arr) => {
-        // const userRef = userCollection.doc(this.state.userId);
-        // userRef.update({ destinations: arr });
-        this.destinationRequests("Generate itinerary");
-    }
 
     setShowMap = (status) => this.setState({ showMap: status });
     
@@ -139,6 +137,7 @@ class App extends React.Component {
     }
 
     handleUserInfo = (c, v, l) => {
+        if (this.state.city != c && c.length > 0) this.destinationRequests("Recommend");
         if (c != ''){
             this.setState({
                 city: c,
@@ -154,8 +153,6 @@ class App extends React.Component {
                 length: l,
             });
         }
-        // because there is no NCRB in every city :)
-        if (c.length > 0) this.destinationRequests("Recommend");
     }
 
     render () {
