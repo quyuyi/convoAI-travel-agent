@@ -20,7 +20,8 @@
 5. When clicking button, send request to clinc so that there's speakable response
    e.g. User clicks button to add, AI says "xxx has been added..."
 ### TTS&STT:
-(1. Can user directly speak to AI without clicking 'record' button?)
+1. Test and make sure it works. Try to make it work without clicking the button.
+   e.g. Say "Hi xxx", and it begins to record.
 
 
 ## Notes:
