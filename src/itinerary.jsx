@@ -17,16 +17,6 @@ import { AccessAlarm, ThreeDRotation } from '@material-ui/icons';
 function updateRoute(map, coords, i) {
   // Set the profile
   var profile = "driving";
-  // var profile = "driving-traffic";
-  // var profile = "cycling";
-  // Get the coordinates that were drawn on the map
-
-
-  //var data = draw.getAll();
-  //var lastFeature = data.features.length - 1;
-  //var coords = data.features[lastFeature].geometry.coordinates;
-  //console.log(coords);
-  
   // format the record in our database
   let format_coords = [];
   coords.map((dest, idx) => {
@@ -48,11 +38,6 @@ function updateRoute(map, coords, i) {
   getMatch(map, newCoords, radius, profile, i);
 }
 
-
-
-
-
-    
 function getMatch(map, coordinates, radius, profile, i) {
   console.log("print from getMatch...")
   console.log(coordinates);
@@ -67,29 +52,11 @@ function getMatch(map, coordinates, radius, profile, i) {
     method: 'GET',
     url: query
   }).done(function(data) {
-    console.log(query);
-    console.log(data);
-    // Get the coordinates from the response
-    // if ("matchings" in data && data.matchings.length > 0){
-    //   let coords = data.matchings[0].geometry;
-    //   // Draw the route on the map
-    //   addRoute(map, coords, i);
-    //   getInstructions(data.matchings[0]);
-    // }
-    // else {
-    //   console.log(data);
-    // }
     let coords = data.routes[0].geometry;
     addRoute(map, coords, data.waypoints, i,);
-    getInstructions(data.routes[0]);
-
+    getInstructions(data.routes[0], i);
   });
 }
-
-
-
-
-
 
 // If the user clicks the delete draw button, remove the layer if it exists
 function removeRoute() {
@@ -100,10 +67,6 @@ function removeRoute() {
     return;
   }
 }
-
-
-
-
 
 function addRoute(map, coords, waypoints, idx) {
   // If a route is already loaded, remove it
@@ -191,20 +154,19 @@ function addRoute(map, coords, waypoints, idx) {
   // };
 }
 
-function getInstructions(data) {
+function getInstructions(data, dayNum) {
   // Target the sidebar to add the instructions
   var directions = document.getElementById('directions');
-
   var legs = data.legs;
   var tripDirections = [];
   // Output the instructions for each step of each leg in the response object
   for (var i = 0; i < legs.length; i++) {
     var steps = legs[i].steps;
     for (var j = 0; j < steps.length; j++) {
-      tripDirections.push('<br><li>' + steps[j].maneuver.instruction) + '</li>';
+      tripDirections.push('<li>' + steps[j].maneuver.instruction) + '</li>';
     }
   }
-  directions.innerHTML = '<br><h5>Trip duration: ' + Math.floor(data.duration / 60) + ' min.</h5>' + tripDirections;
+  directions.innerHTML = `${directions.innerHTML} <h5>Day ${dayNum + 1} trip duration: ${Math.floor(data.duration / 60)} min.</h5><ul>${tripDirections}</ul>`;
 }
 
 class Itinerary extends React.Component {
@@ -214,6 +176,8 @@ class Itinerary extends React.Component {
     }
 
     buildMap = () => {
+      var directions = document.getElementById('directions');
+      directions.innerHTML = '';
       mapboxgl.accessToken = 'pk.eyJ1IjoibHVib3VtaWNoIiwiYSI6ImNrMm5vdWRlODB2M3kzY205aTNwdTMxb2gifQ.Ax7uNaNJhLQVn00dJev4TA';
       var map = new mapboxgl.Map({
         container: 'map', // Specify the container ID
@@ -252,7 +216,8 @@ class Itinerary extends React.Component {
 
     handleGenerate(){
       //this.props.updateDest();
-      
+      var directions = document.getElementById('directions');
+      directions.innerHTML = '';
       if (this.props.schedule.length > 0) {
         let divideByDay = Math.ceil(this.props.destinations.length / this.props.trip_length);
         let count = 0;

@@ -579,7 +579,7 @@ def resolve_recommendation(clinc_request):
  
     clinc_request['visual_payload'] = {
         "intro": city_recommendations['results'][count]['intro'],
-        "image": city_recommendations['results'][count]['images'][0]['sizes']['original']['url']
+        "image": city_recommendations['results'][count]['images'][0]['sizes']['medium']['url']
     }
     doc_ref.update({
         "count": count+1

@@ -196,6 +196,7 @@ class App extends React.Component {
 
                 <Col md={4}>
                 <Dialog 
+                destinationRequests={this.destinationRequests}
                 post={this.postData}
                 userId={this.state.userId}
                 handleUpdate={this.handleUpdate}
