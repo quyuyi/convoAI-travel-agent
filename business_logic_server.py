@@ -444,17 +444,27 @@ def resolve_destination_info(clinc_request):
         city_doc_ref = city_collection.document(city)
         city_recommendations = city_doc_ref.get().to_dict()["recommendations"]
         city_name_dict = city_doc_ref.get().to_dict()["name_to_index"]
+
+        mapper_values = {}
+        for place in city_recommendations:
+            mapper_values[place['name']] = [place['name']]
+
+        clinc_request['slots']['mappings'] = [
+            {
+                "algorithm" : "partial_ratio",
+                "threshold" : 0.6,
+                "type" : "fuzzy",
+                "values" : mapper_values
+            }
+        ]
         
         if destination in city_name_dict: # destination exists
             print('destination in dict')
             clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = destination
             clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 1  # why the value of 'values' is list???
         else: # destination not in recommendation list, cannot add
-            clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = -1
+            clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 0
 
-    # TODO
-    # request the trip api to get information about the destination
-    # figure out what to return back to the user
 
     print("finish resolving, send response back to clinc...")
     pp.pprint(clinc_request)
