@@ -7,10 +7,11 @@
 1. Use dynamic slot mapper in business logic to map destinations
 2. Debug recommendation by looking at firebase, find reason for "out of index"
 3. Say "Remove this place" to remove
-4. Filter out the restaurants and hotels in recommendation
+4. "Add this place" after asking for destination information
+5. Filter out the restaurants and hotels in recommendation
 #### Potential:
-5. Recommend nearby restaurant/hotel based on route
-6. Recommend according to user preference
+6. Recommend nearby restaurant/hotel based on route
+7. Recommend according to user preference
 ### UI:
 #### Itinerary:
 1. Display destinations by day on left of map (now all destinations listed together)
@@ -20,6 +21,7 @@
    e.g. User clicks button to add, AI says "xxx has been added..."
 4. Display destination information at resolve_destination_info 
    e.g. "Tell me about Michigan Stadium" -> show photo and introduction on screen
+5. Find a better initial interface instead of NCRB...
 ### TTS&STT:
 1. Test and make sure it works. Try to make it work without clicking the button.
    e.g. Say "Hi xxx", and it begins to record.
