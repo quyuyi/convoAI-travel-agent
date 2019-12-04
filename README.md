@@ -20,6 +20,7 @@
    e.g. User clicks button to add, AI says "xxx has been added..."
 4. Display destination information at resolve_destination_info 
    e.g. "Tell me about Michigan Stadium" -> show photo and introduction on screen
+5. Find a better initial interface instead of NCRB...
 ### TTS&STT:
 1. Test and make sure it works. Try to make it work without clicking the button.
    e.g. Say "Hi xxx", and it begins to record.
