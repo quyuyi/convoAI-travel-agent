@@ -442,7 +442,7 @@ def resolve_destination_info(clinc_request):
         # }
     
         city_doc_ref = city_collection.document(city)
-        city_recommendations = city_doc_ref.get().to_dict()["recommendations"]
+        city_recommendations = city_doc_ref.get().to_dict()["recommendations"]["results"]
         city_name_dict = city_doc_ref.get().to_dict()["name_to_index"]
 
         mapper_values = {}
