@@ -449,6 +449,8 @@ def resolve_destination_info(clinc_request):
         for place in city_recommendations:
             mapper_values[place['name']] = [place['name']]
 
+        print("mapper_values: ", mapper_values)
+
         clinc_request['slots']['_DESTINATION_']['mappings'] = [
             {
                 "algorithm" : "partial_ratio",
