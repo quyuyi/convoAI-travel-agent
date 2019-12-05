@@ -2,15 +2,15 @@
 
 ## TODO
 ### Clinc:
-1. Test Clinc classification and slot mapping
-   Incorrect cases:
-   (1) "I want to go to Tokyo Tower", should be add_destination, extract as city
-   (2) "I want to go to xxx by myself"
-   (3) "the weekend" days (incorrect slot-value pairing)
-   (4) "I want to go to xxx alone" -> city: "xxx alone"
-   (5) I'll go to xxx with 3 boys and 4 girls.
-   (6) "a week and 2 days"
-   (7) "I'd like to go there." should be add_destination, extract as city
+1. Test Clinc classification and slot mapping   
+   Incorrect cases:   
+   (1) "I want to go to Tokyo Tower", should be add_destination, extract as city   
+   (2) "I want to go to xxx by myself"   
+   (3) "the weekend" days (incorrect slot-value pairing)   
+   (4) "I want to go to xxx alone" -> city: "xxx alone"   
+   (5) I'll go to xxx with 3 boys and 4 girls.   
+   (6) "a week and 2 days"   
+   (7) "I'd like to go there." should be add_destination, extract as city   
 
 ### Backend:
 1. Use dynamic slot mapper in business logic to map destinations
