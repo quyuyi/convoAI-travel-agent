@@ -207,6 +207,7 @@ class App extends React.Component {
             <Row className={this.state.showMap ? "map-container" : "map-container-hidden"}>
                 <Col md={4}>
                     <Destinations
+                            tripLength={this.state.length}
                             reorderDestinations={this.reorderDestinations}
                             post={this.postData}
                             removeDestination={this.handleRemove}
@@ -234,6 +235,7 @@ class App extends React.Component {
             <div className={this.state.showDrawer ? "destination-list" : "destination-list-hidden"}>
                 <h1>Selected Destinations</h1>
                 <Destinations
+                            tripLength = {this.state.length}
                             reorderDestinations={this.reorderDestinations}
                             post={this.postData}
                             removeDestination={this.handleRemove}

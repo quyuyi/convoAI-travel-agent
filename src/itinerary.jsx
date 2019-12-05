@@ -19,15 +19,17 @@ function updateRoute(map, coords, i) {
   var profile = "driving";
   // format the record in our database
   let format_coords = [];
+  let destNames = [];
   coords.map((dest, idx) => {
     let coord;
     coord = [dest.coordinates.longitude, dest.coordinates.latitude];
     format_coords.push(coord);
+    destNames.push(dest.name);
   })
   coords = format_coords;
   // Format the coordinates
   var newCoords = coords.join(';')
- // console.log(newCoords);
+  //console.log(newCoords);
 
 
   // Set the radius for each coordinate pair to 25 meters
@@ -35,25 +37,26 @@ function updateRoute(map, coords, i) {
   coords.forEach(element => {
     radius.push(25);
   });
-  getMatch(map, newCoords, radius, profile, i);
+  getMatch(map, newCoords, radius, profile, i, destNames);
 }
 
-function getMatch(map, coordinates, radius, profile, i) {
+function getMatch(map, coordinates, radius, profile, i, destNames) {
   console.log("print from getMatch...")
   console.log(coordinates);
+  let destNameString = destNames.join(';')
   // Separate the radiuses with semicolons
   var radiuses = radius.join(';')
   // Create the query
   // let query = 'https://api.mapbox.com/matching/v5/mapbox/' + profile + '/' + coordinates + '?geometries=geojson&radiuses=' + radiuses + '&steps=true&access_token=' + mapboxgl.accessToken;
-  let query = 'https://api.mapbox.com/directions/v5/mapbox/' + profile + '/' + coordinates + '?geometries=geojson&steps=true&access_token=' + mapboxgl.accessToken;
-
+  // let query = 'https://api.mapbox.com/directions/v5/mapbox/' + profile + '/' + coordinates + '?geometries=geojson&steps=true&access_token=' + mapboxgl.accessToken;
+  let query = `https://api.mapbox.com/directions/v5/mapbox/${profile}/${coordinates}?geometries=geojson&steps=true&waypoint_names=${destNameString}&access_token=${mapboxgl.accessToken}`;
 
   $.ajax({
     method: 'GET',
     url: query
   }).done(function(data) {
     let coords = data.routes[0].geometry;
-    addRoute(map, coords, data.waypoints, i,);
+    addRoute(map, coords, data.waypoints, i, destNames);
     getInstructions(data.routes[0], i);
   });
 }
@@ -68,7 +71,7 @@ function removeRoute() {
   }
 }
 
-function addRoute(map, coords, waypoints, idx) {
+function addRoute(map, coords, waypoints, idx, destNames) {
   // If a route is already loaded, remove it
   // if (map.getSource('route')) {
   //   map.removeLayer('route')
@@ -99,8 +102,16 @@ function addRoute(map, coords, waypoints, idx) {
     });
 
     let feats = [];
-    console.log(coords.coordinates);
-    console.log(waypoints);
+
+    // waypoints are missing names... so:
+    let waypointLookup = {};
+    for (let i = 0; i < waypoints.length; ++i) {
+      waypointLookup[waypoints[i].location[0]] = true;
+      waypointLookup[waypoints[i].location[1]] = true;
+    }
+
+    let temp = 0;
+
     for (let i = 0; i < coords.coordinates.length; ++i) {
       if (i==0 || i==coords.coordinates.length-1){
         let item = {
@@ -110,8 +121,8 @@ function addRoute(map, coords, waypoints, idx) {
             "coordinates": coords.coordinates[i].map(i => parseFloat(i))
           },
           "properties": {
-            "title": i==0 ? waypoints[0].name : waypoints[1].name,
-            "icon": "monument"
+            "title": waypointLookup[coords.coordinates[i][0]] && waypointLookup[coords.coordinates[i][1]] ? destNames[temp++] : '',
+            "icon": waypointLookup[coords.coordinates[i][0]] && waypointLookup[coords.coordinates[i][1]] ? "monument" : ''
           }
         }
         feats.push(item);
@@ -123,6 +134,10 @@ function addRoute(map, coords, waypoints, idx) {
             "type": "Point",
             "coordinates": coords.coordinates[i].map(i => parseFloat(i))
           },
+          "properties": {
+            "title": waypointLookup[coords.coordinates[i][0]] && waypointLookup[coords.coordinates[i][1]] ? destNames[temp++] : '',
+            "icon": waypointLookup[coords.coordinates[i][0]] && waypointLookup[coords.coordinates[i][1]] ? "monument" : ''
+          }
         }        
         feats.push(item);
       }

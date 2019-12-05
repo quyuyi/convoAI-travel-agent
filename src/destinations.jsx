@@ -28,6 +28,9 @@ class Destinations extends Component {
 
 
   render () {
+    let count = Math.ceil(this.props.destinations.length / this.props.tripLength);
+    let day = 1;
+    let indexer = 1;
     return (
         <DragDropContext onDragEnd={this.onDragEnd}>
           <Droppable droppableId="droppable">
@@ -38,7 +41,13 @@ class Destinations extends Component {
                 className="destinations-list-items"
               >
                 {this.props.destinations.map((dest, index) => (
-                  <Draggable key={index} draggableId={`dest-${index}`} index={index}>
+                  <React.Fragment>
+                    { 
+                      index % count === 0 ? (<h5 style={{display: day >= this.props.destinations.length / count + 1 ? 'none' : 'block' }} 
+                                                key={indexer++ * 7} className="dest-day">Day {day++}</h5>) : '' 
+                    }
+                    <Draggable key={index} draggableId={`dest-${index}`} index={index}>
+                    
                     {(provided, snapshot) => (
                       <div
                         ref={provided.innerRef}
@@ -50,7 +59,8 @@ class Destinations extends Component {
                         <span onClick={() => this.props.removeDestination(index)}>x</span>
                       </div>
                     )}
-                  </Draggable>
+                    </Draggable>
+                  </React.Fragment>
                 ))}
                 {provided.placeholder}
               </div>

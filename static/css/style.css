@@ -313,7 +313,7 @@ body {
     border-bottom: 1px solid #e8e8e8;
     background: #f7f7f7;
     margin-top: 1px;
-    padding: 10px 20px;
+    padding: 4px 20px;
     font-size: 14px;
     color: #333;
     display: flex;
@@ -418,4 +418,23 @@ background: #555;
     bottom: 20px;
     position: absolute;
     width: calc(100% - 30px);
+}
+
+.dest-day {
+    padding: 10px 0 10px 10px;
+    font-size: 14px;
+    background: #f7f7f7;
+    margin-bottom: 0;
+}
+
+.map-container .dest-day {
+    padding: 10px 0 10px 10px;
+    font-size: 14px;
+    background: rgba(0,0,0, 0);
+    margin-bottom: 0;
+    color: #fff;
+}
+
+.dragActive .dest-day {
+    display: none !important;
 }
