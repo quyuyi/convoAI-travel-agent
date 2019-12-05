@@ -449,7 +449,7 @@ def resolve_destination_info(clinc_request):
         for place in city_recommendations:
             mapper_values[place['name']] = [place['name']]
 
-        clinc_request['slots']['mappings'] = [
+        clinc_request['slots']['_DESTINATIONS_']['mappings'] = [
             {
                 "algorithm" : "partial_ratio",
                 "threshold" : 0.6,
