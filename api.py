@@ -4,6 +4,7 @@ import pprint
 app_key = 'd5c427b6678dece62b966bea504b00b511893ec1'
 ai_version = 'd2462c12-e625-49fd-9cfe-c781ddedf060'
 FIREBASE_AUTH = "speech-1572979010959-firebase-adminsdk-2918d-36021ad32f.json"
+TTS_AUTH = "WebpageClassifier-2cf78af630ef.json"
 
 pp = pprint.PrettyPrinter(indent=2)
 query = "what's the weather in Boston?"

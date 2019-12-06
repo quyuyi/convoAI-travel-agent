@@ -5,7 +5,7 @@ import io
 import json
 from flask import Flask, render_template, request, jsonify, send_file, url_for
 import requests
-from api import request_clinc, FIREBASE_AUTH
+from api import request_clinc, FIREBASE_AUTH, TTS_AUTH
 import pprint
 from utils import get
 
@@ -21,8 +21,8 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 
 pp = pprint.PrettyPrinter(indent=4)
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"]=FIREBASE_AUTH
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="/Users/quyuyi/Downloads/WebpageClassifier-2cf78af630ef.json"
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = FIREBASE_AUTH
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = TTS_AUTH
 
 # Instantiates a speech to text client
 speech_to_text_client = speech.SpeechClient()
