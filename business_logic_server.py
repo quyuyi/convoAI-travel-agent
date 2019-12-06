@@ -649,7 +649,6 @@ def resolve_remove_destination(clinc_request):
         # }
         clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = destination
         if destination in ["This Place", "This", "It", "There", "That"]:
-            print("count", count)
             if last_edit != -1:
                 destination = city_recommendations['results'][last_edit]['name']
             else:

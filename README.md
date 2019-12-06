@@ -10,7 +10,10 @@
    (4) "I want to go to xxx alone" -> city: "xxx alone"   
    (5) I'll go to xxx with 3 boys and 4 girls.   
    (6) "a week and 2 days"   
-   (7) "I'd like to go there." should be add_destination, extract as city   
+   (7) "I'd like to go there." should be add_destination, extract as city  
+   (8) "Hi, I'd like to go to Ann Arbor with my parents for 3 days" with "hi days" on the top instead of "3 days" (non-numerical days should be illegal)   
+2. (Add training data to support adding multiple places at once.)
+
 
 ### Backend:
 1. Use dynamic slot mapper in business logic to map destinations
@@ -28,7 +31,7 @@
 #### General:
 2. When clicking button, send request to clinc so that there's speakable response
    e.g. User clicks button to add, AI says "xxx has been added..."
-3. Display destination information at resolve_destination_info 
+3. Display destination information at resolve_destination_info
    e.g. "Tell me about Michigan Stadium" -> show photo and introduction on screen
 4. Find a better initial interface instead of NCRB...
 ### TTS&STT:
