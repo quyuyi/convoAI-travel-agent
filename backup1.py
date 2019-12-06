@@ -14,7 +14,7 @@ from google.cloud.speech import enums
 from google.cloud.speech import types
 from google.cloud import texttospeech
 
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="/Users/quyuyi/Downloads/WebpageClassifier-2cf78af630ef.json"
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="/Users/quyuyi/gitProjects/EECS498ConvoAI/WebpageClassifier-2cf78af630ef.json"
 # Instantiates a speech to text client
 # speech_to_text_client = speech.SpeechClient()
 
