@@ -456,10 +456,17 @@ def resolve_destination_info(clinc_request):
         })
 
         mapper_values = {}
+        candidates = []
         for place in city_recommendations:
             mapper_values[place['name']] = [place['name']]
+            candidate_value = {'value' : place['name']}
+            candidates.append(candidate_value)
+
+        mapper_values["Michigan Stadium"] = ["Stadium", "Big Stadium", "football stadium"]
 
         print("mapper_values: ", mapper_values)
+
+        clinc_request['slots']['_DESTINATION_']['candidates'] = candidates
 
         clinc_request['slots']['_DESTINATION_']['mappings'] = [
             {
