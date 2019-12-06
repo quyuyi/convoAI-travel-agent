@@ -35,9 +35,7 @@
    e.g. "Tell me about Michigan Stadium" -> show photo and introduction on screen
 4. Find a better initial interface instead of NCRB...
 ### TTS&STT:
-1. Test and make sure it works. Try to make it work without clicking the button.
-   e.g. Say "Hi xxx", and it begins to record.
-
+1. Test and make sure it works.
 
 ## Notes:
 1. Business Transition
