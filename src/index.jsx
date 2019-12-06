@@ -137,7 +137,12 @@ class App extends React.Component {
     }
 
     handleUserInfo = (c, v, l) => {
-        if (this.state.city != c && c.length > 0) this.destinationRequests("Recommend");
+        if (this.state.city != c && c.length > 0){
+            let dest = document.getElementById("destination-img");
+            dest.setAttribute("src", "/static/img/jason.jpg");
+            document.getElementById("destination-name").innerHTML = "Hi, I'm your traveling assistant Jason. How can I help you?";
+            document.getElementById("destination-intro").innerHTML = "";
+        }
         if (c != ''){
             this.setState({
                 city: c,

@@ -41,11 +41,13 @@ class Destinations extends Component {
                 className="destinations-list-items"
               >
                 {this.props.destinations.map((dest, index) => (
+                  
                   <React.Fragment>
                     { 
                       index % count === 0 ? (<h5 style={{display: day >= this.props.destinations.length / count + 1 ? 'none' : 'block' }} 
                                                 key={indexer++ * 7} className="dest-day">Day {day++}</h5>) : '' 
                     }
+     
                     <Draggable key={index} draggableId={`dest-${index}`} index={index}>
                     
                     {(provided, snapshot) => (
