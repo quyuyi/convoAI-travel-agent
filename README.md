@@ -11,7 +11,9 @@
    (5) I'll go to xxx with 3 boys and 4 girls.   
    (6) "a week and 2 days"   
    (7) "I'd like to go there." should be add_destination, extract as city  
-   (8) "Hi, I'd like to go to Ann Arbor with my parents for 3 days" with "hi days" on the top instead of "3 days" (non-numerical days should be illegal) 
+   (8) "Hi, I'd like to go to Ann Arbor with my parents for 3 days" with "hi days" on the top instead of "3 days" (non-numerical days should be illegal)   
+2. (Add training data to support adding multiple places at once.)
+
 
 ### Backend:
 1. Use dynamic slot mapper in business logic to map destinations
