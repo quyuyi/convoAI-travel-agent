@@ -408,7 +408,7 @@ def resolve_clean_goodbye(clinc_request):
 def resolve_destination_info(clinc_request):
     print("start resolve destination_info...")
     clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = clinc_request['slots']['_DESTINATION_']['values'][0]['tokens']
-    clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 1
+    clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 0
 
     user_id = clinc_request['external_user_id']
     doc_ref = collection.document(user_id)
