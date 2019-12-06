@@ -114,6 +114,7 @@ def resolve_add_destination(clinc_request):
         count = doc_ref.get().to_dict()["count"]
         city = doc_ref.get().to_dict()['city']
         ndays = doc_ref.get().to_dict()['length_of_visit']
+        last_edit = doc_ref.get().to_dict()['last_edit']
     except KeyError:
         city = "-1"
         print("No count or city or ndays.")
@@ -133,7 +134,10 @@ def resolve_add_destination(clinc_request):
         print("city_recommendations: ", city_recommendations)
         if destination in ["This Place", "This", "It", "There", "That"]:
             print("count", count)
-            destination_name = city_recommendations['results'][count-1]['name']
+            if last_edit != -1:
+                destination_name = city_recommendations['results'][last_edit]['name']
+            else:
+                destination_name = "nowhere"
             added_destinations = doc_ref.get().to_dict()['destinations']
             if destination_name not in added_destinations: # Add successfully
                 added_destinations.append(destination_name)
@@ -163,6 +167,7 @@ def resolve_add_destination(clinc_request):
         else: # Directly add place by name
             print('destination: ', destination)
             print('city_name_dict.keys():', city_name_dict)
+            
             if destination in city_name_dict: # destination exists
                 print('destination in dict')
                 added_destinations = doc_ref.get().to_dict()['destinations']
@@ -253,7 +258,8 @@ def resolve_basic_info(clinc_request):
         doc_ref.update({
             'city': city_value,
             'count': 0,
-            'destinations' : ['dummy']
+            'destinations' : ['dummy'],
+            'last_edit' : -1
         })
 
         ### TO DO:
@@ -444,6 +450,10 @@ def resolve_destination_info(clinc_request):
         city_doc_ref = city_collection.document(city)
         city_recommendations = city_doc_ref.get().to_dict()["recommendations"]["results"]
         city_name_dict = city_doc_ref.get().to_dict()["name_to_index"]
+        idx = city_name_dict[destination]
+        doc_ref.update({
+            'last_edit': idx
+        })
 
         mapper_values = {}
         for place in city_recommendations:
@@ -594,7 +604,8 @@ def resolve_recommendation(clinc_request):
         "image": city_recommendations['results'][count]['images'][0]['sizes']['medium']['url']
     }
     doc_ref.update({
-        "count": count+1
+        "count": count+1,
+        "last_edit": count
     })
 
     print("slots:", clinc_request['slots'])
@@ -626,12 +637,21 @@ def resolve_remove_destination(clinc_request):
 
     if clinc_request['slots']:
         destination = capitalize_name(clinc_request['slots']['_DESTINATION_']['values'][0]['tokens'])
+        last_edit = doc_ref.get().to_dict()['last_edit']
+        
         # clinc_request['visual_payload'] = {
         #     'destination': destination
         # }
         clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = destination
+        if destination in ["This Place", "This", "It", "There", "That"]:
+            print("count", count)
+            if last_edit != -1:
+                destination = city_recommendations['results'][last_edit]['name']
+            else:
+                destination = "nowhere"
         clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 1  # why the value of 'values' is list???
         added_destinations = doc_ref.get().to_dict()['destinations']
+
         found_place = 0
         for idx, d in enumerate(added_destinations):
             if destination == d:
