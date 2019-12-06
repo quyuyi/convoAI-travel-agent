@@ -13,6 +13,44 @@ import { AccessAlarm, ThreeDRotation } from '@material-ui/icons';
 // TODO
 // Better display itinerary?
 
+function showOnePoint(map, day, idx){
+  let coord = [parseFloat(day[0].coordinates.longitude), parseFloat(day[0].coordinates.latitude)];
+  console.log(coord);
+  let feature = [{
+    // feature for the destination
+    "type": "Feature",
+    "geometry": {
+    "type": "Point",
+    "coordinates": coord,
+    },
+    "properties": {
+    "title": day.name,
+    "icon": "monument"
+    }
+    }];
+  map.addLayer({
+    "id": "points"+idx.toString(),
+    "type": "symbol",
+    "source": {
+    "type": "geojson",
+    "data": {
+      "type": "FeatureCollection",
+      "features": feature,
+      }
+    },
+    "layout": {
+    // get the icon name from the source's "icon" property
+    // concatenate the name to get an icon from the style's sprite sheet
+    "icon-image": ["concat", ["get", "icon"], "-15"],
+    // get the title name from the source's "title" property
+    "text-field": ["get", "title"],
+    "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
+    "text-offset": [0, 0.6],
+    "text-anchor": "top"
+    }
+    });
+}
+
 
 function updateRoute(map, coords, i) {
   // Set the profile
@@ -191,6 +229,7 @@ class Itinerary extends React.Component {
     }
 
     buildMap = () => {
+      console.log("-->print from buildMap");
       var directions = document.getElementById('directions');
       directions.innerHTML = '';
       mapboxgl.accessToken = 'pk.eyJ1IjoibHVib3VtaWNoIiwiYSI6ImNrMm5vdWRlODB2M3kzY205aTNwdTMxb2gifQ.Ax7uNaNJhLQVn00dJev4TA';
@@ -211,6 +250,7 @@ class Itinerary extends React.Component {
           console.log("finding route between places...")    
         }
         else {
+          // showOnePoint(map, day, idx);
           console.log("one place doesn't need route.")
         }
       });
@@ -231,6 +271,7 @@ class Itinerary extends React.Component {
 
     handleGenerate(){
       //this.props.updateDest();
+      console.log("print from handleGenerate");
       var directions = document.getElementById('directions');
       directions.innerHTML = '';
       if (this.props.schedule.length > 0) {
@@ -278,10 +319,11 @@ class Itinerary extends React.Component {
           console.log("update route for day ", idx);    
           if (day.length >=2) {
             updateRoute(map, day, idx);  
-            console.log("finding route between places...")    
+            console.log("finding route between places...");    
           }
           else {
-            console.log("one place doesn't need route.")
+            // showOnePoint(map, day, idx);
+            console.log("one place doesn't need route.");
           }
         });
       }
