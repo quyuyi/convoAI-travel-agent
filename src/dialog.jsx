@@ -139,7 +139,7 @@ class Dialog extends React.Component {
                 history: [...previous, record_clinc],
             });
             window.audio = new Audio();
-            // window.audio.src = "/get_audio";
+            window.audio.src = "/get_audio";
             window.audio.play();
             cont.scrollTop = cont.scrollHeight;
         }) // JSON-string from `response.json()` call
