@@ -152,7 +152,7 @@ def resolve_add_destination(clinc_request):
         if destination in ["This Place", "This", "It", "There", "That"]:
             print("count", count)
             if last_edit != -1:
-                destination_name = city_recommendations['results'][last_edit]['name']
+                destination_name = city_recommendations[last_edit]['name']
             else:
                 destination_name = "nowhere"
             added_destinations = doc_ref.get().to_dict()['destinations']
