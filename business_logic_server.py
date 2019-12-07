@@ -128,8 +128,25 @@ def resolve_add_destination(clinc_request):
         clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 1  # why the value of 'values' is list???
     
         city_doc_ref = city_collection.document(city)
-        city_recommendations = city_doc_ref.get().to_dict()["recommendations"]
+        city_recommendations = city_doc_ref.get().to_dict()["recommendations"]["results"]
         city_name_dict = city_doc_ref.get().to_dict()["name_to_index"]
+
+        mapper_values = {}
+        candidates = []
+        for place in city_recommendations:
+            mapper_values[place['name']] = [place['name']]
+            candidate_value = {'value' : place['name']}
+            candidates.append(candidate_value)
+
+        clinc_request['slots']['_DESTINATION_']['candidates'] = candidates
+        clinc_request['slots']['_DESTINATION_']['mappings'] = [
+            {
+                "algorithm" : "partial_ratio",
+                "threshold" : 0.6,
+                "type" : "fuzzy",
+                "values" : mapper_values
+            }
+        ]
         
         print("city_recommendations: ", city_recommendations)
         if destination in ["This Place", "This", "It", "There", "That"]:
@@ -185,7 +202,7 @@ def resolve_add_destination(clinc_request):
                         }]
                     }
             else: # destination not in recommendation list, cannot add
-                clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = -1
+                clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 0
 
 
     print("finish resolving, send response back to clinc...")
@@ -458,10 +475,7 @@ def resolve_destination_info(clinc_request):
             candidate_value = {'value' : place['name']}
             candidates.append(candidate_value)
 
-        print("mapper_values: ", mapper_values)
-
         clinc_request['slots']['_DESTINATION_']['candidates'] = candidates
-
         clinc_request['slots']['_DESTINATION_']['mappings'] = [
             {
                 "algorithm" : "partial_ratio",
@@ -645,6 +659,23 @@ def resolve_remove_destination(clinc_request):
     if clinc_request['slots']:
         destination = capitalize_name(clinc_request['slots']['_DESTINATION_']['values'][0]['tokens'])
         last_edit = doc_ref.get().to_dict()['last_edit']
+
+        mapper_values = {}
+        candidates = []
+        for place in city_recommendations:
+            mapper_values[place['name']] = [place['name']]
+            candidate_value = {'value' : place['name']}
+            candidates.append(candidate_value)
+
+        clinc_request['slots']['_DESTINATION_']['candidates'] = candidates
+        clinc_request['slots']['_DESTINATION_']['mappings'] = [
+            {
+                "algorithm" : "partial_ratio",
+                "threshold" : 0.6,
+                "type" : "fuzzy",
+                "values" : mapper_values
+            }
+        ]
         
         # clinc_request['visual_payload'] = {
         #     'destination': destination
