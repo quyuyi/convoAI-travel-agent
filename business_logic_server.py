@@ -493,6 +493,10 @@ def resolve_destination_info(clinc_request):
             clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 1  # why the value of 'values' is list???
         else: # destination not in recommendation list, cannot add
             clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 0
+            idx = city_name_dict[destination]
+            doc_ref.update({
+                'last_edit': idx
+            })
 
         if clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] == 1:
             idx = city_name_dict[destination]
