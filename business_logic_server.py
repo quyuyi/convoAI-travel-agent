@@ -609,7 +609,7 @@ def resolve_recommendation(clinc_request):
     if clinc_request['slots']:
         preference = clinc_request['slots']['_DESTINATION_']['value'][0]['token']
         for i in range(100):
-            if preference in city_recommendations['results'][i]['tag_labels'] and city_recommendations['results'][i]['recommended'] == False:
+            if preference and preference in city_recommendations['results'][i]['tag_labels'] and city_recommendations['results'][i]['recommended'] == False:
                 city_recommendations['results'][i]['recommended'] = True
                 clinc_request['slots'] = {
                     "_RECOMMENDATION_": {
@@ -677,7 +677,7 @@ def resolve_recommendation(clinc_request):
         "intro": city_recommendations['results'][count]['intro'],
         "image": city_recommendations['results'][count]['images'][0]['sizes']['medium']['url']
     }
-    city_recommendations['results'][count['recommended'] = True
+    city_recommendations['results'][count]['recommended'] = True
     doc_ref.update({
         "count": count+1,
         "last_edit": count,
