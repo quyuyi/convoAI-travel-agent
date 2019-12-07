@@ -606,8 +606,8 @@ def resolve_recommendation(clinc_request):
     city_recommendations = city_doc_ref.get().to_dict()["recommendations"]
 
     print('recommendation got from API:', city_recommendations)
-    #while topattractions not in city_recommendations['results'][count]['tag_labels']:
-    #    count += 1
+    while "topattractions" not in city_recommendations['results'][count]['tag_labels']:
+        count += 1
     clinc_request['slots'] = {
         "_RECOMMENDATION_": {
             "type": "string",
