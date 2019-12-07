@@ -305,10 +305,13 @@ def resolve_basic_info(clinc_request):
                 "recommendations" : recommend
             })
             name_index = {}
+            recommended = {}
             for idx, r in enumerate(recommend['results']):
                 name_index[r['name']] = idx
+                recommended[idx] = False
             city_doc_ref.update({
                 "name_to_index" : name_index
+                "recommended": recommended
             })
 
 
@@ -604,9 +607,54 @@ def resolve_recommendation(clinc_request):
     print("city:", city)
     city_doc_ref = city_collection.document(city)
     city_recommendations = city_doc_ref.get().to_dict()["recommendations"]
+    
+    if clinc_request['slots']:
+        preference = clinc_request['slots']['_DESTINATION_']['value'][0]['token']
+        for i in range(100):
+            if preference in city_recommendations['results'][i]['tag_labels'] and !city_doc_ref['recommended'][i]:
+                city_doc_ref['recommended'][i] = True
+                clinc_request['slots'] = {
+                    "_RECOMMENDATION_": {
+                        "type": "string",
+                        "values": [
+                            {
+                                "resolved": 1,
+                                "value": city_recommendations['results'][i]['name']               
+                            }
+                        ]
+                    },
+                    "_CITY_": {
+                        "type" : "string",
+                        "values": [
+                            {
+                                "resolved" : 1,
+                                "value": city
+                            }
+                        ]
+                    }
+                }
+ 
+                clinc_request['visual_payload'] = {
+                    "intro": city_recommendations['results'][i]['intro'],
+                    "image": city_recommendations['results'][i]['images'][0]['sizes']['medium']['url']
+                }
+
+                city_doc_ref.update({
+                    "recommended": city_doc_ref['recommended']
+                })
+                doc_ref.update({
+                    "last_edit": count
+                })
+
+                print("slots:", clinc_request['slots'])
+
+                print("finish resolving, send response back to clinc...")
+                pp.pprint(clinc_request)
+                return jsonify(**clinc_request)
+                
 
     print('recommendation got from API:', city_recommendations)
-    while "hotels" in city_recommendations['results'][count]['tag_labels'] or "cuisine" in city_recommendations['results'][count]['tag_labels']:
+    while "hotels" in city_recommendations['results'][count]['tag_labels'] or "cuisine" in city_recommendations['results'][count]['tag_labels'] or city_doc_ref['recommended'][count]:
         count += 1
     clinc_request['slots'] = {
         "_RECOMMENDATION_": {
@@ -633,6 +681,10 @@ def resolve_recommendation(clinc_request):
         "intro": city_recommendations['results'][count]['intro'],
         "image": city_recommendations['results'][count]['images'][0]['sizes']['medium']['url']
     }
+    city_doc_ref['recommended'][count] = True
+    city_doc_ref.update({
+        "recommended": city_doc_ref['recommended']
+    })
     doc_ref.update({
         "count": count+1,
         "last_edit": count
