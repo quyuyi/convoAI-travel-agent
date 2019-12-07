@@ -610,7 +610,7 @@ def resolve_recommendation(clinc_request):
     city_recommendations = city_doc_ref.get().to_dict()["recommendations"]
     
     if clinc_request['slots']:
-        preference = clinc_request['slots']['_PREFERENCE_']['values'][0]['token']
+        preference = clinc_request['slots']['_PREFERENCE_']['values'][0]['tokens']
         print("preference", preference)
         for i in range(100):
             if preference and preference in city_recommendations['results'][i]['tag_labels'] and city_recommendations['results'][i]['recommended'] == False:
