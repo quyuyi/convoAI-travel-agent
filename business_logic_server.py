@@ -611,6 +611,7 @@ def resolve_recommendation(clinc_request):
     
     if clinc_request['slots']:
         preference = clinc_request['slots']['_PREFERENCE_']['values'][0]['token']
+        print("preference", preference)
         for i in range(100):
             if preference and preference in city_recommendations['results'][i]['tag_labels'] and city_recommendations['results'][i]['recommended'] == False:
                 city_recommendations['results'][i]['recommended'] = True
