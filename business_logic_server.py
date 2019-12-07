@@ -187,6 +187,10 @@ def resolve_add_destination(clinc_request):
             
             if destination in city_name_dict: # destination exists
                 print('destination in dict')
+            else: # destination not in recommendation list, cannot add
+                clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 0
+            
+            if clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] == 1:
                 added_destinations = doc_ref.get().to_dict()['destinations']
                 if destination not in  added_destinations: # and haven't been added to the list
                     added_destinations.append(destination)
@@ -201,8 +205,6 @@ def resolve_add_destination(clinc_request):
                             "value": destination + " is already in the list. No need to add twice."
                         }]
                     }
-            else: # destination not in recommendation list, cannot add
-                clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 0
 
 
     print("finish resolving, send response back to clinc...")
