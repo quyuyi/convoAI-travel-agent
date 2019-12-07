@@ -309,6 +309,9 @@ def resolve_basic_info(clinc_request):
                 name_index[r['name']] = idx
                 recommend['results'][idx]['recommended'] = False
             city_doc_ref.update({
+                "recommendations" : recommend
+            })
+            city_doc_ref.update({
                 "name_to_index" : name_index
             })
 
