@@ -287,7 +287,7 @@ def resolve_basic_info(clinc_request):
         recommend = None
 
         # When user talks about city, get request from API
-        url = 'https://www.triposo.com/api/20190906/poi.json?location_id='+city_key+'&fields=id,name,intro,images,coordinates,tag_labels&count=30&account=8FRG5L0P&token=i0reis6kqrqd7wi7nnwzhkimvrk9zh6a'
+        url = 'https://www.triposo.com/api/20190906/poi.json?location_id='+city_key+'&fields=id,name,intro,images,coordinates,tag_labels&count=100&account=8FRG5L0P&token=i0reis6kqrqd7wi7nnwzhkimvrk9zh6a'
         recommend = requests.get(url).json()
         if not recommend['results']:
             clinc_request['slots']['_NORESPONSE_'] = {
