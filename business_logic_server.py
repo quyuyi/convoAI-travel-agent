@@ -305,13 +305,11 @@ def resolve_basic_info(clinc_request):
                 "recommendations" : recommend
             })
             name_index = {}
-            recommended = {}
             for idx, r in enumerate(recommend['results']):
                 name_index[r['name']] = idx
-                recommended[idx] = False
+                recommend['results'][idx]['recommended'] = False
             city_doc_ref.update({
                 "name_to_index" : name_index
-                "recommended": recommended
             })
 
 
@@ -611,8 +609,8 @@ def resolve_recommendation(clinc_request):
     if clinc_request['slots']:
         preference = clinc_request['slots']['_DESTINATION_']['value'][0]['token']
         for i in range(100):
-            if preference in city_recommendations['results'][i]['tag_labels'] and !city_doc_ref['recommended'][i]:
-                city_doc_ref['recommended'][i] = True
+            if preference in city_recommendations['results'][i]['tag_labels'] and !city_recommendations['results'][i]['recommended']:
+                city_recommendations['results'][i]['recommended'] = True
                 clinc_request['slots'] = {
                     "_RECOMMENDATION_": {
                         "type": "string",
@@ -639,11 +637,9 @@ def resolve_recommendation(clinc_request):
                     "image": city_recommendations['results'][i]['images'][0]['sizes']['medium']['url']
                 }
 
-                city_doc_ref.update({
-                    "recommended": city_doc_ref['recommended']
-                })
                 doc_ref.update({
-                    "last_edit": count
+                    "last_edit": count,
+                    "recommendations": city_recommendations
                 })
 
                 print("slots:", clinc_request['slots'])
@@ -654,7 +650,7 @@ def resolve_recommendation(clinc_request):
                 
 
     print('recommendation got from API:', city_recommendations)
-    while "hotels" in city_recommendations['results'][count]['tag_labels'] or "cuisine" in city_recommendations['results'][count]['tag_labels'] or city_doc_ref['recommended'][count]:
+    while "hotels" in city_recommendations['results'][count]['tag_labels'] or "cuisine" in city_recommendations['results'][count]['tag_labels'] or city_recommendations['results'][count]['recommended']:
         count += 1
     clinc_request['slots'] = {
         "_RECOMMENDATION_": {
@@ -681,13 +677,11 @@ def resolve_recommendation(clinc_request):
         "intro": city_recommendations['results'][count]['intro'],
         "image": city_recommendations['results'][count]['images'][0]['sizes']['medium']['url']
     }
-    city_doc_ref['recommended'][count] = True
-    city_doc_ref.update({
-        "recommended": city_doc_ref['recommended']
-    })
+    city_recommendations['results'][count['recommended'] = True
     doc_ref.update({
         "count": count+1,
-        "last_edit": count
+        "last_edit": count,
+        "recommendations": city_recommendations
     })
 
     print("slots:", clinc_request['slots'])
