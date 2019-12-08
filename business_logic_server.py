@@ -662,7 +662,7 @@ def resolve_recommendation(clinc_request):
                 
 
     print('recommendation got from API:', city_recommendations)
-    while "hotels" in city_recommendations['results'][count]['tag_labels'] or "cuisine" in city_recommendations['results'][count]['tag_labels'] or i in rec_idx:
+    while "hotels" in city_recommendations['results'][count]['tag_labels'] or "cuisine" in city_recommendations['results'][count]['tag_labels'] or count in rec_idx:
         count += 1
     clinc_request['slots'] = {
         "_RECOMMENDATION_": {
