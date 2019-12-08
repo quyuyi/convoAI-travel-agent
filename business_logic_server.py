@@ -641,6 +641,15 @@ def resolve_recommendation(clinc_request):
                                 "value": city
                             }
                         ]
+                    },
+                    "_PREFERENCE_": {
+                        "type": "string",
+                        "values": [
+                            {
+                                "resolved": 1,
+                                "value": preference
+                            }
+                        ]
                     }
                 }
  
