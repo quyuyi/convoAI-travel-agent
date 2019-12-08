@@ -28,8 +28,6 @@ class App extends React.Component {
           schedule: [],
           showMap: false,
           showDrawer: false,
-          chatRes: '',
-          loading: false,
       }
 
       this.dialogElement = React.createRef();
@@ -100,8 +98,6 @@ class App extends React.Component {
         console.log(query)
         this.postData('/query_clinc/', {query: query, userId: this.state.userId}) 
         .then(data => {
-            // console.log("get reponse: ", data.response);
-            // const previous = this.state.history;
             const record_clinc = {
                 "from": "clinc",
                 "msg": data.response,
@@ -141,14 +137,7 @@ class App extends React.Component {
             }
 
             // update chat histoty
-            // this.setState({
-            //     loading: false,
-            //     history: [...previous, record_clinc],
-            // });
             this.dialogElement.current.updateHistory(record_clinc);
-            // this.setState({
-            //     chatRes: record_clinc,
-            // });
 
             window.audio = new Audio();
             window.audio.src = "/get_audio";
@@ -223,7 +212,12 @@ class App extends React.Component {
     }
 
     handleUserInfo = (c, v, l) => {
-        if (this.state.city != c && c.length > 0) this.destinationRequests("Recommend");
+        if (this.state.city != c && c.length > 0){
+            let dest = document.getElementById("destination-img");
+            dest.setAttribute("src", "/static/img/jason.jpg");
+            document.getElementById("destination-name").innerHTML = "Hi, I'm your traveling assistant Jason. How can I help you?";
+            document.getElementById("destination-intro").innerHTML = "";
+        }
         if (c != ''){
             this.setState({
                 city: c,
@@ -302,7 +296,6 @@ class App extends React.Component {
                 userId={this.state.userId}
                 handleUpdate={this.handleUpdate}
                 handleUserInfo = {this.handleUserInfo}
-                chatRes = {this.state.chatRes}
                 ref = {this.dialogElement}/>
                 </Col>
             </Row>

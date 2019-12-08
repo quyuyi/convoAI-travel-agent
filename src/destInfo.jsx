@@ -17,11 +17,11 @@ class DestInfo extends React.Component {
         return (
             <div className="destination-details">
                 <div className="destination-img-container">
-                    <img id="destination-img" src="/static/img/NCRB.JPG" />
+                    <img id="destination-img" src="/static/img/jason.jpg" />
                 </div>  
-                <h2 id="destination-name">NCRB</h2>  
+                <h2 id="destination-name">Hi, I'm your traveling assistant Jason. How can I help you?</h2>  
                  <p id="destination-intro">
-                     University of Michigan - NCRB, Ann Arbor
+                     
                  </p>
                  <span onClick={() => this.props.addDestination()} className="destination-add">Add</span>
                  <span onClick={() => this.props.skipDestination()} className="destination-skip">Next</span>

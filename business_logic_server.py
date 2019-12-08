@@ -114,6 +114,7 @@ def resolve_add_destination(clinc_request):
         count = doc_ref.get().to_dict()["count"]
         city = doc_ref.get().to_dict()['city']
         ndays = doc_ref.get().to_dict()['length_of_visit']
+        last_edit = doc_ref.get().to_dict()['last_edit']
     except KeyError:
         city = "-1"
         print("No count or city or ndays.")
@@ -127,13 +128,33 @@ def resolve_add_destination(clinc_request):
         clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 1  # why the value of 'values' is list???
     
         city_doc_ref = city_collection.document(city)
-        city_recommendations = city_doc_ref.get().to_dict()["recommendations"]
+        city_recommendations = city_doc_ref.get().to_dict()["recommendations"]["results"]
         city_name_dict = city_doc_ref.get().to_dict()["name_to_index"]
+
+        mapper_values = {}
+        candidates = []
+        for place in city_recommendations:
+            mapper_values[place['name']] = [place['name']]
+            candidate_value = {'value' : place['name']}
+            candidates.append(candidate_value)
+
+        clinc_request['slots']['_DESTINATION_']['candidates'] = candidates
+        clinc_request['slots']['_DESTINATION_']['mappings'] = [
+            {
+                "algorithm" : "partial_ratio",
+                "threshold" : 0.6,
+                "type" : "fuzzy",
+                "values" : mapper_values
+            }
+        ]
         
         print("city_recommendations: ", city_recommendations)
         if destination in ["This Place", "This", "It", "There", "That"]:
             print("count", count)
-            destination_name = city_recommendations['results'][count-1]['name']
+            if last_edit != -1:
+                destination_name = city_recommendations[last_edit]['name']
+            else:
+                destination_name = "nowhere"
             added_destinations = doc_ref.get().to_dict()['destinations']
             if destination_name not in added_destinations: # Add successfully
                 added_destinations.append(destination_name)
@@ -163,8 +184,13 @@ def resolve_add_destination(clinc_request):
         else: # Directly add place by name
             print('destination: ', destination)
             print('city_name_dict.keys():', city_name_dict)
+            
             if destination in city_name_dict: # destination exists
                 print('destination in dict')
+            else: # destination not in recommendation list, cannot add
+                clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 0
+            
+            if clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] == 1:
                 added_destinations = doc_ref.get().to_dict()['destinations']
                 if destination not in  added_destinations: # and haven't been added to the list
                     added_destinations.append(destination)
@@ -179,8 +205,6 @@ def resolve_add_destination(clinc_request):
                             "value": destination + " is already in the list. No need to add twice."
                         }]
                     }
-            else: # destination not in recommendation list, cannot add
-                clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = -1
 
 
     print("finish resolving, send response back to clinc...")
@@ -250,10 +274,13 @@ def resolve_basic_info(clinc_request):
         if city_key == "Beijing":
             city_key = "wv_Beijing"
         clinc_request['slots']['_CITY_']['values'][0]['value'] = city_value
+        rec_idx = [-1]
         doc_ref.update({
             'city': city_value,
             'count': 0,
-            'destinations' : ['dummy']
+            'destinations' : ['dummy'],
+            'last_edit' : -1,
+            'rec_idx' : rec_idx
         })
 
         ### TO DO:
@@ -262,7 +289,7 @@ def resolve_basic_info(clinc_request):
         recommend = None
 
         # When user talks about city, get request from API
-        url = 'https://www.triposo.com/api/20190906/poi.json?location_id='+city_key+'&fields=id,name,intro,images,coordinates&count=30&account=8FRG5L0P&token=i0reis6kqrqd7wi7nnwzhkimvrk9zh6a'
+        url = 'https://www.triposo.com/api/20190906/poi.json?location_id='+city_key+'&fields=id,name,intro,images,coordinates,tag_labels&count=50&account=8FRG5L0P&token=i0reis6kqrqd7wi7nnwzhkimvrk9zh6a'
         recommend = requests.get(url).json()
         if not recommend['results']:
             clinc_request['slots']['_NORESPONSE_'] = {
@@ -282,6 +309,10 @@ def resolve_basic_info(clinc_request):
             name_index = {}
             for idx, r in enumerate(recommend['results']):
                 name_index[r['name']] = idx
+                #recommend['results'][idx]['recommended'] = False
+            city_doc_ref.update({
+                "recommendations" : recommend
+            })
             city_doc_ref.update({
                 "name_to_index" : name_index
             })
@@ -401,8 +432,7 @@ def resolve_clean_goodbye(clinc_request):
 
 def resolve_destination_info(clinc_request):
     print("start resolve destination_info...")
-    clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = clinc_request['slots']['_DESTINATION_']['values'][0]['tokens']
-    clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 1
+    clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 0
 
     user_id = clinc_request['external_user_id']
     doc_ref = collection.document(user_id)
@@ -446,11 +476,13 @@ def resolve_destination_info(clinc_request):
         city_name_dict = city_doc_ref.get().to_dict()["name_to_index"]
 
         mapper_values = {}
+        candidates = []
         for place in city_recommendations:
             mapper_values[place['name']] = [place['name']]
+            candidate_value = {'value' : place['name']}
+            candidates.append(candidate_value)
 
-        print("mapper_values: ", mapper_values)
-
+        clinc_request['slots']['_DESTINATION_']['candidates'] = candidates
         clinc_request['slots']['_DESTINATION_']['mappings'] = [
             {
                 "algorithm" : "partial_ratio",
@@ -466,8 +498,18 @@ def resolve_destination_info(clinc_request):
             clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 1  # why the value of 'values' is list???
         else: # destination not in recommendation list, cannot add
             clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 0
-            # TODO
-            # subsequent API call with that utterance
+            '''
+            idx = city_name_dict[destination]
+            doc_ref.update({
+                'last_edit': idx
+            })
+            '''
+
+        if clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] == 1:
+            idx = city_name_dict[destination]
+            doc_ref.update({
+                'last_edit': idx
+            })
 
 
     print("finish resolving, send response back to clinc...")
@@ -568,8 +610,93 @@ def resolve_recommendation(clinc_request):
     print("city:", city)
     city_doc_ref = city_collection.document(city)
     city_recommendations = city_doc_ref.get().to_dict()["recommendations"]
+    rec_idx = doc_ref.get().to_dict()['rec_idx']
+    
+    if clinc_request['slots']:
+        if clinc_request['slots']['_PREFERENCE_']['values'][0]['tokens'] in ['hotel', 'restaurant', 'amusement park', 'top attractions', 'museum', 'shopping']:
+            preference = clinc_request['slots']['_PREFERENCE_']['values'][0]['tokens']
+            print("preference", preference)
+            if preference == "hotel":
+                preference = "hotels"
+            if preference == "restaurant":
+                preference = "cuisine"
+            if preference == "top attractions":
+                preference = "topattractions"
+            if preference == "museum":
+                preference = "museums"
+            if preference == "amusement part":
+                preference = "amusementpark"
+            for i in range(50):
+                if preference and preference in city_recommendations['results'][i]['tag_labels'] and i not in rec_idx:
+                    #city_recommendations['results'][i]['recommended'] = True
+                    rec_idx.append(i)
+                    clinc_request['slots'] = {
+                        "_RECOMMENDATION_": {
+                            "type": "string",
+                            "values": [
+                                {
+                                    "resolved": 1,
+                                    "value": city_recommendations['results'][i]['name']               
+                                }
+                            ]
+                        },
+                        "_CITY_": {
+                            "type" : "string",
+                            "values": [
+                                {
+                                    "resolved" : 1,
+                                    "value": city
+                                }
+                            ]
+                        },
+                        "_PREFERENCE_": {
+                            "type": "string",
+                            "values": [
+                                {
+                                    "resolved": 1,
+                                    "value": preference
+                                }
+                            ]
+                        }
+                    }
+                    if city_recommendations['results'][i]['images']:
+                        clinc_request['visual_payload'] = {
+                            "intro": city_recommendations['results'][i]['intro'],
+                            "image": city_recommendations['results'][i]['images'][0]['sizes']['medium']['url']
+                        }
+                    else:
+                        clinc_request['visual_payload'] = {
+                            "intro": city_recommendations['results'][i]['intro']
+                        }
+
+                    doc_ref.update({
+                        "last_edit": count,
+                        "rec_idx" : rec_idx
+                    })
+
+                    print("slots:", clinc_request['slots'])
+
+                    print("finish resolving, send response back to clinc...")
+                    pp.pprint(clinc_request)
+                    return jsonify(**clinc_request)
+        
+        preference = clinc_request['slots']['_PREFERENCE_']['values'][0]['tokens']
+        clinc_request['slots'] = {
+            "_NOPREFERENCE_": {
+                "type": "string",
+                "values": [
+                    {
+                        "resolved": 1,
+                        "value": "Sorry, there's no" + preference + "i can recommend for now"
+                    }
+                ]
+            }
+        }
+        return jsonify(**clinc_request)
 
     print('recommendation got from API:', city_recommendations)
+    while "hotels" in city_recommendations['results'][count]['tag_labels'] or "cuisine" in city_recommendations['results'][count]['tag_labels'] or count in rec_idx:
+        count += 1
     clinc_request['slots'] = {
         "_RECOMMENDATION_": {
             "type": "string",
@@ -595,8 +722,11 @@ def resolve_recommendation(clinc_request):
         "intro": city_recommendations['results'][count]['intro'],
         "image": city_recommendations['results'][count]['images'][0]['sizes']['medium']['url']
     }
+    rec_idx.append(count)
     doc_ref.update({
-        "count": count+1
+        "count": count+1,
+        "last_edit": count,
+        "rec_idx" : rec_idx
     })
 
     print("slots:", clinc_request['slots'])
@@ -625,15 +755,48 @@ def resolve_remove_destination(clinc_request):
         doc_ref.set({
             'sessionId' : user_id
         })
+        
+    try:
+        city = doc_ref.get().to_dict()['city']
+    except:
+        city = "-1"
 
     if clinc_request['slots']:
         destination = capitalize_name(clinc_request['slots']['_DESTINATION_']['values'][0]['tokens'])
+        last_edit = doc_ref.get().to_dict()['last_edit']
+        city_doc_ref = city_collection.document(city)
+        city_recommendations = city_doc_ref.get().to_dict()['recommendations']
+
+        #mapper_values = {}
+        #candidates = []
+        #for place in city_recommendations:
+        #    mapper_values[place['name']] = [place['name']]
+        #    candidate_value = {'value' : place['name']}
+        #    candidates.append(candidate_value)
+
+        #clinc_request['slots']['_DESTINATION_']['candidates'] = candidates
+        #clinc_request['slots']['_DESTINATION_']['mappings'] = [
+        #    {
+        #        "algorithm" : "partial_ratio",
+        #        "threshold" : 0.6,
+        #        "type" : "fuzzy",
+        #        "values" : mapper_values
+        #    }
+        #]
+        
         # clinc_request['visual_payload'] = {
         #     'destination': destination
         # }
         clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = destination
+        if destination in ["This Place", "This", "It", "There", "That"]:
+            if last_edit != -1:
+                destination = city_recommendations['results'][last_edit]['name']
+            else:
+                destination = "nowhere"
         clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 1  # why the value of 'values' is list???
+        clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = destination
         added_destinations = doc_ref.get().to_dict()['destinations']
+
         found_place = 0
         for idx, d in enumerate(added_destinations):
             if destination == d:
