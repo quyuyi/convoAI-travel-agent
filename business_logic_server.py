@@ -612,69 +612,83 @@ def resolve_recommendation(clinc_request):
     city_recommendations = city_doc_ref.get().to_dict()["recommendations"]
     rec_idx = doc_ref.get().to_dict()['rec_idx']
     
-    if clinc_request['slots'] and clinc_request['slots']['_PREFERENCE_']['values'][0]['tokens'] in ['hotel', 'restaurant', 'amusement park', 'top attractions', 'museum', 'shopping']:
-        preference = clinc_request['slots']['_PREFERENCE_']['values'][0]['tokens']
-        print("preference", preference)
-        if preference == "hotel":
-            preference = "hotels"
-        if preference == "restaurant":
-            preference = "cuisine"
-        if preference == "top attractions":
-            preference = "topattractions"
-        if preference == "museum":
-            preference = "museums"
-        if preference == "amusement part":
-            preference = "amusementpark"
-        for i in range(100):
-            if preference and preference in city_recommendations['results'][i]['tag_labels'] and i not in rec_idx:
-                #city_recommendations['results'][i]['recommended'] = True
-                rec_idx.append(i)
-                clinc_request['slots'] = {
-                    "_RECOMMENDATION_": {
-                        "type": "string",
-                        "values": [
-                            {
-                                "resolved": 1,
-                                "value": city_recommendations['results'][i]['name']               
-                            }
-                        ]
-                    },
-                    "_CITY_": {
-                        "type" : "string",
-                        "values": [
-                            {
-                                "resolved" : 1,
-                                "value": city
-                            }
-                        ]
-                    },
-                    "_PREFERENCE_": {
-                        "type": "string",
-                        "values": [
-                            {
-                                "resolved": 1,
-                                "value": preference
-                            }
-                        ]
+    if clinc_request['slots']:
+        if clinc_request['slots']['_PREFERENCE_']['values'][0]['tokens'] in ['hotel', 'restaurant', 'amusement park', 'top attractions', 'museum', 'shopping']:
+            preference = clinc_request['slots']['_PREFERENCE_']['values'][0]['tokens']
+            print("preference", preference)
+            if preference == "hotel":
+                preference = "hotels"
+            if preference == "restaurant":
+                preference = "cuisine"
+            if preference == "top attractions":
+                preference = "topattractions"
+            if preference == "museum":
+                preference = "museums"
+            if preference == "amusement part":
+                preference = "amusementpark"
+            for i in range(50):
+                if preference and preference in city_recommendations['results'][i]['tag_labels'] and i not in rec_idx:
+                    #city_recommendations['results'][i]['recommended'] = True
+                    rec_idx.append(i)
+                    clinc_request['slots'] = {
+                        "_RECOMMENDATION_": {
+                            "type": "string",
+                            "values": [
+                                {
+                                    "resolved": 1,
+                                    "value": city_recommendations['results'][i]['name']               
+                                }
+                            ]
+                        },
+                        "_CITY_": {
+                            "type" : "string",
+                            "values": [
+                                {
+                                    "resolved" : 1,
+                                    "value": city
+                                }
+                            ]
+                        },
+                        "_PREFERENCE_": {
+                            "type": "string",
+                            "values": [
+                                {
+                                    "resolved": 1,
+                                    "value": preference
+                                }
+                            ]
+                        }
                     }
-                }
- 
-                clinc_request['visual_payload'] = {
-                    "intro": city_recommendations['results'][i]['intro'],
-                    "image": city_recommendations['results'][i]['images'][0]['sizes']['medium']['url']
-                }
+     
+                    clinc_request['visual_payload'] = {
+                        "intro": city_recommendations['results'][i]['intro'],
+                        "image": city_recommendations['results'][i]['images'][0]['sizes']['medium']['url']
+                    }
 
-                doc_ref.update({
-                    "last_edit": count,
-                    "rec_idx" : rec_idx
-                })
+                    doc_ref.update({
+                        "last_edit": count,
+                        "rec_idx" : rec_idx
+                    })
 
-                print("slots:", clinc_request['slots'])
+                    print("slots:", clinc_request['slots'])
 
-                print("finish resolving, send response back to clinc...")
-                pp.pprint(clinc_request)
-                return jsonify(**clinc_request)
-                
+                    print("finish resolving, send response back to clinc...")
+                    pp.pprint(clinc_request)
+                    return jsonify(**clinc_request)
+        
+        preference = clinc_request['slots']['_PREFERENCE_']['values'][0]['tokens']
+        clinc_request['slots'] = {
+            "_NOPREFERENCE_": {
+                "type": "string",
+                "values": [
+                    {
+                        "resolved": 1,
+                        "value": "Sorry, there's no" + preference + "i can recommend for now"
+                    }
+                ]
+            }
+        }
+        return jsonify(**clinc_request)
 
     print('recommendation got from API:', city_recommendations)
     while "hotels" in city_recommendations['results'][count]['tag_labels'] or "cuisine" in city_recommendations['results'][count]['tag_labels'] or count in rec_idx:
