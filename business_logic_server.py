@@ -749,22 +749,22 @@ def resolve_remove_destination(clinc_request):
         city_doc_ref = city_collection.document(city)
         city_recommendations = city_doc_ref.get().to_dict()['recommendations']
 
-        mapper_values = {}
-        candidates = []
-        for place in city_recommendations:
-            mapper_values[place['name']] = [place['name']]
-            candidate_value = {'value' : place['name']}
-            candidates.append(candidate_value)
+        #mapper_values = {}
+        #candidates = []
+        #for place in city_recommendations:
+        #    mapper_values[place['name']] = [place['name']]
+        #    candidate_value = {'value' : place['name']}
+        #    candidates.append(candidate_value)
 
-        clinc_request['slots']['_DESTINATION_']['candidates'] = candidates
-        clinc_request['slots']['_DESTINATION_']['mappings'] = [
-            {
-                "algorithm" : "partial_ratio",
-                "threshold" : 0.6,
-                "type" : "fuzzy",
-                "values" : mapper_values
-            }
-        ]
+        #clinc_request['slots']['_DESTINATION_']['candidates'] = candidates
+        #clinc_request['slots']['_DESTINATION_']['mappings'] = [
+        #    {
+        #        "algorithm" : "partial_ratio",
+        #        "threshold" : 0.6,
+        #        "type" : "fuzzy",
+        #        "values" : mapper_values
+        #    }
+        #]
         
         # clinc_request['visual_payload'] = {
         #     'destination': destination
