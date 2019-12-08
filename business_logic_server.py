@@ -498,6 +498,8 @@ def resolve_destination_info(clinc_request):
             clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 1  # why the value of 'values' is list???
         else: # destination not in recommendation list, cannot add
             clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 0
+            # TODO
+            # request clinc again to trigger slot mapper
             '''
             idx = city_name_dict[destination]
             doc_ref.update({
@@ -510,6 +512,10 @@ def resolve_destination_info(clinc_request):
             doc_ref.update({
                 'last_edit': idx
             })
+            # TODO
+            # like resolve_recommendation
+            # request API if the destinations list about the city is not stored in the database
+            # construct the response e.g., visual_payload
 
 
     print("finish resolving, send response back to clinc...")
