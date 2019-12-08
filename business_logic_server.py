@@ -466,6 +466,8 @@ def resolve_destination_info(clinc_request):
             clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 1  # why the value of 'values' is list???
         else: # destination not in recommendation list, cannot add
             clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 0
+            # TODO
+            # subsequent API call with that utterance
 
 
     print("finish resolving, send response back to clinc...")

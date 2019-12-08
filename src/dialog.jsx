@@ -33,6 +33,22 @@ class Dialog extends React.Component {
         this.onKeyDown = this.onKeyDown.bind(this);
         this.onRecord = this.onRecord.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
+        this.loadingTrue = this.loadingTrue.bind(this);
+        this.updateHistory = this.updateHistory.bind(this);
+    }
+
+    updateHistory (record) {
+        const previous = this.state.history;
+        this.setState({
+            loading: false,
+            history: [...previous, record],
+        });
+    }
+
+    loadingTrue(){
+        this.setState({
+            loading: true,
+        });
     }
 
     componentDidMount (){
@@ -77,74 +93,75 @@ class Dialog extends React.Component {
                 first: false,
                 loading: true,
                 history: [...previous, record_user],
-            });
+            });   
+
             cont.scrollTop = cont.scrollHeight;
             document.getElementById("userInput").value='';
-            this.queryClinc(text);
+            this.props.queryClinc(text);
         };
     }
 
 
-    // send user utterence to backend which post to clinc
-    // get response from clinc
-    queryClinc(query) {
-        var cont=document.getElementById("words");
-        console.log("request backend server..")
-        console.log(query)
-        this.props.post('/query_clinc/', {query: query, userId: this.props.userId}) 
-        .then(data => {
-            // console.log("get reponse: ", data.response);
-            const previous = this.state.history;
-            const record_clinc = {
-                "from": "clinc",
-                "msg": data.response,
-            };
+    // // send user utterence to backend which post to clinc
+    // // get response from clinc
+    // queryClinc(query) {
+    //     var cont=document.getElementById("words");
+    //     console.log("request backend server..")
+    //     console.log(query)
+    //     this.props.post('/query_clinc/', {query: query, userId: this.props.userId}) 
+    //     .then(data => {
+    //         // console.log("get reponse: ", data.response);
+    //         const previous = this.state.history;
+    //         const record_clinc = {
+    //             "from": "clinc",
+    //             "msg": data.response,
+    //         };
 
-            // update userInfo chips
-            var city = '';
-            var visitor = '';
-            var length = '';
-            if (data.addCity) city = data.city
-            if (data.addVisitor) visitor = data.visitor
-            if (data.addLength) length = data.length
-            // console.log("add city is: ", city);
-            // console.log("add visitor is: ", data.visitor);
-            // console.log("add length is: ", length);
-            this.props.handleUserInfo(city, visitor, length);
+    //         // update userInfo chips
+    //         var city = '';
+    //         var visitor = '';
+    //         var length = '';
+    //         if (data.addCity) city = data.city
+    //         if (data.addVisitor) visitor = data.visitor
+    //         if (data.addLength) length = data.length
+    //         // console.log("add city is: ", city);
+    //         // console.log("add visitor is: ", data.visitor);
+    //         // console.log("add length is: ", length);
+    //         this.props.handleUserInfo(city, visitor, length);
 
-            // update destInfo window
-            console.log(data);
-            if (data.response == "Your itinerary has been generated!") {
-                this.props.destinationRequests("Generate itinerary");
-            }
+    //         // update destInfo window
+    //         console.log(data);
+    //         if (data.response == "Your itinerary has been generated!") {
+    //             this.props.destinationRequests("Generate itinerary");
+    //         }
 
-            if (data.isRecommendation) {
-                let dest = document.getElementById("destination-img");
-                dest.setAttribute("src", data.img);
-                console.log("img element information...");
-                document.getElementById("destination-name").innerHTML = data.dest;
-                document.getElementById("destination-intro").innerHTML = data.intro;
-            }
-            // update distination list
-            this.props.handleUpdate('destinations',data.destinations);
+    //         if (data.isRecommendation) {
+    //             let dest = document.getElementById("destination-img");
+    //             dest.setAttribute("src", data.img);
+    //             console.log("img element information...");
+    //             document.getElementById("destination-name").innerHTML = data.dest;
+    //             document.getElementById("destination-intro").innerHTML = data.intro;
+    //         }
+    //         // update distination list
+    //         this.props.handleUpdate('destinations',data.destinations);
 
-            // update schedule list
-            if (data.schedule != []){
-                this.props.handleUpdate('schedule', data.schedule);
-            }
+    //         // update schedule list
+    //         if (data.schedule != []){
+    //             this.props.handleUpdate('schedule', data.schedule);
+    //         }
 
-            // update chat histoty
-            this.setState({
-                loading: false,
-                history: [...previous, record_clinc],
-            });
-            window.audio = new Audio();
-            window.audio.src = "/get_audio";
-            window.audio.play();
-            cont.scrollTop = cont.scrollHeight;
-        }) // JSON-string from `response.json()` call
-        .catch(error => console.error(error));
-    }
+    //         // update chat histoty
+    //         this.setState({
+    //             loading: false,
+    //             history: [...previous, record_clinc],
+    //         });
+    //         window.audio = new Audio();
+    //         window.audio.src = "/get_audio";
+    //         window.audio.play();
+    //         cont.scrollTop = cont.scrollHeight;
+    //     }) // JSON-string from `response.json()` call
+    //     .catch(error => console.error(error));
+    // }
 
     renderLoader (){
         return (
@@ -229,6 +246,7 @@ class Dialog extends React.Component {
                     );
                 })}
                 {this.state.loading ? this.renderLoader() : this.renderNothing()}
+
         </div>
         {/* <div className="talk_input">
             <form onSubmit = {this.handleSubmit}>

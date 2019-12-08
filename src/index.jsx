@@ -28,7 +28,13 @@ class App extends React.Component {
           schedule: [],
           showMap: false,
           showDrawer: false,
+          chatRes: '',
+          loading: false,
       }
+
+      this.dialogElement = React.createRef();
+
+      this.queryClinc = this.queryClinc.bind(this);
     }
 
     componentDidMount(){
@@ -85,6 +91,77 @@ class App extends React.Component {
         }
     }
 
+
+    // send user utterence to backend which post to clinc
+    // get response from clinc
+    queryClinc(query) {
+        var cont=document.getElementById("words");
+        console.log("request backend server..")
+        console.log(query)
+        this.postData('/query_clinc/', {query: query, userId: this.state.userId}) 
+        .then(data => {
+            // console.log("get reponse: ", data.response);
+            // const previous = this.state.history;
+            const record_clinc = {
+                "from": "clinc",
+                "msg": data.response,
+            };
+
+            // update userInfo chips
+            var city = '';
+            var visitor = '';
+            var length = '';
+            if (data.addCity) city = data.city
+            if (data.addVisitor) visitor = data.visitor
+            if (data.addLength) length = data.length
+            // console.log("add city is: ", city);
+            // console.log("add visitor is: ", data.visitor);
+            // console.log("add length is: ", length);
+            this.handleUserInfo(city, visitor, length);
+
+            // update destInfo window
+            console.log(data);
+            if (data.response == "Your itinerary has been generated!") {
+                this.destinationRequests("Generate itinerary");
+            }
+
+            if (data.isRecommendation) {
+                let dest = document.getElementById("destination-img");
+                dest.setAttribute("src", data.img);
+                console.log("img element information...");
+                document.getElementById("destination-name").innerHTML = data.dest;
+                document.getElementById("destination-intro").innerHTML = data.intro;
+            }
+            // update distination list
+            this.handleUpdate('destinations',data.destinations);
+
+            // update schedule list
+            if (data.schedule != []){
+                this.handleUpdate('schedule', data.schedule);
+            }
+
+            // update chat histoty
+            // this.setState({
+            //     loading: false,
+            //     history: [...previous, record_clinc],
+            // });
+            this.dialogElement.current.updateHistory(record_clinc);
+            // this.setState({
+            //     chatRes: record_clinc,
+            // });
+
+            window.audio = new Audio();
+            window.audio.src = "/get_audio";
+            window.audio.play();
+            cont.scrollTop = cont.scrollHeight;
+        }) // JSON-string from `response.json()` call
+        .catch(error => console.error(error));
+    }
+
+
+
+
+
     destinationRequests = (q) => {
         this.postData('/query_clinc/', {query: q, userId: this.state.userId}) 
         .then(data => {
@@ -114,6 +191,7 @@ class App extends React.Component {
         .catch(error => console.error(error));
     }
 
+
     handleRemove = (idx) => { 
         const result = this.state.destinations.filter((dest, i) => { if (i != idx) return dest; });
         this.setState({ destinations: result });
@@ -123,9 +201,17 @@ class App extends React.Component {
         userRef.update({ destinations: result });
     }
 
-    handleAddDestination = () => { this.destinationRequests("Add this") }
+    handleAddDestination = () => { 
+        // this.destinationRequests("Add this");
+        this.dialogElement.current.loadingTrue();
+        this.queryClinc("Add this");
+    }
     
-    handleSkipDestination = () => { this.destinationRequests("Recommend") }
+    handleSkipDestination = () => { 
+        // this.destinationRequests("Recommend");
+        this.dialogElement.current.loadingTrue();
+        this.queryClinc("Recommend");
+     }
 
     setShowMap = (status) => this.setState({ showMap: status });
     
@@ -154,6 +240,20 @@ class App extends React.Component {
             });
         }
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
 
     render () {
         return (
@@ -198,9 +298,12 @@ class App extends React.Component {
                 <Dialog 
                 destinationRequests={this.destinationRequests}
                 post={this.postData}
+                queryClinc = {this.queryClinc}
                 userId={this.state.userId}
                 handleUpdate={this.handleUpdate}
-                handleUserInfo = {this.handleUserInfo}/>
+                handleUserInfo = {this.handleUserInfo}
+                chatRes = {this.state.chatRes}
+                ref = {this.dialogElement}/>
                 </Col>
             </Row>
             <br></br>
