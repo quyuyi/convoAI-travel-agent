@@ -651,7 +651,7 @@ def resolve_recommendation(clinc_request):
 
                 doc_ref.update({
                     "last_edit": count,
-                    "recommendations": city_recommendations
+                    "rec_idx" : rec_idx
                 })
 
                 print("slots:", clinc_request['slots'])
