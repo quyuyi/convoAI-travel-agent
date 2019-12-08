@@ -12,28 +12,28 @@
    (6) "a week and 2 days"   
    (7) "I'd like to go there." should be add_destination, extract as city  
    (8) "Hi, I'd like to go to Ann Arbor with my parents for 3 days" with "hi days" on the top instead of "3 days" (non-numerical days should be illegal)   
-2. (Add training data to support adding multiple places at once.)
+   
+2. Add utterances, slot mapper, edit response for recommendation preference.   
+3. (Add training data to support adding multiple places at once.)
 
 
 ### Backend:
-1. Use dynamic slot mapper in business logic to map destinations
-2. Debug recommendation by looking at firebase, find reason for "out of index"
-3. Say "Remove this place" to remove
-4. "Add this place" after asking for destination information
-5. Filter out the restaurants and hotels in recommendation:
-   search for key words "restaurant", "hotel" in the first sentence of the introduction.
-#### Potential:
-6. Recommend nearby restaurant/hotel based on route
-7. Recommend according to user preference
+1. Use dynamic slot mapper in business logic to map destination   
+   "resolve_destination_info", add by name, remove by name   
+2. Debug recommendation by looking at firebase, find reason for "out of index"   
+3. Say "Remove this place" to remove    
+4. Recommend according to user preference   
+
 ### UI:
 #### Itinerary:
 1. Display the destination name when there's only 1 place for the day.
+
 #### General:
 2. When clicking button, send request to clinc so that there's speakable response
    e.g. User clicks button to add, AI says "xxx has been added..."
 3. Display destination information at resolve_destination_info
-   e.g. "Tell me about Michigan Stadium" -> show photo and introduction on screen
-4. Find a better initial interface instead of NCRB...
+   e.g. "Tell me about Michigan Stadium" -> show photo and introduction on screen   
+
 ### TTS&STT:
 1. Test and make sure it works.
 
