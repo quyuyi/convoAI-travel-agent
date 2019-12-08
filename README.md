@@ -19,10 +19,9 @@
 
 ### Backend:
 1. Use dynamic slot mapper in business logic to map destination   
-   "resolve_destination_info", add by name, remove by name   
-2. Debug recommendation by looking at firebase, find reason for "out of index"   
-3. Say "Remove this place" to remove    
-4. Recommend according to user preference   
+   "resolve_destination_info", add by name, remove by name     
+2. Say "Remove this place" to remove    
+3. Recommend according to user preference   
 
 ### UI:
 #### Itinerary:
