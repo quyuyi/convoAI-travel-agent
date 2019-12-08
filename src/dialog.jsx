@@ -26,7 +26,7 @@ class Dialog extends React.Component {
             first: true,
             loading: false,
             history: [
-                {"from": "clinc", "msg": "Hi, how can I help you?",}
+                {"from": "clinc", "msg": "Hi! I'm your virtual travel assistant. Please tell me your destination city, length of visit, and number of people so I can plan the travel for you.",}
             ],
         };
         this.handleSubmit = this.handleSubmit.bind(this);
