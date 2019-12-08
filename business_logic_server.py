@@ -659,11 +659,15 @@ def resolve_recommendation(clinc_request):
                             ]
                         }
                     }
-     
-                    clinc_request['visual_payload'] = {
-                        "intro": city_recommendations['results'][i]['intro'],
-                        "image": city_recommendations['results'][i]['images'][0]['sizes']['medium']['url']
-                    }
+                    if city_recommendations['results'][i]['images']:
+                        clinc_request['visual_payload'] = {
+                            "intro": city_recommendations['results'][i]['intro'],
+                            "image": city_recommendations['results'][i]['images'][0]['sizes']['medium']['url']
+                        }
+                    else:
+                        clinc_request['visual_payload'] = {
+                            "intro": city_recommendations['results'][i]['intro']
+                        }
 
                     doc_ref.update({
                         "last_edit": count,
