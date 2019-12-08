@@ -741,6 +741,7 @@ def resolve_remove_destination(clinc_request):
     if clinc_request['slots']:
         destination = capitalize_name(clinc_request['slots']['_DESTINATION_']['values'][0]['tokens'])
         last_edit = doc_ref.get().to_dict()['last_edit']
+        city_recommendations = doc_ref.get().to_dict()['recommendations']
 
         mapper_values = {}
         candidates = []
