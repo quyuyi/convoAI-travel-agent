@@ -776,7 +776,7 @@ def resolve_remove_destination(clinc_request):
             else:
                 destination = "nowhere"
         clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 1  # why the value of 'values' is list???
-        clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = destinations
+        clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = destination
         added_destinations = doc_ref.get().to_dict()['destinations']
 
         found_place = 0
