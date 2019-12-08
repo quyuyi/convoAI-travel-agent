@@ -289,7 +289,7 @@ def resolve_basic_info(clinc_request):
         recommend = None
 
         # When user talks about city, get request from API
-        url = 'https://www.triposo.com/api/20190906/poi.json?location_id='+city_key+'&fields=id,name,intro,images,coordinates,tag_labels&count=100&account=8FRG5L0P&token=i0reis6kqrqd7wi7nnwzhkimvrk9zh6a'
+        url = 'https://www.triposo.com/api/20190906/poi.json?location_id='+city_key+'&fields=id,name,intro,images,coordinates,tag_labels&count=50&account=8FRG5L0P&token=i0reis6kqrqd7wi7nnwzhkimvrk9zh6a'
         recommend = requests.get(url).json()
         if not recommend['results']:
             clinc_request['slots']['_NORESPONSE_'] = {
@@ -612,13 +612,19 @@ def resolve_recommendation(clinc_request):
     city_recommendations = city_doc_ref.get().to_dict()["recommendations"]
     rec_idx = doc_ref.get().to_dict()['rec_idx']
     
-    if clinc_request['slots']:
+    if clinc_request['slots'] and clinc_request['slots']['_PREFERENCE_']['values'][0]['tokens'] in ['hotel', 'restaurant', 'amusement park', 'top attractions', 'museum', 'shopping']:
         preference = clinc_request['slots']['_PREFERENCE_']['values'][0]['tokens']
         print("preference", preference)
-        if preference in ["hotel"]:
+        if preference == "hotel":
             preference = "hotels"
-        if preference in ["restaurant","restaurants"]:
+        if preference == "restaurant":
             preference = "cuisine"
+        if preference == "top attractions"
+            preference = "topattractions"
+        if preference == "museum":
+            preference = "museums"
+        if preference == "amusement part":
+            preference = "amusementpark"
         for i in range(100):
             if preference and preference in city_recommendations['results'][i]['tag_labels'] and i not in rec_idx:
                 #city_recommendations['results'][i]['recommended'] = True
