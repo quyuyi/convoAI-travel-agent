@@ -500,63 +500,25 @@ def resolve_destination_info(clinc_request):
             doc_ref.update({
                 'last_edit': idx
             })
-            # TODO
-            # like resolve_recommendation
-            # request API if the destinations list about the city is not stored in the database
-            # construct the response e.g., visual_payload
-            clinc_request['slots'] = {
-                "_RECOMMENDATION_": {
-                    "type": "string",
-                    "values": [
-                        {
-                            "resolved": 1,
-                            "value": destination
-                        }
-                    ]
-                },
-                "_CITY_": {
-                    "type": "string",
-                    "values": [
-                        {
-                            "resolved": 1,
-                            "value": city
-                        }
-                    ]   
-                }
-            }
-            
             idx = int(idx)
-            print("idx", type(idx))
             clinc_request['visual_payload'] = {
                 "intro": city_recommendations[idx]['intro'],
                 "image": city_recommendations[idx]['images'][0]['sizes']['medium']['url']
             }
-            pp.pprint(clinc_request)
-            return jsonify(**clinc_request)
-
         else: # destination not in recommendation list, cannot add
-            clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = -1
-            # TODO
-            # request clinc again to trigger slot mapper
+            clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 0
             '''
             idx = city_name_dict[destination]
             doc_ref.update({
                 'last_edit': idx
             })
             '''
-            clinc_request['slots'] = {
-                "_NOINFO_": {
-                    "type": "string",
-                    "values": [
-                        {
-                            "resolved": 1,
-                            "value": "Sorry, there is no information about " + destination
-                        }
-                    ]
-                }
-            }
-            return jsonify(**clinc_request)
-          
+
+        if clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] == 1:
+            idx = city_name_dict[destination]
+            doc_ref.update({
+                'last_edit': idx
+            })
 
 
     print("finish resolving, send response back to clinc...")
