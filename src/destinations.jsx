@@ -44,7 +44,7 @@ class Destinations extends Component {
                   
                   <React.Fragment>
                     { 
-                      index % count === 0 ? (<h5 style={{display: day >= this.props.destinations.length / count + 1 ? 'none' : 'block' }} 
+                      index % count === 0  && this.props.mapShow ? (<h5 style={{display: day >= this.props.destinations.length / count + 1 ? 'none' : 'block' }} 
                                                 key={indexer++ * 7} className="dest-day">Day {day++}</h5>) : '' 
                     }
      

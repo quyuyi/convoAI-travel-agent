@@ -219,7 +219,8 @@ function getInstructions(data, dayNum) {
       tripDirections.push('<li>' + steps[j].maneuver.instruction) + '</li>';
     }
   }
-  directions.innerHTML = `${directions.innerHTML} <h5>Day ${dayNum + 1} trip duration: ${Math.floor(data.duration / 60)} min.</h5><ul>${tripDirections}</ul>`;
+  let newNode = `<span><h5>Day ${dayNum + 1} trip duration: ${Math.floor(data.duration / 60)} min.</h5><ul>${tripDirections}</ul></span>`;
+  directions.innerHTML += newNode;
 }
 
 class Itinerary extends React.Component {
