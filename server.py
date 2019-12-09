@@ -125,33 +125,20 @@ return back to the front end
 '''
 @app.route("/query_clinc/", methods=["GET", "POST"])
 def resolve_user_query():
-    query = request.json['query'] # get query from the front end
+    # get query from the front end
+    query = request.json['query'] 
     user_id = request.json['userId']
     print("got query from front end...")
     print(query)
     print("got user ID from front end...")
     print(user_id)
 
-    # request clinc will make clinc to call our business logic server
-    # (if that competency has its business logic enabled)
+    # request clinc and get response, (if that competency has its business logic enabled)
     print("got response from clinc...")
     response = request_clinc(query, user_id)
     pp.pprint(response)
-
-    # return response to the front end
-    # update the front end about the preferences and destinations
-
     
-    # print('destination got from clinc')
-    # print(response['visuals']['destinations'])
-
-    # TODO
-    # request destinations from business logic server
-    # dest = requests.get('http://convo-ai.herokuapp.com/api/return_destinations/')
-    # dest = dest.json()
-    # print('destination list from business logic server is:')
-    # print(dest)
-    result = get(response, 'no speakableResponse from clinc', 'visuals', 'speakableResponse') 
+    result = get(response, 'no speakableResponse from clinc', 'visuals', 'speakableResponse')
     data = {
         'response': result,
         'destinations': get_destinations(user_id), # current list of destinations added by the user
