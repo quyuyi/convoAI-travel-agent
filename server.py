@@ -151,7 +151,7 @@ def resolve_user_query():
     # dest = dest.json()
     # print('destination list from business logic server is:')
     # print(dest)
-    result = get(response, 'no speakableResponse from clinc', 'visuals', 'speakableResponse')
+    result = get(response, 'no speakableResponse from clinc', 'visuals', 'speakableResponse') 
     data = {
         'response': result,
         'destinations': get_destinations(user_id), # current list of destinations added by the user
@@ -167,7 +167,8 @@ def resolve_user_query():
         'city': get(response, '', 'slots', '_CITY_', 'values', 0, 'value'),
         'schedule': get_coords(user_id),
     }
-
+    if response['bl_resp']['state'] == "destination_info":
+        data["dest"] = get(response, '','bl_resp','visual_payload', 'name')
     print("got speakable response from clinc...")
     print(result)
     #text_to_speech(result)
