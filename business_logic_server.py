@@ -610,18 +610,18 @@ def resolve_recommendation(clinc_request):
     rec_idx = doc_ref.get().to_dict()['rec_idx']
     
     if clinc_request['slots']:
-        if clinc_request['slots']['_PREFERENCE_']['values'][0]['tokens'] in ['hotel', 'restaurant', 'amusement park', 'top attractions', 'museum', 'shopping']:
+        if clinc_request['slots']['_PREFERENCE_']['values'][0]['preference_mapper'] in ['hotels', 'restaurants', 'amusement parks', 'attractions', 'museums', 'shopping centers']:
             preference = clinc_request['slots']['_PREFERENCE_']['values'][0]['preference_mapper']
             print("preference", preference)
             if preference == "hotel":
                 preference = "hotels"
             if preference == "restaurants":
                 preference = "cuisine"
-            if preference == "top attractions":
+            if preference == "attractions":
                 preference = "topattractions"
             if preference == "museum":
                 preference = "museums"
-            if preference == "amusement part":
+            if preference == "amusement parks":
                 preference = "amusementpark"
             if preference == "shopping centers":
                 preference = "shopping"
