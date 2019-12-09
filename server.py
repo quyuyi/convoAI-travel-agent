@@ -137,6 +137,14 @@ def resolve_user_query():
     print("got response from clinc...")
     response = request_clinc(query, user_id)
     pp.pprint(response)
+    # if dest_info, slot mapper, request again
+    print("*****", get(response, '', 'bl_resp', 'intent'), "*******")
+    if (get(response, '', 'bl_resp', 'intent') == "destination_info_start"):
+        print("*********enter*************")
+        dest = get(response, '', 'slots', '_DESTINATION_', 'values', 0, 'value')
+        print("-->dest is", dest)
+        query = "Do you know " + dest
+        response = request_clinc(query, user_id)
     
     result = get(response, 'no speakableResponse from clinc', 'visuals', 'speakableResponse')
     data = {

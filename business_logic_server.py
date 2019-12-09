@@ -520,6 +520,9 @@ def resolve_destination_info(clinc_request):
 
     print("finish resolving, send response back to clinc...")
     pp.pprint(clinc_request)
+    # requst clinc
+    # get response 
+    # resolve 
     return jsonify(**clinc_request)
 
 
