@@ -467,9 +467,9 @@ def resolve_destination_info(clinc_request):
                 print("*******Duplicate")
             else:
                 existing[place['name']] = 1
-            mapper_values[place['name']] = [place['name']]
-            candidate_value = {'value' : place['name']}
-            candidates.append(candidate_value)
+                mapper_values[place['name']] = [place['name']]
+                candidate_value = {'value' : place['name']}
+                candidates.append(candidate_value)
 
         clinc_request['slots']['_DESTINATION_']['candidates'] = candidates
         print("*****candidates*********")
