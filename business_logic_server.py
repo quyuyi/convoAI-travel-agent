@@ -614,7 +614,7 @@ def resolve_recommendation(clinc_request):
             print("preference", preference)
             if preference == "hotel":
                 preference = "hotels"
-            if preference == "restaurant":
+            if preference == "restaurants":
                 preference = "cuisine"
             if preference == "top attractions":
                 preference = "topattractions"
