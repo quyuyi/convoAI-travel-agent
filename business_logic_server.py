@@ -541,7 +541,7 @@ def resolve_destination_info(clinc_request):
             print("idx", type(idx))
             clinc_request['visual_payload'] = {
                 "intro": city_recommendation[idx]['intro'],
-                "image": city_recommendations][idx]['images'][0]['sizes']['medium']['url']
+                "image": city_recommendations[idx]['images'][0]['sizes']['medium']['url']
             }
             return jsonify(**clinc_request)
 
