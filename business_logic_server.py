@@ -341,7 +341,8 @@ def resolve_basic_info(clinc_request):
             lov = "7"
         if length_of_visit_tokens in ['weekend']:
             lov = "2"
-        try int(lov):
+        try:
+            a = int(lov)
             clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['value'] = lov
             # preferences['length_of_visit'] = lov
             doc_ref.update({
