@@ -480,6 +480,8 @@ def resolve_destination_info(clinc_request):
             candidates.append(candidate_value)
 
         clinc_request['slots']['_DESTINATION_']['candidates'] = candidates
+        print("*****candidates*********")
+        print(candidates)
         clinc_request['slots']['_DESTINATION_']['mappings'] = [
             {
                 "algorithm" : "partial_ratio",
