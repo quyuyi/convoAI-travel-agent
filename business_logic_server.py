@@ -496,31 +496,6 @@ def resolve_destination_info(clinc_request):
             print('destination in dict')
             clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = destination
             clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 1  # why the value of 'values' is list???
-        else: # destination not in recommendation list, cannot add
-            clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 0
-            # TODO
-            # request clinc again to trigger slot mapper
-            '''
-            idx = city_name_dict[destination]
-            doc_ref.update({
-                'last_edit': idx
-            })
-            '''
-            clinc_request['slots'] = {
-                "_NOINFO_": {
-                    "type": "string",
-                    "values": [
-                        {
-                            "resolved": 0,
-                            "value": "Sorry, there is no information about " + destination
-                        }
-                    ]
-                }
-            }
-            return jsonify(**clinc_request)
-
-        if clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] == 1:
-            clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = destination
             idx = city_name_dict[destination]
             doc_ref.update({
                 'last_edit': idx
@@ -558,6 +533,30 @@ def resolve_destination_info(clinc_request):
             }
             pp.pprint(clinc_request)
             return jsonify(**clinc_request)
+            
+        else: # destination not in recommendation list, cannot add
+            clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 0
+            # TODO
+            # request clinc again to trigger slot mapper
+            '''
+            idx = city_name_dict[destination]
+            doc_ref.update({
+                'last_edit': idx
+            })
+            '''
+            clinc_request['slots'] = {
+                "_NOINFO_": {
+                    "type": "string",
+                    "values": [
+                        {
+                            "resolved": 0,
+                            "value": "Sorry, there is no information about " + destination
+                        }
+                    ]
+                }
+            }
+            return jsonify(**clinc_request)
+          
 
 
     print("finish resolving, send response back to clinc...")
