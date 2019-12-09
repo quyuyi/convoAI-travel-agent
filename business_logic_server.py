@@ -611,7 +611,7 @@ def resolve_recommendation(clinc_request):
     
     if clinc_request['slots']:
         if clinc_request['slots']['_PREFERENCE_']['values'][0]['tokens'] in ['hotel', 'restaurant', 'amusement park', 'top attractions', 'museum', 'shopping']:
-            preference = clinc_request['slots']['_PREFERENCE_']['values'][0]['tokens']
+            preference = clinc_request['slots']['_PREFERENCE_']['values'][0]['preference_mapper']
             print("preference", preference)
             if preference == "hotel":
                 preference = "hotels"
@@ -623,6 +623,8 @@ def resolve_recommendation(clinc_request):
                 preference = "museums"
             if preference == "amusement part":
                 preference = "amusementpark"
+            if preference == "shopping centers":
+                preference = "shopping"
             for i in range(50):
                 if preference and preference in city_recommendations['results'][i]['tag_labels'] and i not in rec_idx:
                     #city_recommendations['results'][i]['recommended'] = True
