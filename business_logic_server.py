@@ -516,6 +516,32 @@ def resolve_destination_info(clinc_request):
             # like resolve_recommendation
             # request API if the destinations list about the city is not stored in the database
             # construct the response e.g., visual_payload
+            clinc_request['slots'] = {
+                "_RECOMMENDATION_": {
+                    "type": "string",
+                    "values": [
+                        {
+                            "resolved": 1,
+                            "value": destination
+                        }
+                    ]
+                },
+                "_CITY_": {
+                    "type": "string",
+                    "values": [
+                        {
+                            "resolved": 1,
+                            "value": city
+                        }
+                    ]   
+                }
+            }
+
+            clinc_request['visual_payload'] = {
+                "intro": city_recommendations['results'][idx]['intro'],
+                "image": city_recommendations['results'][idx]['images'][0]['sizes']['medium']['url']
+            }
+            return jsonify(**clinc_request)
 
 
     print("finish resolving, send response back to clinc...")
