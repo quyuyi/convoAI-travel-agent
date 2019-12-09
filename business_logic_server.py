@@ -483,6 +483,8 @@ def resolve_destination_info(clinc_request):
             candidates.append(candidate_value)
 
         clinc_request['slots']['_DESTINATION_']['candidates'] = candidates
+        print("*****candidates*********")
+        print(candidates)
         clinc_request['slots']['_DESTINATION_']['mappings'] = [
             {
                 "algorithm" : "partial_ratio",
@@ -612,6 +614,8 @@ def resolve_recommendation(clinc_request):
     city_recommendations = city_doc_ref.get().to_dict()["recommendations"]
     rec_idx = doc_ref.get().to_dict()['rec_idx']
     
+
+
     if clinc_request['slots']:
         if clinc_request['slots']['_PREFERENCE_']['values'][0]['preference_mapper'] in ['hotels', 'restaurants', 'amusement parks', 'attractions', 'museums', 'shopping centers']:
             preference = clinc_request['slots']['_PREFERENCE_']['values'][0]['preference_mapper']
@@ -661,11 +665,13 @@ def resolve_recommendation(clinc_request):
                     if city_recommendations['results'][i]['images']:
                         clinc_request['visual_payload'] = {
                             "intro": city_recommendations['results'][i]['intro'],
-                            "image": city_recommendations['results'][i]['images'][0]['sizes']['medium']['url']
+                            "image": city_recommendations['results'][i]['images'][0]['sizes']['medium']['url'],
+                            "name": city_recommendations['results'][i]['name'],
                         }
                     else:
                         clinc_request['visual_payload'] = {
-                            "intro": city_recommendations['results'][i]['intro']
+                            "intro": city_recommendations['results'][i]['intro'],
+                            "name": city_recommendations['results'][i]['name'],
                         }
 
                     doc_ref.update({
@@ -719,7 +725,8 @@ def resolve_recommendation(clinc_request):
  
     clinc_request['visual_payload'] = {
         "intro": city_recommendations['results'][count]['intro'],
-        "image": city_recommendations['results'][count]['images'][0]['sizes']['medium']['url']
+        "image": city_recommendations['results'][count]['images'][0]['sizes']['medium']['url'],
+        "name": city_recommendations['results'][count]['name'],
     }
     rec_idx.append(count)
     doc_ref.update({
