@@ -341,7 +341,7 @@ def resolve_basic_info(clinc_request):
             lov = "7"
         if length_of_visit_tokens in ['weekend']:
             lov = "2"
-        if type(lov) is not int:
+        if isinstance(lov, int):
             clinc_request['slots']['_LENGTH_OF_VISIT_'][0]['resolved'] = -1
         else:
             clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['value'] = lov
