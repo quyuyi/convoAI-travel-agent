@@ -167,7 +167,7 @@ def resolve_user_query():
         'city': get(response, '', 'slots', '_CITY_', 'values', 0, 'value'),
         'schedule': get_coords(user_id),
     }
-    if response['bl_resp']['state'] == "destination_info":
+    if get(response,'', 'bl_resp', 'state') == "destination_info":
         data["dest"] = get(response, '','bl_resp','visual_payload', 'name')
     print("got speakable response from clinc...")
     print(result)
