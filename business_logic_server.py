@@ -501,7 +501,8 @@ def resolve_destination_info(clinc_request):
             idx = int(idx)
             clinc_request['visual_payload'] = {
                 "intro": city_recommendations[idx]['intro'],
-                "image": city_recommendations[idx]['images'][0]['sizes']['medium']['url']
+                "image": city_recommendations[idx]['images'][0]['sizes']['medium']['url'],
+                "name": city_recommendations[idx]['name']
             }
 
                 
