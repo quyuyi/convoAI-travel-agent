@@ -432,8 +432,6 @@ def resolve_clean_goodbye(clinc_request):
 
 def resolve_destination_info(clinc_request):
     print("start resolve destination_info...")
-    clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 0
-
     user_id = clinc_request['external_user_id']
     doc_ref = collection.document(user_id)
     doc = doc_ref.get()
@@ -470,7 +468,6 @@ def resolve_destination_info(clinc_request):
         # clinc_request['visual_payload'] = {
         #     'destination': destination
         # }
-    
         city_doc_ref = city_collection.document(city)
         city_recommendations = city_doc_ref.get().to_dict()["recommendations"]["results"]
         city_name_dict = city_doc_ref.get().to_dict()["name_to_index"]
@@ -490,12 +487,13 @@ def resolve_destination_info(clinc_request):
                 "type" : "fuzzy",
                 "values" : mapper_values
             }
-        ]
+        ]  
         
         if destination in city_name_dict: # destination exists
             print('destination in dict')
             clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = destination
             clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 1  # why the value of 'values' is list???
+            
             idx = city_name_dict[destination]
             doc_ref.update({
                 'last_edit': idx
@@ -503,17 +501,14 @@ def resolve_destination_info(clinc_request):
             idx = int(idx)
             clinc_request['visual_payload'] = {
                 "intro": city_recommendations[idx]['intro'],
-                "image": city_recommendations[idx]['images'][0]['sizes']['medium']['url']
+                "image": city_recommendations[idx]['images'][0]['sizes']['medium']['url'],
+                "name": city_recommendations[idx]['name']
             }
-        else: # destination not in recommendation list, cannot add
-            clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 0
-            '''
-            idx = city_name_dict[destination]
-            doc_ref.update({
-                'last_edit': idx
-            })
-            '''
 
+                
+        else:
+            clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 0
+        
         if clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] == 1:
             idx = city_name_dict[destination]
             doc_ref.update({
@@ -524,13 +519,6 @@ def resolve_destination_info(clinc_request):
     print("finish resolving, send response back to clinc...")
     pp.pprint(clinc_request)
     return jsonify(**clinc_request)
-
-
-
-
-
-
-
 
 
 def resolve_generate_schedule(clinc_request):
@@ -623,11 +611,11 @@ def resolve_recommendation(clinc_request):
     
     if clinc_request['slots']:
         if clinc_request['slots']['_PREFERENCE_']['values'][0]['tokens'] in ['hotel', 'restaurant', 'amusement park', 'top attractions', 'museum', 'shopping']:
-            preference = clinc_request['slots']['_PREFERENCE_']['values'][0]['tokens']
+            preference = clinc_request['slots']['_PREFERENCE_']['values'][0]['preference_mapper']
             print("preference", preference)
             if preference == "hotel":
                 preference = "hotels"
-            if preference == "restaurant":
+            if preference == "restaurants":
                 preference = "cuisine"
             if preference == "top attractions":
                 preference = "topattractions"
@@ -635,6 +623,8 @@ def resolve_recommendation(clinc_request):
                 preference = "museums"
             if preference == "amusement part":
                 preference = "amusementpark"
+            if preference == "shopping centers":
+                preference = "shopping"
             for i in range(50):
                 if preference and preference in city_recommendations['results'][i]['tag_labels'] and i not in rec_idx:
                     #city_recommendations['results'][i]['recommended'] = True
@@ -679,7 +669,7 @@ def resolve_recommendation(clinc_request):
                         }
 
                     doc_ref.update({
-                        "last_edit": count,
+                        "last_edit": i,
                         "rec_idx" : rec_idx
                     })
 
