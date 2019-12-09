@@ -125,40 +125,28 @@ return back to the front end
 '''
 @app.route("/query_clinc/", methods=["GET", "POST"])
 def resolve_user_query():
-    query = request.json['query'] # get query from the front end
+    # get query from the front end
+    query = request.json['query'] 
     user_id = request.json['userId']
     print("got query from front end...")
     print(query)
     print("got user ID from front end...")
     print(user_id)
 
-    # request clinc will make clinc to call our business logic server
-    # (if that competency has its business logic enabled)
+    # request clinc and get response, (if that competency has its business logic enabled)
     print("got response from clinc...")
     response = request_clinc(query, user_id)
     pp.pprint(response)
-
-    # return response to the front end
-    # update the front end about the preferences and destinations
-
     
-    # print('destination got from clinc')
-    # print(response['visuals']['destinations'])
-
-    # TODO
-    # request destinations from business logic server
-    # dest = requests.get('http://convo-ai.herokuapp.com/api/return_destinations/')
-    # dest = dest.json()
-    # print('destination list from business logic server is:')
-    # print(dest)
-    result = get(response, 'no speakableResponse from clinc', 'visuals', 'speakableResponse') 
+    result = get(response, 'no speakableResponse from clinc', 'visuals', 'speakableResponse')
     data = {
         'response': result,
         'destinations': get_destinations(user_id), # current list of destinations added by the user
         'isRecommendation': False if get(response, False, 'visuals', 'intro') == False else True, 
         'intro': get(response, '', 'visuals', 'intro'), # intro about the destination
         'img': get(response, '', 'visuals', 'image'), # an exrernal image url for the destination 
-        'dest': get(response, '', 'bl_resp', 'slots', '_RECOMMENDATION_', 'values', 0, 'value'),
+        # 'dest': get(response, '', 'bl_resp', 'slots', '_RECOMMENDATION_', 'values', 0, 'value'),
+        'dest': get(response, '', 'visuals', 'name'),
         'addVisitor': get(response, False, 'slots', '_NUMBER_OF_PEOPLE_'),
         'visitor': get(response, '', 'slots', '_NUMBER_OF_PEOPLE_', 'values', 0, 'value'),
         'addLength': get(response, False, 'slots', '_LENGTH_OF_VISIT_'),

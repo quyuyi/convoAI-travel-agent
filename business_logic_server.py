@@ -480,6 +480,8 @@ def resolve_destination_info(clinc_request):
             candidates.append(candidate_value)
 
         clinc_request['slots']['_DESTINATION_']['candidates'] = candidates
+        print("*****candidates*********")
+        print(candidates)
         clinc_request['slots']['_DESTINATION_']['mappings'] = [
             {
                 "algorithm" : "partial_ratio",
@@ -612,19 +614,18 @@ def resolve_recommendation(clinc_request):
 
 
     if clinc_request['slots']:
-        if clinc_request['slots']['_PREFERENCE_']['values'][0]['tokens'] in ['hotel', 'restaurant', 'amusement park', 'top attractions', 'museum', 'shopping']:
-            preference = clinc_request['slots']['_PREFERENCE_']['values'][0]['tokens']
+        if clinc_request['slots']['_PREFERENCE_']['values'][0]['preference_mapper'] in ['hotels', 'restaurants', 'amusement parks', 'attractions', 'museums', 'shopping centers']:
+            preference = clinc_request['slots']['_PREFERENCE_']['values'][0]['preference_mapper']
             print("preference", preference)
-            if preference_value == "hotel":
-                preference = "hotels"
-            if preference_value== "restaurant":
+            tmp_pref = preference
+            if preference == "restaurants":
                 preference = "cuisine"
-            if preference == "top attractions":
+            if preference == "attractions":
                 preference = "topattractions"
-            if preference == "museum":
-                preference = "museums"
-            if preference == "amusement part":
+            if preference == "amusement parks":
                 preference = "amusementpark"
+            if preference == "shopping centers":
+                preference = "shopping"
             for i in range(50):
                 if preference and preference in city_recommendations['results'][i]['tag_labels'] and i not in rec_idx:
                     #city_recommendations['results'][i]['recommended'] = True
@@ -653,7 +654,7 @@ def resolve_recommendation(clinc_request):
                             "values": [
                                 {
                                     "resolved": 1,
-                                    "value": preference
+                                    "value": tmp_pref
                                 }
                             ]
                         }
@@ -661,11 +662,13 @@ def resolve_recommendation(clinc_request):
                     if city_recommendations['results'][i]['images']:
                         clinc_request['visual_payload'] = {
                             "intro": city_recommendations['results'][i]['intro'],
-                            "image": city_recommendations['results'][i]['images'][0]['sizes']['medium']['url']
+                            "image": city_recommendations['results'][i]['images'][0]['sizes']['medium']['url'],
+                            "name": city_recommendations['results'][i]['name'],
                         }
                     else:
                         clinc_request['visual_payload'] = {
-                            "intro": city_recommendations['results'][i]['intro']
+                            "intro": city_recommendations['results'][i]['intro'],
+                            "name": city_recommendations['results'][i]['name'],
                         }
 
                     doc_ref.update({
@@ -719,7 +722,8 @@ def resolve_recommendation(clinc_request):
  
     clinc_request['visual_payload'] = {
         "intro": city_recommendations['results'][count]['intro'],
-        "image": city_recommendations['results'][count]['images'][0]['sizes']['medium']['url']
+        "image": city_recommendations['results'][count]['images'][0]['sizes']['medium']['url'],
+        "name": city_recommendations['results'][count]['name'],
     }
     rec_idx.append(count)
     doc_ref.update({
