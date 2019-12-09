@@ -131,7 +131,7 @@ def resolve_add_destination(clinc_request):
         city_recommendations = city_doc_ref.get().to_dict()["recommendations"]["results"]
         city_name_dict = city_doc_ref.get().to_dict()["name_to_index"]
         
-        print("city_recommendations: ", city_recommendations)
+        # print("city_recommendations: ", city_recommendations)
         if destination in ["This Place", "This", "It", "There", "That"]:
             print("count", count)
             if last_edit != -1:
@@ -165,8 +165,8 @@ def resolve_add_destination(clinc_request):
             clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = destination_name
 
         else: # Directly add place by name
-            print('destination: ', destination)
-            print('city_name_dict.keys():', city_name_dict)
+            # print('destination: ', destination)
+            # print('city_name_dict.keys():', city_name_dict)
             
             if destination in city_name_dict: # destination exists
                 print('destination in dict')
@@ -354,7 +354,7 @@ def resolve_basic_info(clinc_request):
             print("enter except")
             people_number = 1
             number_of_people_tokens = number_of_people_str.split()
-            print(clinc_request['slots']['_NUMBER_OF_PEOPLE_'])
+            # print(clinc_request['slots']['_NUMBER_OF_PEOPLE_'])
             for t in number_of_people_tokens:
                 if t in ['with', 'and', 'take', 'parents', 'grandparents', ',']:
                     people_number += 1
