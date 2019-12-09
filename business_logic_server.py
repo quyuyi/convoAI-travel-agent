@@ -130,23 +130,6 @@ def resolve_add_destination(clinc_request):
         city_doc_ref = city_collection.document(city)
         city_recommendations = city_doc_ref.get().to_dict()["recommendations"]["results"]
         city_name_dict = city_doc_ref.get().to_dict()["name_to_index"]
-
-        mapper_values = {}
-        candidates = []
-        for place in city_recommendations:
-            mapper_values[place['name']] = [place['name']]
-            candidate_value = {'value' : place['name']}
-            candidates.append(candidate_value)
-
-        clinc_request['slots']['_DESTINATION_']['candidates'] = candidates
-        clinc_request['slots']['_DESTINATION_']['mappings'] = [
-            {
-                "algorithm" : "partial_ratio",
-                "threshold" : 0.6,
-                "type" : "fuzzy",
-                "values" : mapper_values
-            }
-        ]
         
         print("city_recommendations: ", city_recommendations)
         if destination in ["This Place", "This", "It", "There", "That"]:
@@ -341,11 +324,15 @@ def resolve_basic_info(clinc_request):
             lov = "7"
         if length_of_visit_tokens in ['weekend']:
             lov = "2"
-        clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['value'] = lov
-        # preferences['length_of_visit'] = lov
-        doc_ref.update({
-            'length_of_visit': lov
-        })
+        try:
+            a = int(lov)
+            clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['value'] = lov
+            # preferences['length_of_visit'] = lov
+            doc_ref.update({
+                'length_of_visit': lov
+            })
+        except:
+            clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['resolved'] = -1
 
     else:
         if "length_of_visit" in doc_ref.get().to_dict():
@@ -614,6 +601,8 @@ def resolve_recommendation(clinc_request):
     city_recommendations = city_doc_ref.get().to_dict()["recommendations"]
     rec_idx = doc_ref.get().to_dict()['rec_idx']
     
+
+
     if clinc_request['slots']:
         if clinc_request['slots']['_PREFERENCE_']['values'][0]['preference_mapper'] in ['hotels', 'restaurants', 'amusement parks', 'attractions', 'museums', 'shopping centers']:
             preference = clinc_request['slots']['_PREFERENCE_']['values'][0]['preference_mapper']
