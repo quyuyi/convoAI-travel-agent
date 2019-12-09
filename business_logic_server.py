@@ -535,7 +535,7 @@ def resolve_destination_info(clinc_request):
             return jsonify(**clinc_request)
 
         else: # destination not in recommendation list, cannot add
-            clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = -1
+            clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 0
             # TODO
             # request clinc again to trigger slot mapper
             '''
@@ -717,7 +717,7 @@ def resolve_recommendation(clinc_request):
                         }
 
                     doc_ref.update({
-                        "last_edit": count,
+                        "last_edit": i,
                         "rec_idx" : rec_idx
                     })
 
