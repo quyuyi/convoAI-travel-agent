@@ -506,8 +506,21 @@ def resolve_destination_info(clinc_request):
                 'last_edit': idx
             })
             '''
+            clinc_request['slots'] = {
+                "_NOINFO_": {
+                    "type": "string",
+                    "values": [
+                        {
+                            "resolved": -1,
+                            "value": "Sorry, there is no information about " + destination
+                        }
+                    ]
+                }
+            }
+            return(**clinc_request)
 
         if clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] == 1:
+            clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = destination
             idx = city_name_dict[destination]
             doc_ref.update({
                 'last_edit': idx
