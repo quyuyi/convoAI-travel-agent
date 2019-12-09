@@ -130,25 +130,8 @@ def resolve_add_destination(clinc_request):
         city_doc_ref = city_collection.document(city)
         city_recommendations = city_doc_ref.get().to_dict()["recommendations"]["results"]
         city_name_dict = city_doc_ref.get().to_dict()["name_to_index"]
-
-        mapper_values = {}
-        candidates = []
-        for place in city_recommendations:
-            mapper_values[place['name']] = [place['name']]
-            candidate_value = {'value' : place['name']}
-            candidates.append(candidate_value)
-
-        clinc_request['slots']['_DESTINATION_']['candidates'] = candidates
-        clinc_request['slots']['_DESTINATION_']['mappings'] = [
-            {
-                "algorithm" : "partial_ratio",
-                "threshold" : 0.6,
-                "type" : "fuzzy",
-                "values" : mapper_values
-            }
-        ]
         
-        print("city_recommendations: ", city_recommendations)
+        # print("city_recommendations: ", city_recommendations)
         if destination in ["This Place", "This", "It", "There", "That"]:
             print("count", count)
             if last_edit != -1:
@@ -182,8 +165,8 @@ def resolve_add_destination(clinc_request):
             clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = destination_name
 
         else: # Directly add place by name
-            print('destination: ', destination)
-            print('city_name_dict.keys():', city_name_dict)
+            # print('destination: ', destination)
+            # print('city_name_dict.keys():', city_name_dict)
             
             if destination in city_name_dict: # destination exists
                 print('destination in dict')
@@ -371,7 +354,7 @@ def resolve_basic_info(clinc_request):
             print("enter except")
             people_number = 1
             number_of_people_tokens = number_of_people_str.split()
-            print(clinc_request['slots']['_NUMBER_OF_PEOPLE_'])
+            # print(clinc_request['slots']['_NUMBER_OF_PEOPLE_'])
             for t in number_of_people_tokens:
                 if t in ['with', 'and', 'take', 'parents', 'grandparents', ',']:
                     people_number += 1
@@ -477,11 +460,16 @@ def resolve_destination_info(clinc_request):
         city_name_dict = city_doc_ref.get().to_dict()["name_to_index"]
 
         mapper_values = {}
+        existing = {}
         candidates = []
         for place in city_recommendations:
-            mapper_values[place['name']] = [place['name']]
-            candidate_value = {'value' : place['name']}
-            candidates.append(candidate_value)
+            if place['name'] in existing:
+                print("*******Duplicate")
+            else:
+                existing[place['name']] = 1
+                mapper_values[place['name']] = [place['name']]
+                candidate_value = {'value' : place['name']}
+                candidates.append(candidate_value)
 
         clinc_request['slots']['_DESTINATION_']['candidates'] = candidates
         print("*****candidates*********")
@@ -524,6 +512,9 @@ def resolve_destination_info(clinc_request):
 
     print("finish resolving, send response back to clinc...")
     pp.pprint(clinc_request)
+    # requst clinc
+    # get response 
+    # resolve 
     return jsonify(**clinc_request)
 
 
@@ -556,7 +547,7 @@ def resolve_generate_schedule(clinc_request):
         it_gen = ItineraryGen(int(doc_ref.get().to_dict()['length_of_visit']), places)
         plan = it_gen.make()
         print('Schedule Generated:')
-        print(plan)
+        # print(plan)
         schedule = []
         days = len(plan)
         for i in range(days):
@@ -564,7 +555,7 @@ def resolve_generate_schedule(clinc_request):
             for j in plan[i]:
                 places_in_day.append(j)
             schedule.append(places_in_day)
-        print('schedule', schedule)
+        # print('schedule', schedule)
         doc_ref.update({
             "schedule": json.dumps(schedule)
         })
@@ -610,7 +601,7 @@ def resolve_recommendation(clinc_request):
     except:
         city = "-1"
         count = 0
-    print("city:", city)
+    #print("city:", city)
     city_doc_ref = city_collection.document(city)
     city_recommendations = city_doc_ref.get().to_dict()["recommendations"]
     rec_idx = doc_ref.get().to_dict()['rec_idx']
@@ -620,7 +611,7 @@ def resolve_recommendation(clinc_request):
     if clinc_request['slots']:
         if clinc_request['slots']['_PREFERENCE_']['values'][0]['preference_mapper'] in ['hotels', 'restaurants', 'amusement parks', 'attractions', 'museums', 'shopping centers']:
             preference = clinc_request['slots']['_PREFERENCE_']['values'][0]['preference_mapper']
-            print("preference", preference)
+            # print("preference", preference)
             tmp_pref = preference
             if preference == "restaurants":
                 preference = "cuisine"
@@ -680,7 +671,7 @@ def resolve_recommendation(clinc_request):
                         "rec_idx" : rec_idx
                     })
 
-                    print("slots:", clinc_request['slots'])
+                    # print("slots:", clinc_request['slots'])
 
                     print("finish resolving, send response back to clinc...")
                     pp.pprint(clinc_request)
@@ -700,7 +691,7 @@ def resolve_recommendation(clinc_request):
         }
         return jsonify(**clinc_request)
 
-    print('recommendation got from API:', city_recommendations)
+    # print('recommendation got from API:', city_recommendations)
     while "hotels" in city_recommendations['results'][count]['tag_labels'] or "cuisine" in city_recommendations['results'][count]['tag_labels'] or count in rec_idx:
         count += 1
     clinc_request['slots'] = {
