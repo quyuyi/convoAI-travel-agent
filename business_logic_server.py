@@ -511,7 +511,7 @@ def resolve_destination_info(clinc_request):
                     "type": "string",
                     "values": [
                         {
-                            "resolved": -1,
+                            "resolved": 0,
                             "value": "Sorry, there is no information about " + destination
                         }
                     ]
@@ -556,6 +556,7 @@ def resolve_destination_info(clinc_request):
                 "intro": city_recommendations[idx]['intro'],
                 "image": city_recommendations[idx]['images'][0]['sizes']['medium']['url']
             }
+            pp.pprint(clinc_request)
             return jsonify(**clinc_request)
 
 
