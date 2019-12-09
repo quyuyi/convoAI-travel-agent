@@ -613,14 +613,11 @@ def resolve_recommendation(clinc_request):
         if clinc_request['slots']['_PREFERENCE_']['values'][0]['preference_mapper'] in ['hotels', 'restaurants', 'amusement parks', 'attractions', 'museums', 'shopping centers']:
             preference = clinc_request['slots']['_PREFERENCE_']['values'][0]['preference_mapper']
             print("preference", preference)
-            if preference == "hotel":
-                preference = "hotels"
+            tmp_pref = preference
             if preference == "restaurants":
                 preference = "cuisine"
             if preference == "attractions":
                 preference = "topattractions"
-            if preference == "museum":
-                preference = "museums"
             if preference == "amusement parks":
                 preference = "amusementpark"
             if preference == "shopping centers":
@@ -653,7 +650,7 @@ def resolve_recommendation(clinc_request):
                             "values": [
                                 {
                                     "resolved": 1,
-                                    "value": preference
+                                    "value": tmp_pref
                                 }
                             ]
                         }
