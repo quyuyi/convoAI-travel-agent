@@ -145,7 +145,8 @@ def resolve_user_query():
         'isRecommendation': False if get(response, False, 'visuals', 'intro') == False else True, 
         'intro': get(response, '', 'visuals', 'intro'), # intro about the destination
         'img': get(response, '', 'visuals', 'image'), # an exrernal image url for the destination 
-        'dest': get(response, '', 'bl_resp', 'slots', '_RECOMMENDATION_', 'values', 0, 'value'),
+        # 'dest': get(response, '', 'bl_resp', 'slots', '_RECOMMENDATION_', 'values', 0, 'value'),
+        'dest': get(response, '', 'visuals', 'name'),
         'addVisitor': get(response, False, 'slots', '_NUMBER_OF_PEOPLE_'),
         'visitor': get(response, '', 'slots', '_NUMBER_OF_PEOPLE_', 'values', 0, 'value'),
         'addLength': get(response, False, 'slots', '_LENGTH_OF_VISIT_'),

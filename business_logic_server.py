@@ -660,11 +660,13 @@ def resolve_recommendation(clinc_request):
                     if city_recommendations['results'][i]['images']:
                         clinc_request['visual_payload'] = {
                             "intro": city_recommendations['results'][i]['intro'],
-                            "image": city_recommendations['results'][i]['images'][0]['sizes']['medium']['url']
+                            "image": city_recommendations['results'][i]['images'][0]['sizes']['medium']['url']，
+                            "name": city_recommendations['results'][i]['name'],
                         }
                     else:
                         clinc_request['visual_payload'] = {
                             "intro": city_recommendations['results'][i]['intro']
+                            "name": city_recommendations['results'][i]['name']
                         }
 
                     doc_ref.update({
@@ -718,7 +720,8 @@ def resolve_recommendation(clinc_request):
  
     clinc_request['visual_payload'] = {
         "intro": city_recommendations['results'][count]['intro'],
-        "image": city_recommendations['results'][count]['images'][0]['sizes']['medium']['url']
+        "image": city_recommendations['results'][count]['images'][0]['sizes']['medium']['url'],
+        "name": city_recommendations['results'][count]['name'],
     }
     rec_idx.append(count)
     doc_ref.update({
