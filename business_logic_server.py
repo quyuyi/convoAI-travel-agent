@@ -533,9 +533,9 @@ def resolve_destination_info(clinc_request):
             }
             pp.pprint(clinc_request)
             return jsonify(**clinc_request)
-            
+
         else: # destination not in recommendation list, cannot add
-            clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 0
+            clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = -1
             # TODO
             # request clinc again to trigger slot mapper
             '''
@@ -549,7 +549,7 @@ def resolve_destination_info(clinc_request):
                     "type": "string",
                     "values": [
                         {
-                            "resolved": 0,
+                            "resolved": 1,
                             "value": "Sorry, there is no information about " + destination
                         }
                     ]
