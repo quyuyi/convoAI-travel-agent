@@ -504,9 +504,9 @@ def resolve_destination_info(clinc_request):
                 "image": city_recommendations[idx]['images'][0]['sizes']['medium']['url']
             }
                 
-        else: # destination not in recommendation list, cannot add
+        else:
             clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 0
-
+        
         if clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] == 1:
             idx = city_name_dict[destination]
             doc_ref.update({
@@ -517,13 +517,6 @@ def resolve_destination_info(clinc_request):
     print("finish resolving, send response back to clinc...")
     pp.pprint(clinc_request)
     return jsonify(**clinc_request)
-
-
-
-
-
-
-
 
 
 def resolve_generate_schedule(clinc_request):
