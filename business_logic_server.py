@@ -460,8 +460,13 @@ def resolve_destination_info(clinc_request):
         city_name_dict = city_doc_ref.get().to_dict()["name_to_index"]
 
         mapper_values = {}
+        existing = {}
         candidates = []
         for place in city_recommendations:
+            if place['name'] in existing:
+                print("*******Duplicate")
+            else:
+                existing[place['name']] = 1
             mapper_values[place['name']] = [place['name']]
             candidate_value = {'value' : place['name']}
             candidates.append(candidate_value)
