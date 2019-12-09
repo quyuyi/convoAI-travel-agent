@@ -432,8 +432,6 @@ def resolve_clean_goodbye(clinc_request):
 
 def resolve_destination_info(clinc_request):
     print("start resolve destination_info...")
-    clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 0
-
     user_id = clinc_request['external_user_id']
     doc_ref = collection.document(user_id)
     doc = doc_ref.get()
@@ -470,11 +468,10 @@ def resolve_destination_info(clinc_request):
         # clinc_request['visual_payload'] = {
         #     'destination': destination
         # }
-    
         city_doc_ref = city_collection.document(city)
         city_recommendations = city_doc_ref.get().to_dict()["recommendations"]["results"]
         city_name_dict = city_doc_ref.get().to_dict()["name_to_index"]
-        '''
+
         mapper_values = {}
         candidates = []
         for place in city_recommendations:
@@ -490,8 +487,8 @@ def resolve_destination_info(clinc_request):
                 "type" : "fuzzy",
                 "values" : mapper_values
             }
-        ]
-        '''    
+        ]  
+        
         if destination in city_name_dict: # destination exists
             print('destination in dict')
             clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = destination
@@ -508,7 +505,7 @@ def resolve_destination_info(clinc_request):
             }
                 
         else: # destination not in recommendation list, cannot add
-            clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = -1
+            clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 0
                 '''
                 idx = city_name_dict[destination]
                 doc_ref.update({
