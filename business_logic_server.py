@@ -517,7 +517,7 @@ def resolve_destination_info(clinc_request):
                     ]
                 }
             }
-            return(**clinc_request)
+            return jsonify(**clinc_request)
 
         if clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] == 1:
             clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = destination
