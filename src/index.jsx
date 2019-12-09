@@ -236,19 +236,6 @@ class App extends React.Component {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-    
-
     render () {
         return (
             <div>
@@ -301,8 +288,9 @@ class App extends React.Component {
             </Row>
             <br></br>
             <Row className={this.state.showMap ? "map-container" : "map-container-hidden"}>
-                <Col md={4}>
+                <Col className="dest-parent" md={4}>
                     <Destinations
+                            mapShow={this.state.showMap}
                             tripLength={this.state.length}
                             reorderDestinations={this.reorderDestinations}
                             post={this.postData}
@@ -331,6 +319,7 @@ class App extends React.Component {
             <div className={this.state.showDrawer ? "destination-list" : "destination-list-hidden"}>
                 <h1>Selected Destinations</h1>
                 <Destinations
+                            mapShow = {this.state.showMap}
                             tripLength = {this.state.length}
                             reorderDestinations={this.reorderDestinations}
                             post={this.postData}
