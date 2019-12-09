@@ -477,7 +477,7 @@ def resolve_destination_info(clinc_request):
         clinc_request['slots']['_DESTINATION_']['mappings'] = [
             {
                 "algorithm" : "partial_ratio",
-                "threshold" : 0.8,
+                "threshold" : 0.6,
                 "type" : "fuzzy",
                 "values" : mapper_values
             }
