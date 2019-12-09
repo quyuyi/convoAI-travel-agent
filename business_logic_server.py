@@ -341,11 +341,14 @@ def resolve_basic_info(clinc_request):
             lov = "7"
         if length_of_visit_tokens in ['weekend']:
             lov = "2"
-        clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['value'] = lov
-        # preferences['length_of_visit'] = lov
-        doc_ref.update({
-            'length_of_visit': lov
-        })
+        if type(lov) is not int:
+            clinc_request['slots']['_LENGTH_OF_VISIT_'][0]['resolved'] = -1
+        else:
+            clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['value'] = lov
+            # preferences['length_of_visit'] = lov
+            doc_ref.update({
+                'length_of_visit': lov
+            })
 
     else:
         if "length_of_visit" in doc_ref.get().to_dict():
