@@ -349,7 +349,7 @@ def resolve_basic_info(clinc_request):
                 'length_of_visit': lov
             })
         except:
-            clinc_request['slots']['_LENGTH_OF_VISIT_'][0]['resolved'] = -1
+            clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['resolved'] = -1
 
     else:
         if "length_of_visit" in doc_ref.get().to_dict():
