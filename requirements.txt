@@ -40,6 +40,7 @@ protobuf==3.10.0
 public==2019.4.13
 pyasn1==0.4.7
 pyasn1-modules==0.2.7
+PyAudio==0.2.11
 pylint==2.4.3
 pytz==2019.3
 query-string==2019.4.13
@@ -53,5 +54,6 @@ sklearn==0.0
 typed-ast==1.4.0
 uritemplate==3.0.0
 urllib3==1.25.6
+virtualenv==16.7.5
 Werkzeug==0.16.0
 wrapt==1.11.2

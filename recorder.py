@@ -18,7 +18,7 @@ import time
 import math
 import struct
 
-Threshold = 100
+Threshold = 200
 
 SHORT_NORMALIZE = (1.0/32768.0)
 chunk = 1024
