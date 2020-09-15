@@ -146,12 +146,9 @@ def resolve_user_query():
     return jsonify(**data)
 
 
-# TODO
-# add destination to database by clicking the add button on UI
-# define the route name and the function name
-# call this function in destInfo.jsx onClick Add button
 @app.route("/add_destination/", methods=["GET", "POST"])
 def add_distination():
+    """Add destination to database by clicking the add button on UI."""
     user_id = request.json["user_id"]
     print(user_id)
     if request.method == "POST":
@@ -173,17 +170,8 @@ def add_distination():
     return jsonify(**data)
 
 
-
-
-
-
-
-
-
-'''get destinations list of the user from database
-Returns: a list of destinations
-'''
 def get_destinations(user_id):
+    """Get destinations list of from db; returns: a list of destinations."""
     doc_ref = collection.document(user_id)
     try:
         destinations = doc_ref.get().to_dict()["destinations"]
@@ -208,9 +196,6 @@ def get_coords(user_id):
     print("fetch schedule list from database...")
     print(schedule)
     return schedule
-
-
-
 
 
 all_states = [

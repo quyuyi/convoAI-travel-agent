@@ -1,5 +1,4 @@
-""" Requesr Clinc with query and get response back
-"""
+""" Requesr Clinc with query and get response back."""
 
 import requests
 import pprint

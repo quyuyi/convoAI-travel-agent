@@ -26,7 +26,6 @@ class Destinations extends Component {
     this.props.reorderDestinations(destinations);
   }
 
-
   render () {
     let count = Math.ceil(this.props.destinations.length / this.props.tripLength);
     let day = 1;

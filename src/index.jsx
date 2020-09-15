@@ -89,9 +89,7 @@ class App extends React.Component {
         }
     }
 
-
-    // send user utterence to backend which post to clinc
-    // get response from clinc
+    // send user utterence to backend which post to clint and get response from clinc
     queryClinc(query) {
         var cont=document.getElementById("words");
         console.log("request backend server..")
@@ -146,11 +144,7 @@ class App extends React.Component {
         }) // JSON-string from `response.json()` call
         .catch(error => console.error(error));
     }
-
-
-
-
-
+  
     destinationRequests = (q) => {
         this.postData('/query_clinc/', {query: q, userId: this.state.userId}) 
         .then(data => {
@@ -234,7 +228,6 @@ class App extends React.Component {
             });
         }
     }
-
 
     render () {
         return (
@@ -334,7 +327,6 @@ class App extends React.Component {
 
     
 }
-
 
 function uuidv4() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
