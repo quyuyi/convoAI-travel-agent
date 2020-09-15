@@ -1,3 +1,5 @@
+""" Record user query audio
+"""
 from recorder import *
 from auto_recorder import *
 

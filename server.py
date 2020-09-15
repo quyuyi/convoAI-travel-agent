@@ -1,5 +1,8 @@
-#!/usr/bin/env python
-
+"""Backend server
+Resolve request from the frontend.
+"""
+import sys
+sys.path.append('./utils')
 import os
 import io
 import json
@@ -8,15 +11,11 @@ import requests
 from api import request_clinc, FIREBASE_AUTH, TTS_AUTH
 import pprint
 from utils import get
-
 from record import record, auto_record # record utterance query
-
 from google.cloud import speech # Imports the Google Cloud client library
 from google.cloud.speech import enums
 from google.cloud.speech import types
 from google.cloud import texttospeech
-
-
 import firebase_admin # import database
 from firebase_admin import credentials
 from firebase_admin import firestore
@@ -25,23 +24,15 @@ pp = pprint.PrettyPrinter(indent=4)
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = FIREBASE_AUTH
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = TTS_AUTH
 
+speech_to_text_client = speech.SpeechClient() # speech to text client
+text_to_speech_client = texttospeech.TextToSpeechClient() # text to speech client
 
-# Instantiates a speech to text client
-speech_to_text_client = speech.SpeechClient()
-# Instantiates a text to speech client
-text_to_speech_client = texttospeech.TextToSpeechClient()
-
-
-# database
 cred = credentials.Certificate(FIREBASE_AUTH)
 firebase_admin.initialize_app(cred)
-db = firestore.client()
+db = firestore.client() # db client
 collection = db.collection('users')
 
-# app
 app = Flask(__name__)
-
-
 
 
 @app.route("/")
@@ -51,6 +42,7 @@ def index():
 
 @app.route("/record_to_text/", methods=["GET", "POST"])
 def record_to_text():
+    """Audio to text."""
     record() # record the file
     print("transcribing the audio file...")
     # call asr api to turn the blocking.wav to text
@@ -59,25 +51,21 @@ def record_to_text():
     with io.open(file_name, 'rb') as audio_file:
         content = audio_file.read()
         audio = types.RecognitionAudio(content=content)
-
     config = types.RecognitionConfig(
         encoding=enums.RecognitionConfig.AudioEncoding.LINEAR16,
         sample_rate_hertz=44100,
         language_code='en-US')
-
-
     # Detects speech in the audio file
     response = speech_to_text_client.recognize(config, audio)
-
     transcript = ''
     for result in response.results:
         transcript += result.alternatives[0].transcript
         print('Transcript: {}'.format(result.alternatives[0].transcript))
-
     data = {
         "response": transcript
     }
     return jsonify(**data)
+
 
 @app.route('/get_audio/')
 def get_audio():
@@ -92,21 +80,17 @@ def get_silence():
 def text_to_speech(text):
     # Set the text input to be synthesized
     synthesis_input = texttospeech.types.SynthesisInput(text=text)
-
     # Build the voice request, select the language code ("en-US") and the ssml
     # voice gender ("neutral")
     voice = texttospeech.types.VoiceSelectionParams(
         language_code='en-US',
         ssml_gender=texttospeech.enums.SsmlVoiceGender.NEUTRAL)
-
     # Select the type of audio file you want returned
     audio_config = texttospeech.types.AudioConfig(
         audio_encoding=texttospeech.enums.AudioEncoding.MP3)
-
     # Perform the text-to-speech request on the text input with the selected
     # voice parameters and audio file type
     response = text_to_speech_client.synthesize_speech(synthesis_input, voice, audio_config)
-
     # The response's audio_content is binary.
     with open('output.mp3', 'wb') as out:
         # Write the response to the output file.
@@ -114,16 +98,9 @@ def text_to_speech(text):
         print('Audio content written to file "output.mp3"')
 
 
-
-
-'''
-get the user query from the front end
-query clinc in the required format
-get the response from clinc, which contains speakableResponse
-return back to the front end
-'''
 @app.route("/query_clinc/", methods=["GET", "POST"])
 def resolve_user_query():
+    """Resolve user query from frontend to Clinc."""
     # get query from the front end
     query = request.json['query'] 
     user_id = request.json['userId']
@@ -131,7 +108,6 @@ def resolve_user_query():
     print(query)
     print("got user ID from front end...")
     print(user_id)
-
     # request clinc and get response, (if that competency has its business logic enabled)
     print("got response from clinc...")
     response = request_clinc(query, user_id)
@@ -168,10 +144,6 @@ def resolve_user_query():
     print(result)
     text_to_speech(result)
     return jsonify(**data)
-
-
-
-
 
 
 # TODO

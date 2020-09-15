@@ -1,11 +1,17 @@
-#!/usr/bin/env python
-
+"""Business logic server
+deployed at http://heroku.travel_agent.com/api/v1/clinc/
+- Get request from clinc
+- Check state, add slot values, etc. Only the state and slots properties can be manipulated
+- Return reponse to clinc
+"""
 import os
 import io
+import pprint
+import sys
+sys.path.append('./utils')
 from flask import Flask, render_template, request, jsonify, send_file, url_for
 import requests
 from api import request_clinc, FIREBASE_AUTH
-import pprint
 from utils import get 
 import firebase_admin
 from firebase_admin import credentials
@@ -14,21 +20,15 @@ from business_logic_utils import capitalize_name
 from itinerary_generator import ItineraryGen
 import json
 
-# Use a service account
+# estabalish filebase
 cred = credentials.Certificate(FIREBASE_AUTH)
 firebase_admin.initialize_app(cred)
 db = firestore.client()
 collection = db.collection('users')
-
-# user_id = "10086"
-# doc_ref = collection.document(user_id)
-# doc_ref.set({
-#     'dummy' : 'dummy'
-# })
-
 city_collection = db.collection('city')
 
 pp = pprint.PrettyPrinter(indent=4)
+
 
 app = Flask(__name__)
 
@@ -37,15 +37,9 @@ def index():
     return render_template('businessLogic.html')
 
 
-
-# business logic server
-# http://heroku.travel_agent.com/api/v1/clinc/
-# get request from clinc
-# check state, add slot values, etc.
-# Only the state and slots properties can be manipulated
-# return reponse to clinc
 @app.route("/api/v1/clinc/", methods=["GET", "POST"])
 def business_logic():
+    """Rounter function for resolving request from Clinc."""
     clinc_request = request.json # read clinc's request.json
     print("got request from clinc...")
     pp.pprint(clinc_request)
@@ -74,13 +68,8 @@ def business_logic():
         print("intent out of scope")
 
 
-
-
-
-
-
-# Only the state and slots properties can be manipulated
 def resolve_add_destination(clinc_request):
+    """Resolve request when intent state is to add destination."""
     print("start resolve add_destination...")
     user_id = clinc_request['external_user_id']
     doc_ref = collection.document(user_id)
@@ -107,9 +96,6 @@ def resolve_add_destination(clinc_request):
         pp.pprint(clinc_request)
         return jsonify(**clinc_request)
 
-    # TODO
-    # determine if need business transition
-    # clinc_request['state'] = "generate_shedule"
     try:
         count = doc_ref.get().to_dict()["count"]
         city = doc_ref.get().to_dict()['city']
@@ -121,17 +107,13 @@ def resolve_add_destination(clinc_request):
 
     if clinc_request['slots']:
         destination = capitalize_name(clinc_request['slots']['_DESTINATION_']['values'][0]['tokens'])
-        # clinc_request['visual_payload'] = {
-        #     'destination': destination
-        # }
         clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = destination
-        clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 1  # why the value of 'values' is list???
+        clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 1
     
         city_doc_ref = city_collection.document(city)
         city_recommendations = city_doc_ref.get().to_dict()["recommendations"]["results"]
         city_name_dict = city_doc_ref.get().to_dict()["name_to_index"]
         
-        # print("city_recommendations: ", city_recommendations)
         if destination in ["This Place", "This", "It", "There", "That"]:
             print("count", count)
             if last_edit != -1:
@@ -165,9 +147,6 @@ def resolve_add_destination(clinc_request):
             clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = destination_name
 
         else: # Directly add place by name
-            # print('destination: ', destination)
-            # print('city_name_dict.keys():', city_name_dict)
-            
             if destination in city_name_dict: # destination exists
                 print('destination in dict')
             else: # destination not in recommendation list, cannot add
@@ -188,21 +167,13 @@ def resolve_add_destination(clinc_request):
                             "value": destination + " is already in the list. No need to add twice."
                         }]
                     }
-
-
     print("finish resolving, send response back to clinc...")
     pp.pprint(clinc_request)
     return jsonify(**clinc_request)
 
 
-
-
-
-
-
-
-
 def resolve_basic_info(clinc_request):
+    """Resolve request when state about basic info about the user."""
     print("start resolve basic info...")
     user_id = clinc_request['external_user_id']
     doc_ref = collection.document(user_id)
@@ -211,32 +182,16 @@ def resolve_basic_info(clinc_request):
         doc_ref.set({
             'sessionId' : user_id
         })
-
-    # slots: city, length_of_visit, number_of_people
-    # example request body
-    '''
-    {'ai_version': 'd2462c12-e625-49fd-9cfe-c781ddedf060', 'device': 'default', 'dialog': 'KIuP1skcNGBdxFjVc5NWl6NqvFY3LnaL', 'lat': 0, 'lon': 0, 'time_offset': 0, 'external_user_id': '1', 'query': 'I want to travel to Ann Arbor for 3 days with mum.', 'qid': '98477a05-bc61-48e9-94cc-3aa04265444c', 'state': 'basic_info', 'slots': {'_CITY_': {'type': 'string', 'values': [{'resolved': -1, 'tokens': 'ann arbor'}]}, '_LENGTH_OF_VISIT_': {'type': 'string', 'values': [{'resolved': -1, 'tokens': '3'}]}, '_NUMBER_OF_PEOPLE_': {'type': 'string', 'values': [{'resolved': -1, 'tokens': 'with mum'}]}}, 'sentiment': 0, 'intent_probability': 0.9865199534733209, 'session_id': '1c0e6e95e60f4ef0bd8e20bee0f12320', 'intent': 'basic_info_start'}
-    '''
-    # if you can get slot value from token, then set resolve to 1
-    # if resolve is -1, edit response in clinc to continue query that slot
-    # TODO
-    # 1. check if all slots have token and whether the token is valid
-    # 2. turn token to value, using regex or exactgit
-
-    #### process number_of_people
-    # try:
-    #     clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['value'] = int()
-
     number_mapper = {"one" : "1",
-                                  "two" : "2",
-                                  "three" : "3",
-                                  "four" : "4",
-                                  "five" : "5",
-                                  "six" : "6",
-                                  "seven" : "7",
-                                  "eight" : "8",
-                                  "nine" : "9",
-                                  "ten" : "10"
+                    "two" : "2",
+                    "three" : "3",
+                    "four" : "4",
+                    "five" : "5",
+                    "six" : "6",
+                    "seven" : "7",
+                    "eight" : "8",
+                    "nine" : "9",
+                    "ten" : "10"
     }
 
     if '_CITY_' in clinc_request['slots']:
@@ -245,7 +200,7 @@ def resolve_basic_info(clinc_request):
         city_value = city_str.capitalize()
         city_key = city_str.capitalize()
         city_tokens = city_str.split()
-        if len(city_tokens) == 2:
+        if len(city_tokens) == 2: # resolve name alias
             city_key = city_tokens[0].capitalize() + '_' + city_tokens[1].capitalize()
             city_value = city_tokens[0].capitalize() + ' ' + city_tokens[1].capitalize()
         if city_key == "New_York":
@@ -266,11 +221,7 @@ def resolve_basic_info(clinc_request):
             'rec_idx' : rec_idx
         })
 
-        ### TO DO:
-        # If the city document already exists, do not request API
-        ###
         recommend = None
-
         # When user talks about city, get request from API
         url = 'https://www.triposo.com/api/20190906/poi.json?location_id='+city_key+'&fields=id,name,intro,images,coordinates,tag_labels&count=50&account=8FRG5L0P&token=i0reis6kqrqd7wi7nnwzhkimvrk9zh6a'
         recommend = requests.get(url).json()
@@ -292,15 +243,12 @@ def resolve_basic_info(clinc_request):
             name_index = {}
             for idx, r in enumerate(recommend['results']):
                 name_index[r['name']] = idx
-                #recommend['results'][idx]['recommended'] = False
             city_doc_ref.update({
                 "recommendations" : recommend
             })
             city_doc_ref.update({
                 "name_to_index" : name_index
             })
-
-
     else:
         if "city" in doc_ref.get().to_dict():
             clinc_request['slots']['_CITY_'] = {
@@ -327,13 +275,11 @@ def resolve_basic_info(clinc_request):
         try:
             a = int(lov)
             clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['value'] = lov
-            # preferences['length_of_visit'] = lov
             doc_ref.update({
                 'length_of_visit': lov
             })
         except:
             clinc_request['slots']['_LENGTH_OF_VISIT_']['values'][0]['resolved'] = -1
-
     else:
         if "length_of_visit" in doc_ref.get().to_dict():
             clinc_request['slots']['_LENGTH_OF_VISIT_'] = {
@@ -354,7 +300,6 @@ def resolve_basic_info(clinc_request):
             print("enter except")
             people_number = 1
             number_of_people_tokens = number_of_people_str.split()
-            # print(clinc_request['slots']['_NUMBER_OF_PEOPLE_'])
             for t in number_of_people_tokens:
                 if t in ['with', 'and', 'take', 'parents', 'grandparents', ',']:
                     people_number += 1
@@ -365,11 +310,9 @@ def resolve_basic_info(clinc_request):
                 except:
                     pass
             clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['value'] = str(people_number)
-        # preferences['number_of_people'] = clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['value']
         doc_ref.update({
             'number_of_people': clinc_request['slots']['_NUMBER_OF_PEOPLE_']['values'][0]['value']
         })
-
     else:
         if "number_of_people" in doc_ref.get().to_dict():
             clinc_request['slots']['_NUMBER_OF_PEOPLE_'] = {
@@ -380,44 +323,28 @@ def resolve_basic_info(clinc_request):
                 }]
             }
 
-
     print("finish resolving, send response back to clinc...")
     pp.pprint(clinc_request)
     return jsonify(**clinc_request)
 
 
-
-
-
-
-
-
-
-
 def resolve_clean_hello(clinc_request):
+    """Resolve request when state is to clean hello."""
     print("start resolve clean hello...")
-
     print("finish resolving, sned response back to clinc...")
     pp.pprint(clinc_request)
     return jsonify(**clinc_request)
 
 def resolve_clean_goodbye(clinc_request):
+    """Resolve request when state is to clean goodbye."""
     print("start resolve clean goodbye...")
     print("finish resolving, sned response back to clinc...")
     pp.pprint(clinc_request)
     return jsonify(**clinc_request)
 
 
-
-
-
-
-
-
-
-
-
 def resolve_destination_info(clinc_request):
+    """Resolve request when state is about destination info."""
     print("start resolve destination_info...")
     user_id = clinc_request['external_user_id']
     doc_ref = collection.document(user_id)
@@ -426,7 +353,6 @@ def resolve_destination_info(clinc_request):
         doc_ref.set({
             'sessionId' : user_id
         })
-
     city_dict = doc_ref.get().to_dict()
 
     if  "city" not in city_dict:
@@ -443,7 +369,6 @@ def resolve_destination_info(clinc_request):
         }
         pp.pprint(clinc_request)
         return jsonify(**clinc_request)
-
     try:
         city = doc_ref.get().to_dict()['city']
     except KeyError:
@@ -452,9 +377,6 @@ def resolve_destination_info(clinc_request):
 
     if clinc_request['slots']:
         destination = capitalize_name(clinc_request['slots']['_DESTINATION_']['values'][0]['tokens'])
-        # clinc_request['visual_payload'] = {
-        #     'destination': destination
-        # }
         city_doc_ref = city_collection.document(city)
         city_recommendations = city_doc_ref.get().to_dict()["recommendations"]["results"]
         city_name_dict = city_doc_ref.get().to_dict()["name_to_index"]
@@ -482,12 +404,11 @@ def resolve_destination_info(clinc_request):
                 "values" : mapper_values
             }
         ]  
-        
+
         if destination in city_name_dict: # destination exists
             print('destination in dict')
             clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = destination
             clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 1  # why the value of 'values' is list???
-            
             idx = city_name_dict[destination]
             doc_ref.update({
                 'last_edit': idx
@@ -497,28 +418,21 @@ def resolve_destination_info(clinc_request):
                 "intro": city_recommendations[idx]['intro'],
                 "image": city_recommendations[idx]['images'][0]['sizes']['medium']['url'],
                 "name": city_recommendations[idx]['name']
-            }
-
-                
+            }            
         else:
-            clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 0
-        
+            clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 0      
         if clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] == 1:
             idx = city_name_dict[destination]
             doc_ref.update({
                 'last_edit': idx
             })
-
-
     print("finish resolving, send response back to clinc...")
     pp.pprint(clinc_request)
-    # requst clinc
-    # get response 
-    # resolve 
     return jsonify(**clinc_request)
 
 
 def resolve_generate_schedule(clinc_request):
+    """Resolve request when state is to generate schedule."""
     print("start resolve generate_schedule...")
     user_id = clinc_request['external_user_id']
     doc_ref = collection.document(user_id)
@@ -542,12 +456,10 @@ def resolve_generate_schedule(clinc_request):
                 'longitude' : lo
             }
         })
-
     try:
         it_gen = ItineraryGen(int(doc_ref.get().to_dict()['length_of_visit']), places)
         plan = it_gen.make()
         print('Schedule Generated:')
-        # print(plan)
         schedule = []
         days = len(plan)
         for i in range(days):
@@ -555,20 +467,18 @@ def resolve_generate_schedule(clinc_request):
             for j in plan[i]:
                 places_in_day.append(j)
             schedule.append(places_in_day)
-        # print('schedule', schedule)
         doc_ref.update({
             "schedule": json.dumps(schedule)
-        })
-        
+        })       
     except TypeError:
         print('length_of_visit not int')
-
     print("finish resolving, send response back to clinc...")
     pp.pprint(clinc_request)
     return jsonify(**clinc_request)
 
 
 def resolve_recommendation(clinc_request):
+    """Resolve request when state is to give recommendation."""
     print("start resolve recommendation...")
     user_id = clinc_request['external_user_id']
     doc_ref = collection.document(user_id)
@@ -577,7 +487,6 @@ def resolve_recommendation(clinc_request):
         doc_ref.set({
             'sessionId' : user_id
         })
-
     city_dict = doc_ref.get().to_dict()
 
     if  "city" not in city_dict or "length_of_visit" not in city_dict or "number_of_people" not in city_dict:
@@ -594,24 +503,19 @@ def resolve_recommendation(clinc_request):
         }
         pp.pprint(clinc_request)
         return jsonify(**clinc_request)
-
     try:
         city = doc_ref.get().to_dict()['city']
         count = doc_ref.get().to_dict()['count']
     except:
         city = "-1"
         count = 0
-    #print("city:", city)
     city_doc_ref = city_collection.document(city)
     city_recommendations = city_doc_ref.get().to_dict()["recommendations"]
     rec_idx = doc_ref.get().to_dict()['rec_idx']
-    
-
 
     if clinc_request['slots']:
         if clinc_request['slots']['_PREFERENCE_']['values'][0]['preference_mapper'] in ['hotels', 'restaurants', 'amusement parks', 'attractions', 'museums', 'shopping centers']:
             preference = clinc_request['slots']['_PREFERENCE_']['values'][0]['preference_mapper']
-            # print("preference", preference)
             tmp_pref = preference
             if preference == "restaurants":
                 preference = "cuisine"
@@ -623,7 +527,6 @@ def resolve_recommendation(clinc_request):
                 preference = "shopping"
             for i in range(50):
                 if preference and preference in city_recommendations['results'][i]['tag_labels'] and i not in rec_idx:
-                    #city_recommendations['results'][i]['recommended'] = True
                     rec_idx.append(i)
                     clinc_request['slots'] = {
                         "_RECOMMENDATION_": {
@@ -675,8 +578,7 @@ def resolve_recommendation(clinc_request):
 
                     print("finish resolving, send response back to clinc...")
                     pp.pprint(clinc_request)
-                    return jsonify(**clinc_request)
-        
+                    return jsonify(**clinc_request)      
         preference = clinc_request['slots']['_PREFERENCE_']['values'][0]['tokens']
         clinc_request['slots'] = {
             "_NOPREFERENCE_": {
@@ -691,7 +593,6 @@ def resolve_recommendation(clinc_request):
         }
         return jsonify(**clinc_request)
 
-    # print('recommendation got from API:', city_recommendations)
     while "hotels" in city_recommendations['results'][count]['tag_labels'] or "cuisine" in city_recommendations['results'][count]['tag_labels'] or count in rec_idx:
         count += 1
     clinc_request['slots'] = {
@@ -726,25 +627,13 @@ def resolve_recommendation(clinc_request):
         "last_edit": count,
         "rec_idx" : rec_idx
     })
-
-    print("slots:", clinc_request['slots'])
-
     print("finish resolving, send response back to clinc...")
     pp.pprint(clinc_request)
     return jsonify(**clinc_request)
 
 
-
-
-
-
-
-
-
-
-
-
 def resolve_remove_destination(clinc_request):
+    """Resolve request when state is to remove destination."""
     print("start resolve remove_destination...")
     user_id = clinc_request['external_user_id']
     doc_ref = collection.document(user_id)
@@ -752,39 +641,16 @@ def resolve_remove_destination(clinc_request):
     if not doc.exists:
         doc_ref.set({
             'sessionId' : user_id
-        })
-        
+        }) 
     try:
         city = doc_ref.get().to_dict()['city']
     except:
         city = "-1"
-
     if clinc_request['slots']:
         destination = capitalize_name(clinc_request['slots']['_DESTINATION_']['values'][0]['tokens'])
         last_edit = doc_ref.get().to_dict()['last_edit']
         city_doc_ref = city_collection.document(city)
         city_recommendations = city_doc_ref.get().to_dict()['recommendations']
-
-        #mapper_values = {}
-        #candidates = []
-        #for place in city_recommendations:
-        #    mapper_values[place['name']] = [place['name']]
-        #    candidate_value = {'value' : place['name']}
-        #    candidates.append(candidate_value)
-
-        #clinc_request['slots']['_DESTINATION_']['candidates'] = candidates
-        #clinc_request['slots']['_DESTINATION_']['mappings'] = [
-        #    {
-        #        "algorithm" : "partial_ratio",
-        #        "threshold" : 0.6,
-        #        "type" : "fuzzy",
-        #        "values" : mapper_values
-        #    }
-        #]
-        
-        # clinc_request['visual_payload'] = {
-        #     'destination': destination
-        # }
         clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = destination
         if destination in ["This Place", "This", "It", "There", "That"]:
             if last_edit != -1:
@@ -794,7 +660,6 @@ def resolve_remove_destination(clinc_request):
         clinc_request['slots']['_DESTINATION_']['values'][0]['resolved'] = 1  # why the value of 'values' is list???
         clinc_request['slots']['_DESTINATION_']['values'][0]['value'] = destination
         added_destinations = doc_ref.get().to_dict()['destinations']
-
         found_place = 0
         for idx, d in enumerate(added_destinations):
             if destination == d:
@@ -812,19 +677,10 @@ def resolve_remove_destination(clinc_request):
                     "value": destination + " is not in your list."
                 }]
             }
-
     print("finish resolving, send response back to clinc...")
     pp.pprint(clinc_request)
     return jsonify(**clinc_request)
 
-
-# @app.route("/api/return_destinations", methods=["GET", "POST"])
-# def return_destinations():
-#     global destinations
-#     data = {
-#         "result": destinations,
-#     }
-#     return jsonify(**data)
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=os.environ.get('PORT', 8000), debug=True)

@@ -1,9 +1,11 @@
+"""Generate itinerary based on number of days and places to travel.
+Places in evenly distributed to days, and palces are grouped by TSP.
+"""
+
 import numpy as np 
 import geopy.distance
-#from equal_groups import EqualGroupsKMeans
 import mlrose
 from collections import OrderedDict
-
 
 
 def cal_dist(coords_1, coords_2, unit='km'):
@@ -31,23 +33,12 @@ class ItineraryGen(object):
 		num_days: int 
 		places: list of dicts
 	"""
-
 	def __init__(self, num_days, places):
 
 		#assert (len(places) / num_days <= 3)
 
 		self._num_days = num_days
 		self._places = places
-
-	'''
-	# use for even-size cluster 
-	def _cluster(self, data, k):
-		""" equal-size cluster """
-
-		clf = EqualGroupsKMeans(n_clusters=k, random_state=0)
-		clf.fit(data)
-		return clf.labels_
-	'''
 
 	def _coords(self, place):
 		coords = place['coordinates']
@@ -110,27 +101,6 @@ class ItineraryGen(object):
 		return plan
 
 
-		'''
-		# even clustering 
-
-		num_places = len(self._places)
-		data = np.zeros((num_places, num_places))
-
-		for i, place in enumerate(self._places):
-			coords = place['coordinates']
-			data[i] = [coords['latitude'], coords['longitude']]
-
-		num_clusters = int(
-			np.ceil(num_places / self._max_num_places_per_day))
-
-		labels = self._cluster(data, num_clusters)
-
-		plan = self._plan(data, labels)
-
-		return plan
-		'''
-
-
 	def add_places(self, places):
 		""" add places
 		
@@ -159,9 +129,6 @@ class ItineraryGen(object):
 	@property
 	def num_days(self):
 		return self._num_days
-	
-
-
 
 
 if __name__ == '__main__':

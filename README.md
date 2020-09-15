@@ -1,52 +1,46 @@
-# EECS498 Conversational AI - Travel Agent
+# Conversational AI - Travel Agent
 
-## TODO
-### Clinc:
-1. Test Clinc classification and slot mapping   
-   Incorrect cases:   
-   (1) "I want to go to Tokyo Tower", should be add_destination, extract as city   
-   (2) "I want to go to xxx by myself"   
-   (3) "the weekend" days (incorrect slot-value pairing)   
-   (4) "I want to go to xxx alone" -> city: "xxx alone"   
-   (5) I'll go to xxx with 3 boys and 4 girls.   
-   (6) "a week and 2 days"   
-   (7) "I'd like to go there." should be add_destination, extract as city  
-   (8) "Hi, I'd like to go to Ann Arbor with my parents for 3 days" with "hi days" on the top instead of "3 days" (non-numerical days should be illegal)   
-   
-2. Add utterances, slot mapper, edit response for recommendation preference.   
-3. (Add training data to support adding multiple places at once.)
+A conversational Artificial Intelligence web application that can assist users to create travel itinerary by interpreting user intent. Supported by Clinc, Inc.
+
+<img src="description/demo_chat.png" alt="chat dmeo" width="300"/>
+
+*A screen shot of chatting with our AI, audio is transcripted to words.*
+
+## Overview
+Our conversational AI is consisted of many components. A detailed description and functionality of each component is shown below. The following image shows the interaction between them.
+
+- Clinc AI Platform
+   - Open-source platform that designed to incorporate a conversational AI in service, based on a finite state machine
 
 
-### Backend:
-1. Use dynamic slot mapper in business logic to map destination   
-   "resolve_destination_info", add by name, remove by name     
-2. Say "Remove this place" to remove    
-3. Recommend according to user preference   
+- Frontend User Interface
+   - User speaks to AI through the user interface, and the final response from the AI is also displayed on user interface.
+   - Support user interaction through both voice and word.
 
-### UI:
-#### Itinerary:
-1. Display the destination name when there's only 1 place for the day.
+- Backend Server
+   - Support data/response transfer among user interface, Google ASR, and Clinc AI platform.
 
-#### General:
-2. When clicking button, send request to clinc so that there's speakable response
-   e.g. User clicks button to add, AI says "xxx has been added..."
-3. Display destination information at resolve_destination_info
-   e.g. "Tell me about Michigan Stadium" -> show photo and introduction on screen   
+- Business Logic Server
+   - Request external data source to get the recommendation information 
+   - Support generation of travel itinerary
 
-### TTS&STT:
-1. Test and make sure it works.
+- APIs
+   - Google Firebase
+      - Store user profile and city information from Triposo 
+      - Generate route and traffic guides based on real-time information
 
-## Notes:
-1. Business Transition
-- With out BT, user input -> clinc intent classification -> clinc slot extraction -> backend resolve state and slots
-- With BT, user input -> clinc intent classification -> clinc slot extraction -> Business logic server BT -> clinc slot extraction based on the new state with the old query -> backend can't resolve slot?
+   - Google ASR
+      - Enable text-to-speech and speech-to-text conversion.
+      - Support state-of-the-art speech recognition technology.
 
+   - Triposo
+      - Use Triposo API as the external data source.
+      - Provide tourist destination including its coordinates to visualize the route.
 
-### To run this app:
-1. npm install
-2. npm run dev
-3. pip install -r requirements.txt
-4. python server.py
-5. Goto http://localhost:3000
+   - Mapbox
+      - Display itinerary on real map 
+      - Generate route and traffic guides based on real-time information
 
-If you would like to have webpack rebuild your javascript any time your React code changes, enter `npm run start` in a different terminal.
+<img src="description/workflow.png" alt="workflow" width="600"/>
+
+*Overview of the interaction among different components.*

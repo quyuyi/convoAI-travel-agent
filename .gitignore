@@ -200,7 +200,14 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
-
+# admin file
 speech-1572979010959-firebase-adminsdk-158i4-af50eeb52d.json
+WebpageClassifier*.json
+
+# deploy file
+Procfile
+
+# self test
+test/*
 
 # End of https://www.gitignore.io/api/osx
