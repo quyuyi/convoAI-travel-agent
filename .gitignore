@@ -209,5 +209,8 @@ Procfile
 
 # self test
 test/*
+.vscode/*
+.babelrc
+.travis.yml
 
 # End of https://www.gitignore.io/api/osx
