@@ -8,7 +8,7 @@ import os
 import io
 import pprint
 import sys
-sys.path.append('./utils')
+sys.path.append('./script')
 from flask import Flask, render_template, request, jsonify, send_file, url_for
 import requests
 from api import request_clinc, FIREBASE_AUTH

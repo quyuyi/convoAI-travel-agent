@@ -2,7 +2,7 @@
 Resolve request from the frontend.
 """
 import sys
-sys.path.append('./utils')
+sys.path.append('./script')
 import os
 import io
 import json
